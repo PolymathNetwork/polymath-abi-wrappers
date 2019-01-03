@@ -1,0 +1,287 @@
+// tslint:disable:no-consecutive-blank-lines ordered-imports align trailing-comma whitespace class-name
+// tslint:disable:no-unused-variable
+// tslint:disable:no-unbound-method
+import { BaseContract } from '@0x/base-contract';
+import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact, DecodedLogArgs, MethodAbi, Provider, TxData, TxDataPayable } from 'ethereum-types';
+import { BigNumber, classUtils, logUtils } from '@0x/utils';
+import { SimpleContractArtifact } from '@0x/types';
+import { Web3Wrapper } from '@0x/web3-wrapper';
+import * as ethers from 'ethers';
+import * as _ from 'lodash';
+// tslint:enable:no-unused-variable
+
+export type OwnableEventArgs =
+    | OwnableOwnershipRenouncedEventArgs
+    | OwnableOwnershipTransferredEventArgs;
+
+export enum OwnableEvents {
+    OwnershipRenounced = 'OwnershipRenounced',
+    OwnershipTransferred = 'OwnershipTransferred',
+}
+
+export interface OwnableOwnershipRenouncedEventArgs extends DecodedLogArgs {
+    previousOwner: string;
+}
+
+export interface OwnableOwnershipTransferredEventArgs extends DecodedLogArgs {
+    previousOwner: string;
+    newOwner: string;
+}
+
+
+/* istanbul ignore next */
+// tslint:disable:no-parameter-reassignment
+// tslint:disable-next-line:class-name
+export class OwnableContract extends BaseContract {
+    public owner = {
+        async callAsync(
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as OwnableContract;
+            const functionSignature = 'owner()';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.owner;
+            const encodedData = ethersFunction.encode([]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'owner'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray[0];
+        },
+    };
+    public renounceOwnership = {
+        async sendTransactionAsync(
+            txData: Partial<TxData> = {},
+        ): Promise<string> {
+            const self = this as any as OwnableContract;
+            const inputAbi = self._lookupAbi('renounceOwnership()').inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
+            const encodedData = self._lookupEthersInterface('renounceOwnership()').functions.renounceOwnership.encode([]);
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+                self.renounceOwnership.estimateGasAsync.bind(
+                    self,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            return txHash;
+        },
+        async estimateGasAsync(
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as OwnableContract;
+            const inputAbi = self._lookupAbi('renounceOwnership()').inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
+            const encodedData = self._lookupEthersInterface('renounceOwnership()').functions.renounceOwnership.encode([]);
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            return gas;
+        },
+        getABIEncodedTransactionData(
+        ): string {
+            const self = this as any as OwnableContract;
+            const inputAbi = self._lookupAbi('renounceOwnership()').inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
+            const abiEncodedTransactionData = self._lookupEthersInterface('renounceOwnership()').functions.renounceOwnership.encode([]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as OwnableContract;
+            const functionSignature = 'renounceOwnership()';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.renounceOwnership;
+            const encodedData = ethersFunction.encode([]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'renounceOwnership'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray;
+        },
+    };
+    public transferOwnership = {
+        async sendTransactionAsync(
+            _newOwner: string,
+            txData: Partial<TxData> = {},
+        ): Promise<string> {
+            const self = this as any as OwnableContract;
+            const inputAbi = self._lookupAbi('transferOwnership(address)').inputs;
+            [_newOwner
+    ] = BaseContract._formatABIDataItemList(inputAbi, [_newOwner
+    ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_newOwner
+    ]);
+            const encodedData = self._lookupEthersInterface('transferOwnership(address)').functions.transferOwnership.encode([_newOwner
+    ]);
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+                self.transferOwnership.estimateGasAsync.bind(
+                    self,
+                    _newOwner
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            return txHash;
+        },
+        async estimateGasAsync(
+            _newOwner: string,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as OwnableContract;
+            const inputAbi = self._lookupAbi('transferOwnership(address)').inputs;
+            [_newOwner
+    ] = BaseContract._formatABIDataItemList(inputAbi, [_newOwner
+    ], BaseContract._bigNumberToString);
+            const encodedData = self._lookupEthersInterface('transferOwnership(address)').functions.transferOwnership.encode([_newOwner
+    ]);
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            return gas;
+        },
+        getABIEncodedTransactionData(
+            _newOwner: string,
+        ): string {
+            const self = this as any as OwnableContract;
+            const inputAbi = self._lookupAbi('transferOwnership(address)').inputs;
+            [_newOwner
+    ] = BaseContract._formatABIDataItemList(inputAbi, [_newOwner
+    ], BaseContract._bigNumberToString);
+            const abiEncodedTransactionData = self._lookupEthersInterface('transferOwnership(address)').functions.transferOwnership.encode([_newOwner
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _newOwner: string,
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as OwnableContract;
+            const functionSignature = 'transferOwnership(address)';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [_newOwner
+        ] = BaseContract._formatABIDataItemList(inputAbi, [_newOwner
+        ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_newOwner
+        ]);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.transferOwnership;
+            const encodedData = ethersFunction.encode([_newOwner
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'transferOwnership'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray;
+        },
+    };
+    public static async deployFrom0xArtifactAsync(
+        artifact: ContractArtifact | SimpleContractArtifact,
+        provider: Provider,
+        txDefaults: Partial<TxData>,
+    ): Promise<OwnableContract> {
+        if (_.isUndefined(artifact.compilerOutput)) {
+            throw new Error('Compiler output not found in the artifact file');
+        }
+        const bytecode = artifact.compilerOutput.evm.bytecode.object;
+        const abi = artifact.compilerOutput.abi;
+        return OwnableContract.deployAsync(bytecode, abi, provider, txDefaults, );
+    }
+    public static async deployAsync(
+        bytecode: string,
+        abi: ContractAbi,
+        provider: Provider,
+        txDefaults: Partial<TxData>,
+    ): Promise<OwnableContract> {
+        const constructorAbi = BaseContract._lookupConstructorAbi(abi);
+        [] = BaseContract._formatABIDataItemList(
+            constructorAbi.inputs,
+            [],
+            BaseContract._bigNumberToString,
+        );
+        const iface = new ethers.utils.Interface(abi);
+        const deployInfo = iface.deployFunction;
+        const txData = deployInfo.encode(bytecode, []);
+        const web3Wrapper = new Web3Wrapper(provider);
+        const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {data: txData},
+            txDefaults,
+            web3Wrapper.estimateGasAsync.bind(web3Wrapper),
+        );
+        const txHash = await web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+        logUtils.log(`transactionHash: ${txHash}`);
+        const txReceipt = await web3Wrapper.awaitTransactionSuccessAsync(txHash);
+        logUtils.log(`Ownable successfully deployed at ${txReceipt.contractAddress}`);
+        const contractInstance = new OwnableContract(abi, txReceipt.contractAddress as string, provider, txDefaults);
+        contractInstance.constructorArgs = [];
+        return contractInstance;
+    }
+    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>) {
+        super('Ownable', abi, address, provider, txDefaults);
+        classUtils.bindAll(this, ['_ethersInterfacesByFunctionSignature', 'address', 'abi', '_web3Wrapper']);
+    }
+} // tslint:disable:max-file-line-count
+// tslint:enable:no-unbound-method

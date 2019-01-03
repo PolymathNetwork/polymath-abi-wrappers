@@ -14,11 +14,11 @@
     "build:ci": "yarn build",
     "lint": "tslint --format stylish --project .",
     "pre_build": "yarn generate_contract_wrappers",
-    "clean": "shx rm -rf lib wrappers",
-    "generate_contract_wrappers": "node_modules/@0x/abi-gen --abis ${npm_package_config_abis} --template contract.handlebars --partials 'partials/**/*.handlebars' --output src/generated-wrappers"
+    "clean": "shx rm -rf src/generated-wrappers",
+    "generate_contract_wrappers": "node_modules/@0x/abi-gen/bin/abi-gen.js --abis ${npm_package_config_abis} --template contract.handlebars --partials 'partials/**/*.handlebars' --output src/generated-wrappers"
   },
   "config": {
-    "abis": "node_modules/polymath-contract-artifacts/artifacts/*.json"
+    "abis": "node_modules/polymath-contract-artifacts/artifacts/@(*).json"
   },
   "repository": {
     "type": "git",
