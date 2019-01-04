@@ -78,7 +78,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.unpause.estimateGasAsync.bind(
+                self.unpause.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -231,7 +231,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.takeFee.estimateGasAsync.bind(
+                self.takeFee.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
                     _amount
                 ),
@@ -388,7 +388,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.pause.estimateGasAsync.bind(
+                self.pause.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -701,7 +701,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.verifyTransfer.estimateGasAsync.bind(
+                self.verifyTransfer.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
                     _from,
                     _to,
@@ -874,7 +874,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.addManualApproval.estimateGasAsync.bind(
+                self.addManualApproval.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
                     _from,
                     _to,
@@ -1047,7 +1047,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.addManualApprovalMulti.estimateGasAsync.bind(
+                self.addManualApprovalMulti.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
                     _from,
                     _to,
@@ -1225,7 +1225,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.modifyManualApproval.estimateGasAsync.bind(
+                self.modifyManualApproval.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
                     _from,
                     _to,
@@ -1417,7 +1417,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.modifyManualApprovalMulti.estimateGasAsync.bind(
+                self.modifyManualApprovalMulti.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
                     _from,
                     _to,
@@ -1589,7 +1589,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.revokeManualApproval.estimateGasAsync.bind(
+                self.revokeManualApproval.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
                     _from,
                     _to
@@ -1705,7 +1705,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.revokeManualApprovalMulti.estimateGasAsync.bind(
+                self.revokeManualApprovalMulti.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
                     _from,
                     _to

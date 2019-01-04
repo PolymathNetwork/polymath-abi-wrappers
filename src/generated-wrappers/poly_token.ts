@@ -287,7 +287,7 @@ export class PolyTokenContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.transfer.estimateGasAsync.bind(
+                self.transfer.estimateGasAsync.bind<PolyTokenContract, any, Promise<number>>(
                     self,
                     _to,
                     _value
@@ -408,7 +408,7 @@ export class PolyTokenContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.transferFrom.estimateGasAsync.bind(
+                self.transferFrom.estimateGasAsync.bind<PolyTokenContract, any, Promise<number>>(
                     self,
                     _from,
                     _to,
@@ -538,7 +538,7 @@ export class PolyTokenContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.approve.estimateGasAsync.bind(
+                self.approve.estimateGasAsync.bind<PolyTokenContract, any, Promise<number>>(
                     self,
                     _spender,
                     _value
@@ -654,7 +654,7 @@ export class PolyTokenContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.increaseApproval.estimateGasAsync.bind(
+                self.increaseApproval.estimateGasAsync.bind<PolyTokenContract, any, Promise<number>>(
                     self,
                     _spender,
                     _addedValue
@@ -770,7 +770,7 @@ export class PolyTokenContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.decreaseApproval.estimateGasAsync.bind(
+                self.decreaseApproval.estimateGasAsync.bind<PolyTokenContract, any, Promise<number>>(
                     self,
                     _spender,
                     _subtractedValue

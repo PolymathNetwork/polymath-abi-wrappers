@@ -28,6 +28,7 @@ export enum USDTieredSTOFactoryEvents {
     ChangeSTVersionBound = 'ChangeSTVersionBound',
     OwnershipRenounced = 'OwnershipRenounced',
     OwnershipTransferred = 'OwnershipTransferred',
+    GenerateModuleFromFactory = 'GenerateModuleFromFactory',
 }
 
 export interface USDTieredSTOFactoryChangeFactorySetupFeeEventArgs extends DecodedLogArgs {
@@ -197,7 +198,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeTitle.estimateGasAsync.bind(
+                self.changeTitle.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _newTitle
                 ),
@@ -294,7 +295,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeFactorySubscriptionFee.estimateGasAsync.bind(
+                self.changeFactorySubscriptionFee.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _newSubscriptionCost
                 ),
@@ -451,7 +452,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeFactorySetupFee.estimateGasAsync.bind(
+                self.changeFactorySetupFee.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _newSetupCost
                 ),
@@ -548,7 +549,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeVersion.estimateGasAsync.bind(
+                self.changeVersion.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _newVersion
                 ),
@@ -670,7 +671,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.renounceOwnership.estimateGasAsync.bind(
+                self.renounceOwnership.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -843,7 +844,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeName.estimateGasAsync.bind(
+                self.changeName.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _newName
                 ),
@@ -1000,7 +1001,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeFactoryUsageFee.estimateGasAsync.bind(
+                self.changeFactoryUsageFee.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _newUsageCost
                 ),
@@ -1157,7 +1158,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeDescription.estimateGasAsync.bind(
+                self.changeDescription.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _newDesc
                 ),
@@ -1254,7 +1255,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.transferOwnership.estimateGasAsync.bind(
+                self.transferOwnership.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _newOwner
                 ),
@@ -1386,7 +1387,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeSTVersionBounds.estimateGasAsync.bind(
+                self.changeSTVersionBounds.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _boundType,
                     _newVersion
@@ -1497,7 +1498,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.deploy.estimateGasAsync.bind(
+                self.deploy.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _data
                 ),

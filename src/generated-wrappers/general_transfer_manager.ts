@@ -193,7 +193,7 @@ export class GeneralTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.unpause.estimateGasAsync.bind(
+                self.unpause.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -341,7 +341,7 @@ export class GeneralTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.takeFee.estimateGasAsync.bind(
+                self.takeFee.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _amount
                 ),
@@ -463,7 +463,7 @@ export class GeneralTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.pause.estimateGasAsync.bind(
+                self.pause.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -926,7 +926,7 @@ export class GeneralTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeDefaults.estimateGasAsync.bind(
+                self.changeDefaults.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _defaultFromTime,
                     _defaultToTime
@@ -1037,7 +1037,7 @@ export class GeneralTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeIssuanceAddress.estimateGasAsync.bind(
+                self.changeIssuanceAddress.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _issuanceAddress
                 ),
@@ -1134,7 +1134,7 @@ export class GeneralTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeSigningAddress.estimateGasAsync.bind(
+                self.changeSigningAddress.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _signingAddress
                 ),
@@ -1231,7 +1231,7 @@ export class GeneralTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeAllowAllTransfers.estimateGasAsync.bind(
+                self.changeAllowAllTransfers.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _allowAllTransfers
                 ),
@@ -1328,7 +1328,7 @@ export class GeneralTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeAllowAllWhitelistTransfers.estimateGasAsync.bind(
+                self.changeAllowAllWhitelistTransfers.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _allowAllWhitelistTransfers
                 ),
@@ -1425,7 +1425,7 @@ export class GeneralTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeAllowAllWhitelistIssuances.estimateGasAsync.bind(
+                self.changeAllowAllWhitelistIssuances.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _allowAllWhitelistIssuances
                 ),
@@ -1522,7 +1522,7 @@ export class GeneralTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeAllowAllBurnTransfers.estimateGasAsync.bind(
+                self.changeAllowAllBurnTransfers.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _allowAllBurnTransfers
                 ),
@@ -1639,7 +1639,7 @@ export class GeneralTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.verifyTransfer.estimateGasAsync.bind(
+                self.verifyTransfer.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _from,
                     _to,
@@ -1812,7 +1812,7 @@ export class GeneralTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.modifyWhitelist.estimateGasAsync.bind(
+                self.modifyWhitelist.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _investor,
                     _fromTime,
@@ -1985,7 +1985,7 @@ export class GeneralTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.modifyWhitelistMulti.estimateGasAsync.bind(
+                self.modifyWhitelistMulti.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _investors,
                     _fromTimes,
@@ -2188,7 +2188,7 @@ export class GeneralTransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.modifyWhitelistSigned.estimateGasAsync.bind(
+                self.modifyWhitelistSigned.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _investor,
                     _fromTime,

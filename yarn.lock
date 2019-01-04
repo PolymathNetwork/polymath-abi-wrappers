@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@0x/abi-gen@^1.0.19":
+"@0x/abi-gen@1.0.19":
   version "1.0.19"
   resolved "https://registry.yarnpkg.com/@0x/abi-gen/-/abi-gen-1.0.19.tgz#4c40ee73f544803ef8254328041333f2fa180b16"
   integrity sha512-J/f0e4wn0yOArnObUqm3Q7q9DUk3TE2nouWB9alDaVq2bFXgf5UWyUxdd4n+REiSluD4+EszUSAE8zVuPyLGYQ==
@@ -87,7 +87,7 @@
     "@0x/typescript-typings" "^3.0.6"
     lodash "^4.17.5"
 
-"@0x/types@^1.4.1":
+"@0x/types@1.4.1", "@0x/types@^1.4.1":
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@0x/types/-/types-1.4.1.tgz#0468c1f04b7689498b0729787e1218da8d1e1b9f"
   integrity sha512-nz58oN5v83Ui2mag1NN+GAmpp5yNRhJC25eyDnYjXez0QqU/hOcgC8F0R0IGj/WQbs/d9rWV+iUy7GAhmkmOcw==
@@ -151,7 +151,7 @@
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.119.tgz#be847e5f4bc3e35e46d041c394ead8b603ad8b39"
   integrity sha512-Z3TNyBL8Vd/M9D9Ms2S3LmFq2sSMzahodD6rCS9V2N44HUMINb75jNkSuwAx7eo2ufqTdfOdtGQpNbieUjPQmw==
 
-"@types/node@*", "@types/node@^10.3.2":
+"@types/node@*", "@types/node@^10.12.18", "@types/node@^10.3.2":
   version "10.12.18"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.18.tgz#1d3ca764718915584fcd9f6344621b7672665c67"
   integrity sha512-fh+pAqt4xRzPfqA6eh3Z2y6fyZavRIumvjhaCL753+TVkGKGhpPeyrJG2JftD0T9q4GF00KjefsQ+PQNDdWQaQ==
@@ -2159,6 +2159,11 @@ type-is@~1.6.16:
   dependencies:
     media-typer "0.3.0"
     mime-types "~2.1.18"
+
+typescript@3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.2.1.tgz#0b7a04b8cf3868188de914d9568bd030f0c56192"
+  integrity sha512-jw7P2z/h6aPT4AENXDGjcfHTu5CSqzsbZc6YlUIebTyBAq8XaKp78x7VcSh30xwSCcsu5irZkYZUSFP1MrAMbg==
 
 uglify-js@^3.1.4:
   version "3.4.9"

@@ -179,7 +179,7 @@ export class ISTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.takeFee.estimateGasAsync.bind(
+                self.takeFee.estimateGasAsync.bind<ISTOContract, any, Promise<number>>(
                     self,
                     _amount
                 ),
@@ -616,7 +616,7 @@ export class ISTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.reclaimERC20.estimateGasAsync.bind(
+                self.reclaimERC20.estimateGasAsync.bind<ISTOContract, any, Promise<number>>(
                     self,
                     _tokenContract
                 ),
@@ -773,7 +773,7 @@ export class ISTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.pause.estimateGasAsync.bind(
+                self.pause.estimateGasAsync.bind<ISTOContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -851,7 +851,7 @@ export class ISTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.unpause.estimateGasAsync.bind(
+                self.unpause.estimateGasAsync.bind<ISTOContract, any, Promise<number>>(
                     self,
                 ),
             );

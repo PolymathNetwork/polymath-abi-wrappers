@@ -232,7 +232,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.unpause.estimateGasAsync.bind(
+                self.unpause.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -405,7 +405,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.takeFee.estimateGasAsync.bind(
+                self.takeFee.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _amount
                 ),
@@ -652,7 +652,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.pause.estimateGasAsync.bind(
+                self.pause.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -775,7 +775,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.reclaimERC20.estimateGasAsync.bind(
+                self.reclaimERC20.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _tokenContract
                 ),
@@ -1492,7 +1492,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.configure.estimateGasAsync.bind(
+                self.configure.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _startTime,
                     _endTime,
@@ -1743,7 +1743,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.modifyFunding.estimateGasAsync.bind(
+                self.modifyFunding.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _fundRaiseTypes
                 ),
@@ -1845,7 +1845,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.modifyLimits.estimateGasAsync.bind(
+                self.modifyLimits.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _nonAccreditedLimitUSD,
                     _minimumInvestmentUSD
@@ -1971,7 +1971,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.modifyTiers.estimateGasAsync.bind(
+                self.modifyTiers.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _ratePerTier,
                     _ratePerTierDiscountPoly,
@@ -2115,7 +2115,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.modifyTimes.estimateGasAsync.bind(
+                self.modifyTimes.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _startTime,
                     _endTime
@@ -2236,7 +2236,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.modifyAddresses.estimateGasAsync.bind(
+                self.modifyAddresses.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _wallet,
                     _reserveWallet,
@@ -2356,7 +2356,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.finalize.estimateGasAsync.bind(
+                self.finalize.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -2444,7 +2444,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeAccredited.estimateGasAsync.bind(
+                self.changeAccredited.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _investors,
                     _accredited
@@ -2560,7 +2560,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeNonAccreditedLimit.estimateGasAsync.bind(
+                self.changeNonAccreditedLimit.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _investors,
                     _nonAccreditedLimit
@@ -2671,7 +2671,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeAllowBeneficialInvestments.estimateGasAsync.bind(
+                self.changeAllowBeneficialInvestments.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _allowBeneficialInvestments
                 ),
@@ -2768,7 +2768,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.buyWithETH.estimateGasAsync.bind(
+                self.buyWithETH.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _beneficiary
                 ),
@@ -2870,7 +2870,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.buyWithPOLY.estimateGasAsync.bind(
+                self.buyWithPOLY.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _beneficiary,
                     _investedPOLY
@@ -2986,7 +2986,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.buyWithUSD.estimateGasAsync.bind(
+                self.buyWithUSD.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _beneficiary,
                     _investedDAI
@@ -3102,7 +3102,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.buyWithETHRateLimited.estimateGasAsync.bind(
+                self.buyWithETHRateLimited.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _beneficiary,
                     _minTokens
@@ -3223,7 +3223,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.buyWithPOLYRateLimited.estimateGasAsync.bind(
+                self.buyWithPOLYRateLimited.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _beneficiary,
                     _investedPOLY,
@@ -3358,7 +3358,7 @@ export class USDTieredSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.buyWithUSDRateLimited.estimateGasAsync.bind(
+                self.buyWithUSDRateLimited.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _beneficiary,
                     _investedDAI,

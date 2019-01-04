@@ -112,7 +112,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.setWithholdingFixed.estimateGasAsync.bind(
+                self.setWithholdingFixed.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _investors,
                     _withholding
@@ -283,7 +283,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.pullDividendPayment.estimateGasAsync.bind(
+                self.pullDividendPayment.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _dividendIndex
                 ),
@@ -450,7 +450,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.pushDividendPaymentToAddresses.estimateGasAsync.bind(
+                self.pushDividendPaymentToAddresses.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _dividendIndex,
                     _payees
@@ -666,7 +666,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.takeFee.estimateGasAsync.bind(
+                self.takeFee.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _amount
                 ),
@@ -898,7 +898,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.setWithholding.estimateGasAsync.bind(
+                self.setWithholding.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _investors,
                     _withholding
@@ -1169,7 +1169,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.setDefaultExcluded.estimateGasAsync.bind(
+                self.setDefaultExcluded.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _excluded
                 ),
@@ -1306,7 +1306,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.pushDividendPayment.estimateGasAsync.bind(
+                self.pushDividendPayment.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _dividendIndex,
                     _start,
@@ -1456,7 +1456,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.createCheckpoint.estimateGasAsync.bind(
+                self.createCheckpoint.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -1559,7 +1559,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.createDividend.estimateGasAsync.bind(
+                self.createDividend.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _maturity,
                     _expiry,
@@ -1737,7 +1737,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.createDividendWithCheckpoint.estimateGasAsync.bind(
+                self.createDividendWithCheckpoint.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _maturity,
                     _expiry,
@@ -1929,7 +1929,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.createDividendWithExclusions.estimateGasAsync.bind(
+                self.createDividendWithExclusions.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _maturity,
                     _expiry,
@@ -2126,7 +2126,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.createDividendWithCheckpointAndExclusions.estimateGasAsync.bind(
+                self.createDividendWithCheckpointAndExclusions.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _maturity,
                     _expiry,
@@ -2307,7 +2307,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.reclaimDividend.estimateGasAsync.bind(
+                self.reclaimDividend.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _dividendIndex
                 ),
@@ -2404,7 +2404,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.withdrawWithholding.estimateGasAsync.bind(
+                self.withdrawWithholding.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _dividendIndex
                 ),
