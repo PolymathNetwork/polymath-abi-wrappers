@@ -28,7 +28,6 @@ export enum ModuleFactoryEvents {
     ChangeSTVersionBound = 'ChangeSTVersionBound',
     OwnershipRenounced = 'OwnershipRenounced',
     OwnershipTransferred = 'OwnershipTransferred',
-    GenerateModuleFromFactory = 'GenerateModuleFromFactory',
 }
 
 export interface ModuleFactoryChangeFactorySetupFeeEventArgs extends DecodedLogArgs {

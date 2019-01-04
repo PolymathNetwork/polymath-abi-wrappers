@@ -1,4 +1,4 @@
-## @polymath-abi-wrappers
+## polymath-abi-wrappers
 
 Low-level Polymath smart contract wrappers generated using @0x/abi-gen with custom poly template. These
 low-level wrappers are imported by other packages and application developers are not expected to import this package directly.

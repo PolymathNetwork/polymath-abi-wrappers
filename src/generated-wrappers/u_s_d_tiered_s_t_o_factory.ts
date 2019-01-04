@@ -28,7 +28,6 @@ export enum USDTieredSTOFactoryEvents {
     ChangeSTVersionBound = 'ChangeSTVersionBound',
     OwnershipRenounced = 'OwnershipRenounced',
     OwnershipTransferred = 'OwnershipTransferred',
-    GenerateModuleFromFactory = 'GenerateModuleFromFactory',
 }
 
 export interface USDTieredSTOFactoryChangeFactorySetupFeeEventArgs extends DecodedLogArgs {
