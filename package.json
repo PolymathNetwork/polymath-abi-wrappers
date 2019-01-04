@@ -10,7 +10,7 @@
     "test": "test"
   },
   "scripts": {
-    "build": "yarn pre_build && tsc -b",
+    "build": "tsc -b",
     "build:ci": "yarn build",
     "lint": "tslint --format stylish --project .",
     "pre_build": "yarn generate_contract_wrappers",
@@ -30,9 +30,10 @@
   },
   "homepage": "https://github.com/PolymathNetwork/polymath-abi-wrappers/blob/master/README.md",
   "devDependencies": {
-    "polymath-contract-artifacts": "git://github.com/PolymathNetwork/polymath-contract-artifacts.git#v2.1.0-beta",
     "@0x/abi-gen": "^1.0.19",
     "@0x/types": "^1.4.1",
+    "@types/lodash": "^4.14.119",
+    "polymath-contract-artifacts": "git://github.com/PolymathNetwork/polymath-contract-artifacts.git#v2.1.0-beta",
     "shx": "^0.2.2"
   },
   "dependencies": {

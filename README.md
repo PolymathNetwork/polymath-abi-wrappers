@@ -44,7 +44,7 @@ yarn install
 To build this package run the following from root directory:
 
 ```bash
-yarn build
+yarn pre_build && yarn build
 ```
 
 ### Clean

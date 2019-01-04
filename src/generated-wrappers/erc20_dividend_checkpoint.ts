@@ -2480,61 +2480,6 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             return resultArray;
         },
     };
-    public static async deployFrom0xArtifactAsync(
-        artifact: ContractArtifact | SimpleContractArtifact,
-        provider: Provider,
-        txDefaults: Partial<TxData>,
-            _securityToken: string,
-            _polyAddress: string,
-    ): Promise<ERC20DividendCheckpointContract> {
-        if (_.isUndefined(artifact.compilerOutput)) {
-            throw new Error('Compiler output not found in the artifact file');
-        }
-        const bytecode = artifact.compilerOutput.evm.bytecode.object;
-        const abi = artifact.compilerOutput.abi;
-        return ERC20DividendCheckpointContract.deployAsync(bytecode, abi, provider, txDefaults, _securityToken,
-_polyAddress
-);
-    }
-    public static async deployAsync(
-        bytecode: string,
-        abi: ContractAbi,
-        provider: Provider,
-        txDefaults: Partial<TxData>,
-            _securityToken: string,
-            _polyAddress: string,
-    ): Promise<ERC20DividendCheckpointContract> {
-        const constructorAbi = BaseContract._lookupConstructorAbi(abi);
-        [_securityToken,
-_polyAddress
-] = BaseContract._formatABIDataItemList(
-            constructorAbi.inputs,
-            [_securityToken,
-_polyAddress
-],
-            BaseContract._bigNumberToString,
-        );
-        const iface = new ethers.utils.Interface(abi);
-        const deployInfo = iface.deployFunction;
-        const txData = deployInfo.encode(bytecode, [_securityToken,
-_polyAddress
-]);
-        const web3Wrapper = new Web3Wrapper(provider);
-        const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {data: txData},
-            txDefaults,
-            web3Wrapper.estimateGasAsync.bind(web3Wrapper),
-        );
-        const txHash = await web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-        logUtils.log(`transactionHash: ${txHash}`);
-        const txReceipt = await web3Wrapper.awaitTransactionSuccessAsync(txHash);
-        logUtils.log(`ERC20DividendCheckpoint successfully deployed at ${txReceipt.contractAddress}`);
-        const contractInstance = new ERC20DividendCheckpointContract(abi, txReceipt.contractAddress as string, provider, txDefaults);
-        contractInstance.constructorArgs = [_securityToken,
-_polyAddress
-];
-        return contractInstance;
-    }
     constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>) {
         super('ERC20DividendCheckpoint', abi, address, provider, txDefaults);
         classUtils.bindAll(this, ['_ethersInterfacesByFunctionSignature', 'address', 'abi', '_web3Wrapper']);

@@ -28,7 +28,6 @@ export enum CappedSTOFactoryEvents {
     ChangeSTVersionBound = 'ChangeSTVersionBound',
     OwnershipRenounced = 'OwnershipRenounced',
     OwnershipTransferred = 'OwnershipTransferred',
-    GenerateModuleFromFactory = 'GenerateModuleFromFactory',
 }
 
 export interface CappedSTOFactoryChangeFactorySetupFeeEventArgs extends DecodedLogArgs {
@@ -1634,75 +1633,6 @@ export class CappedSTOFactoryContract extends BaseContract {
             return resultArray[0];
         },
     };
-    public static async deployFrom0xArtifactAsync(
-        artifact: ContractArtifact | SimpleContractArtifact,
-        provider: Provider,
-        txDefaults: Partial<TxData>,
-            _polyAddress: string,
-            _setupCost: BigNumber,
-            _usageCost: BigNumber,
-            _subscriptionCost: BigNumber,
-    ): Promise<CappedSTOFactoryContract> {
-        if (_.isUndefined(artifact.compilerOutput)) {
-            throw new Error('Compiler output not found in the artifact file');
-        }
-        const bytecode = artifact.compilerOutput.evm.bytecode.object;
-        const abi = artifact.compilerOutput.abi;
-        return CappedSTOFactoryContract.deployAsync(bytecode, abi, provider, txDefaults, _polyAddress,
-_setupCost,
-_usageCost,
-_subscriptionCost
-);
-    }
-    public static async deployAsync(
-        bytecode: string,
-        abi: ContractAbi,
-        provider: Provider,
-        txDefaults: Partial<TxData>,
-            _polyAddress: string,
-            _setupCost: BigNumber,
-            _usageCost: BigNumber,
-            _subscriptionCost: BigNumber,
-    ): Promise<CappedSTOFactoryContract> {
-        const constructorAbi = BaseContract._lookupConstructorAbi(abi);
-        [_polyAddress,
-_setupCost,
-_usageCost,
-_subscriptionCost
-] = BaseContract._formatABIDataItemList(
-            constructorAbi.inputs,
-            [_polyAddress,
-_setupCost,
-_usageCost,
-_subscriptionCost
-],
-            BaseContract._bigNumberToString,
-        );
-        const iface = new ethers.utils.Interface(abi);
-        const deployInfo = iface.deployFunction;
-        const txData = deployInfo.encode(bytecode, [_polyAddress,
-_setupCost,
-_usageCost,
-_subscriptionCost
-]);
-        const web3Wrapper = new Web3Wrapper(provider);
-        const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {data: txData},
-            txDefaults,
-            web3Wrapper.estimateGasAsync.bind(web3Wrapper),
-        );
-        const txHash = await web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-        logUtils.log(`transactionHash: ${txHash}`);
-        const txReceipt = await web3Wrapper.awaitTransactionSuccessAsync(txHash);
-        logUtils.log(`CappedSTOFactory successfully deployed at ${txReceipt.contractAddress}`);
-        const contractInstance = new CappedSTOFactoryContract(abi, txReceipt.contractAddress as string, provider, txDefaults);
-        contractInstance.constructorArgs = [_polyAddress,
-_setupCost,
-_usageCost,
-_subscriptionCost
-];
-        return contractInstance;
-    }
     constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>) {
         super('CappedSTOFactory', abi, address, provider, txDefaults);
         classUtils.bindAll(this, ['_ethersInterfacesByFunctionSignature', 'address', 'abi', '_web3Wrapper']);
