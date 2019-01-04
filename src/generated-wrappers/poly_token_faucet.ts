@@ -152,7 +152,7 @@ export class PolyTokenFaucetContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.getTokens.estimateGasAsync.bind(
+                self.getTokens.estimateGasAsync.bind<PolyTokenFaucetContract, any, Promise<number>>(
                     self,
                     _amount,
                     _recipient
@@ -268,7 +268,7 @@ export class PolyTokenFaucetContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.transfer.estimateGasAsync.bind(
+                self.transfer.estimateGasAsync.bind<PolyTokenFaucetContract, any, Promise<number>>(
                     self,
                     _to,
                     _value
@@ -389,7 +389,7 @@ export class PolyTokenFaucetContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.transferFrom.estimateGasAsync.bind(
+                self.transferFrom.estimateGasAsync.bind<PolyTokenFaucetContract, any, Promise<number>>(
                     self,
                     _from,
                     _to,
@@ -554,7 +554,7 @@ export class PolyTokenFaucetContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.approve.estimateGasAsync.bind(
+                self.approve.estimateGasAsync.bind<PolyTokenFaucetContract, any, Promise<number>>(
                     self,
                     _spender,
                     _value
@@ -740,7 +740,7 @@ export class PolyTokenFaucetContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.increaseApproval.estimateGasAsync.bind(
+                self.increaseApproval.estimateGasAsync.bind<PolyTokenFaucetContract, any, Promise<number>>(
                     self,
                     _spender,
                     _addedValue
@@ -856,7 +856,7 @@ export class PolyTokenFaucetContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.decreaseApproval.estimateGasAsync.bind(
+                self.decreaseApproval.estimateGasAsync.bind<PolyTokenFaucetContract, any, Promise<number>>(
                     self,
                     _spender,
                     _subtractedValue

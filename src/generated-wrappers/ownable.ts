@@ -79,7 +79,7 @@ export class OwnableContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.renounceOwnership.estimateGasAsync.bind(
+                self.renounceOwnership.estimateGasAsync.bind<OwnableContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -162,7 +162,7 @@ export class OwnableContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.transferOwnership.estimateGasAsync.bind(
+                self.transferOwnership.estimateGasAsync.bind<OwnableContract, any, Promise<number>>(
                     self,
                     _newOwner
                 ),

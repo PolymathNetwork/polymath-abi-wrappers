@@ -20,7 +20,7 @@ public {{this.tsName}} = {
                 data: encodedData,
             },
             self._web3Wrapper.getContractDefaults(),
-            self.{{this.tsName}}.estimateGasAsync.bind(
+            self.{{this.tsName}}.estimateGasAsync.bind<{{contractName}}Contract, any, Promise<number>>(
                 self,
                 {{> params inputs=inputs}}
             ),

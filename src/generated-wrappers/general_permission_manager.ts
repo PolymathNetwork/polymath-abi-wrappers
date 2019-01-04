@@ -104,7 +104,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.takeFee.estimateGasAsync.bind(
+                self.takeFee.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
                     self,
                     _amount
                 ),
@@ -501,7 +501,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.addDelegate.estimateGasAsync.bind(
+                self.addDelegate.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
                     self,
                     _delegate,
                     _details
@@ -612,7 +612,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.deleteDelegate.estimateGasAsync.bind(
+                self.deleteDelegate.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
                     self,
                     _delegate
                 ),
@@ -759,7 +759,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changePermission.estimateGasAsync.bind(
+                self.changePermission.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
                     self,
                     _delegate,
                     _module,
@@ -913,7 +913,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changePermissionMulti.estimateGasAsync.bind(
+                self.changePermissionMulti.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
                     self,
                     _delegate,
                     _modules,

@@ -56,7 +56,7 @@ export class FeatureRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.renounceOwnership.estimateGasAsync.bind(
+                self.renounceOwnership.estimateGasAsync.bind<FeatureRegistryContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -139,7 +139,7 @@ export class FeatureRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.reclaimERC20.estimateGasAsync.bind(
+                self.reclaimERC20.estimateGasAsync.bind<FeatureRegistryContract, any, Promise<number>>(
                     self,
                     _tokenContract
                 ),
@@ -301,7 +301,7 @@ export class FeatureRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.transferOwnership.estimateGasAsync.bind(
+                self.transferOwnership.estimateGasAsync.bind<FeatureRegistryContract, any, Promise<number>>(
                     self,
                     _newOwner
                 ),
@@ -438,7 +438,7 @@ export class FeatureRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.setFeatureStatus.estimateGasAsync.bind(
+                self.setFeatureStatus.estimateGasAsync.bind<FeatureRegistryContract, any, Promise<number>>(
                     self,
                     _nameKey,
                     _newStatus

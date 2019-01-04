@@ -189,7 +189,7 @@ export class CappedSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.unpause.estimateGasAsync.bind(
+                self.unpause.estimateGasAsync.bind<CappedSTOContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -332,7 +332,7 @@ export class CappedSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.takeFee.estimateGasAsync.bind(
+                self.takeFee.estimateGasAsync.bind<CappedSTOContract, any, Promise<number>>(
                     self,
                     _amount
                 ),
@@ -549,7 +549,7 @@ export class CappedSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.pause.estimateGasAsync.bind(
+                self.pause.estimateGasAsync.bind<CappedSTOContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -632,7 +632,7 @@ export class CappedSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.reclaimERC20.estimateGasAsync.bind(
+                self.reclaimERC20.estimateGasAsync.bind<CappedSTOContract, any, Promise<number>>(
                     self,
                     _tokenContract
                 ),
@@ -1009,7 +1009,7 @@ export class CappedSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.configure.estimateGasAsync.bind(
+                self.configure.estimateGasAsync.bind<CappedSTOContract, any, Promise<number>>(
                     self,
                     _startTime,
                     _endTime,
@@ -1206,7 +1206,7 @@ export class CappedSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeAllowBeneficialInvestments.estimateGasAsync.bind(
+                self.changeAllowBeneficialInvestments.estimateGasAsync.bind<CappedSTOContract, any, Promise<number>>(
                     self,
                     _allowBeneficialInvestments
                 ),
@@ -1303,7 +1303,7 @@ export class CappedSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.buyTokens.estimateGasAsync.bind(
+                self.buyTokens.estimateGasAsync.bind<CappedSTOContract, any, Promise<number>>(
                     self,
                     _beneficiary
                 ),
@@ -1400,7 +1400,7 @@ export class CappedSTOContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.buyTokensWithPoly.estimateGasAsync.bind(
+                self.buyTokensWithPoly.estimateGasAsync.bind<CappedSTOContract, any, Promise<number>>(
                     self,
                     _investedPOLY
                 ),

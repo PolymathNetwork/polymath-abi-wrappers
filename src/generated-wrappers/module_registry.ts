@@ -303,7 +303,7 @@ export class ModuleRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.initialize.estimateGasAsync.bind(
+                self.initialize.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                     _polymathRegistry,
                     _owner
@@ -414,7 +414,7 @@ export class ModuleRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.useModule.estimateGasAsync.bind(
+                self.useModule.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                     _moduleFactory
                 ),
@@ -511,7 +511,7 @@ export class ModuleRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.registerModule.estimateGasAsync.bind(
+                self.registerModule.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                     _moduleFactory
                 ),
@@ -608,7 +608,7 @@ export class ModuleRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.removeModule.estimateGasAsync.bind(
+                self.removeModule.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                     _moduleFactory
                 ),
@@ -710,7 +710,7 @@ export class ModuleRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.verifyModule.estimateGasAsync.bind(
+                self.verifyModule.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                     _moduleFactory,
                     _verified
@@ -1006,7 +1006,7 @@ export class ModuleRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.reclaimERC20.estimateGasAsync.bind(
+                self.reclaimERC20.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                     _tokenContract
                 ),
@@ -1098,7 +1098,7 @@ export class ModuleRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.pause.estimateGasAsync.bind(
+                self.pause.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -1176,7 +1176,7 @@ export class ModuleRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.unpause.estimateGasAsync.bind(
+                self.unpause.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -1254,7 +1254,7 @@ export class ModuleRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.updateFromRegistry.estimateGasAsync.bind(
+                self.updateFromRegistry.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -1337,7 +1337,7 @@ export class ModuleRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.transferOwnership.estimateGasAsync.bind(
+                self.transferOwnership.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                     _newOwner
                 ),

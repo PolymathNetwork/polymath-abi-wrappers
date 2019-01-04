@@ -113,7 +113,7 @@ export class ITransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.takeFee.estimateGasAsync.bind(
+                self.takeFee.estimateGasAsync.bind<ITransferManagerContract, any, Promise<number>>(
                     self,
                     _amount
                 ),
@@ -380,7 +380,7 @@ export class ITransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.verifyTransfer.estimateGasAsync.bind(
+                self.verifyTransfer.estimateGasAsync.bind<ITransferManagerContract, any, Promise<number>>(
                     self,
                     _from,
                     _to,
@@ -528,7 +528,7 @@ export class ITransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.unpause.estimateGasAsync.bind(
+                self.unpause.estimateGasAsync.bind<ITransferManagerContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -606,7 +606,7 @@ export class ITransferManagerContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.pause.estimateGasAsync.bind(
+                self.pause.estimateGasAsync.bind<ITransferManagerContract, any, Promise<number>>(
                     self,
                 ),
             );

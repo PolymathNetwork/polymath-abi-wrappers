@@ -357,7 +357,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.initialize.estimateGasAsync.bind(
+                self.initialize.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _polymathRegistry,
                     _STFactory,
@@ -534,7 +534,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.registerTicker.estimateGasAsync.bind(
+                self.registerTicker.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _owner,
                     _ticker,
@@ -684,7 +684,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.modifyTicker.estimateGasAsync.bind(
+                self.modifyTicker.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _owner,
                     _ticker,
@@ -851,7 +851,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.removeTicker.estimateGasAsync.bind(
+                self.removeTicker.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _ticker
                 ),
@@ -953,7 +953,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.transferTickerOwnership.estimateGasAsync.bind(
+                self.transferTickerOwnership.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _newOwner,
                     _ticker
@@ -1064,7 +1064,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeExpiryLimit.estimateGasAsync.bind(
+                self.changeExpiryLimit.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _newExpiry
                 ),
@@ -1281,7 +1281,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.generateSecurityToken.estimateGasAsync.bind(
+                self.generateSecurityToken.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _name,
                     _ticker,
@@ -1445,7 +1445,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.modifySecurityToken.estimateGasAsync.bind(
+                self.modifySecurityToken.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _name,
                     _ticker,
@@ -1717,7 +1717,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.transferOwnership.estimateGasAsync.bind(
+                self.transferOwnership.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _newOwner
                 ),
@@ -1809,7 +1809,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.pause.estimateGasAsync.bind(
+                self.pause.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -1887,7 +1887,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.unpause.estimateGasAsync.bind(
+                self.unpause.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -1970,7 +1970,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeTickerRegistrationFee.estimateGasAsync.bind(
+                self.changeTickerRegistrationFee.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _tickerRegFee
                 ),
@@ -2067,7 +2067,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeSecurityLaunchFee.estimateGasAsync.bind(
+                self.changeSecurityLaunchFee.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _stLaunchFee
                 ),
@@ -2164,7 +2164,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.reclaimERC20.estimateGasAsync.bind(
+                self.reclaimERC20.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _tokenContract
                 ),
@@ -2276,7 +2276,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.setProtocolVersion.estimateGasAsync.bind(
+                self.setProtocolVersion.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _STFactoryAddress,
                     _major,
@@ -2475,7 +2475,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.updatePolyTokenAddress.estimateGasAsync.bind(
+                self.updatePolyTokenAddress.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _newAddress
                 ),

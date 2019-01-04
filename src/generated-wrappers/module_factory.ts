@@ -28,6 +28,7 @@ export enum ModuleFactoryEvents {
     ChangeSTVersionBound = 'ChangeSTVersionBound',
     OwnershipRenounced = 'OwnershipRenounced',
     OwnershipTransferred = 'OwnershipTransferred',
+    GenerateModuleFromFactory = 'GenerateModuleFromFactory',
 }
 
 export interface ModuleFactoryChangeFactorySetupFeeEventArgs extends DecodedLogArgs {
@@ -107,7 +108,7 @@ export class ModuleFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.deploy.estimateGasAsync.bind(
+                self.deploy.estimateGasAsync.bind<ModuleFactoryContract, any, Promise<number>>(
                     self,
                     _data
                 ),
@@ -349,7 +350,7 @@ export class ModuleFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.renounceOwnership.estimateGasAsync.bind(
+                self.renounceOwnership.estimateGasAsync.bind<ModuleFactoryContract, any, Promise<number>>(
                     self,
                 ),
             );
@@ -642,7 +643,7 @@ export class ModuleFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.transferOwnership.estimateGasAsync.bind(
+                self.transferOwnership.estimateGasAsync.bind<ModuleFactoryContract, any, Promise<number>>(
                     self,
                     _newOwner
                 ),
@@ -739,7 +740,7 @@ export class ModuleFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeFactorySetupFee.estimateGasAsync.bind(
+                self.changeFactorySetupFee.estimateGasAsync.bind<ModuleFactoryContract, any, Promise<number>>(
                     self,
                     _newSetupCost
                 ),
@@ -836,7 +837,7 @@ export class ModuleFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeFactoryUsageFee.estimateGasAsync.bind(
+                self.changeFactoryUsageFee.estimateGasAsync.bind<ModuleFactoryContract, any, Promise<number>>(
                     self,
                     _newUsageCost
                 ),
@@ -933,7 +934,7 @@ export class ModuleFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeFactorySubscriptionFee.estimateGasAsync.bind(
+                self.changeFactorySubscriptionFee.estimateGasAsync.bind<ModuleFactoryContract, any, Promise<number>>(
                     self,
                     _newSubscriptionCost
                 ),
@@ -1030,7 +1031,7 @@ export class ModuleFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeTitle.estimateGasAsync.bind(
+                self.changeTitle.estimateGasAsync.bind<ModuleFactoryContract, any, Promise<number>>(
                     self,
                     _newTitle
                 ),
@@ -1127,7 +1128,7 @@ export class ModuleFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeDescription.estimateGasAsync.bind(
+                self.changeDescription.estimateGasAsync.bind<ModuleFactoryContract, any, Promise<number>>(
                     self,
                     _newDesc
                 ),
@@ -1224,7 +1225,7 @@ export class ModuleFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeName.estimateGasAsync.bind(
+                self.changeName.estimateGasAsync.bind<ModuleFactoryContract, any, Promise<number>>(
                     self,
                     _newName
                 ),
@@ -1321,7 +1322,7 @@ export class ModuleFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeVersion.estimateGasAsync.bind(
+                self.changeVersion.estimateGasAsync.bind<ModuleFactoryContract, any, Promise<number>>(
                     self,
                     _newVersion
                 ),
@@ -1423,7 +1424,7 @@ export class ModuleFactoryContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.changeSTVersionBounds.estimateGasAsync.bind(
+                self.changeSTVersionBounds.estimateGasAsync.bind<ModuleFactoryContract, any, Promise<number>>(
                     self,
                     _boundType,
                     _newVersion

@@ -96,7 +96,7 @@ export class IModuleContract extends BaseContract {
                     data: encodedData,
                 },
                 self._web3Wrapper.getContractDefaults(),
-                self.takeFee.estimateGasAsync.bind(
+                self.takeFee.estimateGasAsync.bind<IModuleContract, any, Promise<number>>(
                     self,
                     _amount
                 ),
