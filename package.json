@@ -13,7 +13,7 @@
     "build": "tsc -b",
     "build:ci": "yarn build",
     "lint": "tslint --format stylish --project .",
-    "pre_build": "yarn generate_contract_wrappers",
+    "pre_build": "yarn clean && yarn generate_contract_wrappers",
     "clean": "shx rm -rf src/generated-wrappers",
     "generate_contract_wrappers": "node_modules/@0x/abi-gen/bin/abi-gen.js --abis ${npm_package_config_abis} --template contract.handlebars --partials 'partials/**/*.handlebars' --output src/generated-wrappers"
   },

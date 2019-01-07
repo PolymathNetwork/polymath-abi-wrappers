@@ -11,24 +11,31 @@ import * as _ from 'lodash';
 // tslint:enable:no-unused-variable
 
 export type CappedSTOFactoryEventArgs =
+    | CappedSTOFactoryOwnershipRenouncedEventArgs
+    | CappedSTOFactoryOwnershipTransferredEventArgs
     | CappedSTOFactoryChangeFactorySetupFeeEventArgs
     | CappedSTOFactoryChangeFactoryUsageFeeEventArgs
     | CappedSTOFactoryChangeFactorySubscriptionFeeEventArgs
     | CappedSTOFactoryGenerateModuleFromFactoryEventArgs
-    | CappedSTOFactoryChangeSTVersionBoundEventArgs
-    | CappedSTOFactoryOwnershipRenouncedEventArgs
-    | CappedSTOFactoryOwnershipTransferredEventArgs
-    | CappedSTOFactoryGenerateModuleFromFactoryEventArgs;
+    | CappedSTOFactoryChangeSTVersionBoundEventArgs;
 
 export enum CappedSTOFactoryEvents {
+    OwnershipRenounced = 'OwnershipRenounced',
+    OwnershipTransferred = 'OwnershipTransferred',
     ChangeFactorySetupFee = 'ChangeFactorySetupFee',
     ChangeFactoryUsageFee = 'ChangeFactoryUsageFee',
     ChangeFactorySubscriptionFee = 'ChangeFactorySubscriptionFee',
     GenerateModuleFromFactory = 'GenerateModuleFromFactory',
     ChangeSTVersionBound = 'ChangeSTVersionBound',
-    OwnershipRenounced = 'OwnershipRenounced',
-    OwnershipTransferred = 'OwnershipTransferred',
-    GenerateModuleFromFactory = 'GenerateModuleFromFactory',
+}
+
+export interface CappedSTOFactoryOwnershipRenouncedEventArgs extends DecodedLogArgs {
+    previousOwner: string;
+}
+
+export interface CappedSTOFactoryOwnershipTransferredEventArgs extends DecodedLogArgs {
+    previousOwner: string;
+    newOwner: string;
 }
 
 export interface CappedSTOFactoryChangeFactorySetupFeeEventArgs extends DecodedLogArgs {
@@ -54,6 +61,7 @@ export interface CappedSTOFactoryGenerateModuleFromFactoryEventArgs extends Deco
     _moduleName: string;
     _moduleFactory: string;
     _creator: string;
+    _setupCost: BigNumber;
     _timestamp: BigNumber;
 }
 
@@ -62,24 +70,6 @@ export interface CappedSTOFactoryChangeSTVersionBoundEventArgs extends DecodedLo
     _major: BigNumber;
     _minor: BigNumber;
     _patch: BigNumber;
-}
-
-export interface CappedSTOFactoryOwnershipRenouncedEventArgs extends DecodedLogArgs {
-    previousOwner: string;
-}
-
-export interface CappedSTOFactoryOwnershipTransferredEventArgs extends DecodedLogArgs {
-    previousOwner: string;
-    newOwner: string;
-}
-
-export interface CappedSTOFactoryGenerateModuleFromFactoryEventArgs extends DecodedLogArgs {
-    _module: string;
-    _moduleName: string;
-    _moduleFactory: string;
-    _creator: string;
-    _setupCost: BigNumber;
-    _timestamp: BigNumber;
 }
 
 

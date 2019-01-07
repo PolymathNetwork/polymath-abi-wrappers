@@ -11,24 +11,31 @@ import * as _ from 'lodash';
 // tslint:enable:no-unused-variable
 
 export type USDTieredSTOFactoryEventArgs =
+    | USDTieredSTOFactoryOwnershipRenouncedEventArgs
+    | USDTieredSTOFactoryOwnershipTransferredEventArgs
     | USDTieredSTOFactoryChangeFactorySetupFeeEventArgs
     | USDTieredSTOFactoryChangeFactoryUsageFeeEventArgs
     | USDTieredSTOFactoryChangeFactorySubscriptionFeeEventArgs
     | USDTieredSTOFactoryGenerateModuleFromFactoryEventArgs
-    | USDTieredSTOFactoryChangeSTVersionBoundEventArgs
-    | USDTieredSTOFactoryOwnershipRenouncedEventArgs
-    | USDTieredSTOFactoryOwnershipTransferredEventArgs
-    | USDTieredSTOFactoryGenerateModuleFromFactoryEventArgs;
+    | USDTieredSTOFactoryChangeSTVersionBoundEventArgs;
 
 export enum USDTieredSTOFactoryEvents {
+    OwnershipRenounced = 'OwnershipRenounced',
+    OwnershipTransferred = 'OwnershipTransferred',
     ChangeFactorySetupFee = 'ChangeFactorySetupFee',
     ChangeFactoryUsageFee = 'ChangeFactoryUsageFee',
     ChangeFactorySubscriptionFee = 'ChangeFactorySubscriptionFee',
     GenerateModuleFromFactory = 'GenerateModuleFromFactory',
     ChangeSTVersionBound = 'ChangeSTVersionBound',
-    OwnershipRenounced = 'OwnershipRenounced',
-    OwnershipTransferred = 'OwnershipTransferred',
-    GenerateModuleFromFactory = 'GenerateModuleFromFactory',
+}
+
+export interface USDTieredSTOFactoryOwnershipRenouncedEventArgs extends DecodedLogArgs {
+    previousOwner: string;
+}
+
+export interface USDTieredSTOFactoryOwnershipTransferredEventArgs extends DecodedLogArgs {
+    previousOwner: string;
+    newOwner: string;
 }
 
 export interface USDTieredSTOFactoryChangeFactorySetupFeeEventArgs extends DecodedLogArgs {
@@ -54,6 +61,7 @@ export interface USDTieredSTOFactoryGenerateModuleFromFactoryEventArgs extends D
     _moduleName: string;
     _moduleFactory: string;
     _creator: string;
+    _setupCost: BigNumber;
     _timestamp: BigNumber;
 }
 
@@ -62,24 +70,6 @@ export interface USDTieredSTOFactoryChangeSTVersionBoundEventArgs extends Decode
     _major: BigNumber;
     _minor: BigNumber;
     _patch: BigNumber;
-}
-
-export interface USDTieredSTOFactoryOwnershipRenouncedEventArgs extends DecodedLogArgs {
-    previousOwner: string;
-}
-
-export interface USDTieredSTOFactoryOwnershipTransferredEventArgs extends DecodedLogArgs {
-    previousOwner: string;
-    newOwner: string;
-}
-
-export interface USDTieredSTOFactoryGenerateModuleFromFactoryEventArgs extends DecodedLogArgs {
-    _module: string;
-    _moduleName: string;
-    _moduleFactory: string;
-    _creator: string;
-    _setupCost: BigNumber;
-    _timestamp: BigNumber;
 }
 
 
