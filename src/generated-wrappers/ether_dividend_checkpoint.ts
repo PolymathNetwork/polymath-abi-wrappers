@@ -267,6 +267,41 @@ export class EtherDividendCheckpointContract extends BaseContract {
             return resultArray[0];
         },
     };
+    public getDividendData = {
+        async callAsync(
+            _dividendIndex: BigNumber,
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, string]
+        > {
+            const self = this as any as EtherDividendCheckpointContract;
+            const functionSignature = 'getDividendData(uint256)';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [_dividendIndex
+        ] = BaseContract._formatABIDataItemList(inputAbi, [_dividendIndex
+        ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_dividendIndex
+        ]);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getDividendData;
+            const encodedData = ethersFunction.encode([_dividendIndex
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'getDividendData'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray;
+        },
+    };
     public pullDividendPayment = {
         async sendTransactionAsync(
             _dividendIndex: BigNumber,
@@ -394,41 +429,6 @@ export class EtherDividendCheckpointContract extends BaseContract {
             return resultArray[0];
         },
     };
-    public investorWithheld = {
-        async callAsync(
-            index_0: string,
-            callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<BigNumber
-        > {
-            const self = this as any as EtherDividendCheckpointContract;
-            const functionSignature = 'investorWithheld(address)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [index_0
-        ] = BaseContract._formatABIDataItemList(inputAbi, [index_0
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [index_0
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.investorWithheld;
-            const encodedData = ethersFunction.encode([index_0
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'investorWithheld'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
     public pushDividendPaymentToAddresses = {
         async sendTransactionAsync(
             _dividendIndex: BigNumber,
@@ -543,6 +543,46 @@ export class EtherDividendCheckpointContract extends BaseContract {
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
             return resultArray;
+        },
+    };
+    public isClaimed = {
+        async callAsync(
+            _investor: string,
+            _dividendIndex: BigNumber,
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<boolean
+        > {
+            const self = this as any as EtherDividendCheckpointContract;
+            const functionSignature = 'isClaimed(address,uint256)';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [_investor,
+        _dividendIndex
+        ] = BaseContract._formatABIDataItemList(inputAbi, [_investor,
+        _dividendIndex
+        ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_investor,
+        _dividendIndex
+        ]);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.isClaimed;
+            const encodedData = ethersFunction.encode([_investor,
+        _dividendIndex
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'isClaimed'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray[0];
         },
     };
     public calculateDividend = {
@@ -812,6 +852,41 @@ export class EtherDividendCheckpointContract extends BaseContract {
             return resultArray[0];
         },
     };
+    public getCheckpointData = {
+        async callAsync(
+            _checkpointId: BigNumber,
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<[string[], BigNumber[], BigNumber[]]
+        > {
+            const self = this as any as EtherDividendCheckpointContract;
+            const functionSignature = 'getCheckpointData(uint256)';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [_checkpointId
+        ] = BaseContract._formatABIDataItemList(inputAbi, [_checkpointId
+        ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_checkpointId
+        ]);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getCheckpointData;
+            const encodedData = ethersFunction.encode([_checkpointId
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'getCheckpointData'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray;
+        },
+    };
     public DISTRIBUTE = {
         async callAsync(
             callData: Partial<CallData> = {},
@@ -875,6 +950,46 @@ export class EtherDividendCheckpointContract extends BaseContract {
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
             return resultArray;
+        },
+    };
+    public isExcluded = {
+        async callAsync(
+            _investor: string,
+            _dividendIndex: BigNumber,
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<boolean
+        > {
+            const self = this as any as EtherDividendCheckpointContract;
+            const functionSignature = 'isExcluded(address,uint256)';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [_investor,
+        _dividendIndex
+        ] = BaseContract._formatABIDataItemList(inputAbi, [_investor,
+        _dividendIndex
+        ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_investor,
+        _dividendIndex
+        ]);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.isExcluded;
+            const encodedData = ethersFunction.encode([_investor,
+        _dividendIndex
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'isExcluded'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray[0];
         },
     };
     public setWithholding = {
@@ -988,6 +1103,36 @@ export class EtherDividendCheckpointContract extends BaseContract {
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             let resultArray = ethersFunction.decode(rawCallResult);
             const outputAbi = (_.find(self.abi, {name: 'setWithholding'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray;
+        },
+    };
+    public getDividendsData = {
+        async callAsync(
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<[BigNumber[], BigNumber[], BigNumber[], BigNumber[], BigNumber[], string[]]
+        > {
+            const self = this as any as EtherDividendCheckpointContract;
+            const functionSignature = 'getDividendsData()';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getDividendsData;
+            const encodedData = ethersFunction.encode([]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'getDividendsData'}) as MethodAbi).outputs;
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
             return resultArray;
@@ -1408,6 +1553,41 @@ export class EtherDividendCheckpointContract extends BaseContract {
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
             return resultArray[0];
+        },
+    };
+    public getDividendProgress = {
+        async callAsync(
+            _dividendIndex: BigNumber,
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<[string[], boolean[], boolean[], BigNumber[], BigNumber[], BigNumber[]]
+        > {
+            const self = this as any as EtherDividendCheckpointContract;
+            const functionSignature = 'getDividendProgress(uint256)';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [_dividendIndex
+        ] = BaseContract._formatABIDataItemList(inputAbi, [_dividendIndex
+        ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_dividendIndex
+        ]);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getDividendProgress;
+            const encodedData = ethersFunction.encode([_dividendIndex
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'getDividendProgress'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray;
         },
     };
     public createCheckpoint = {

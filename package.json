@@ -34,7 +34,7 @@
     "@0x/types": "1.4.1",
     "@types/lodash": "^4.14.119",
     "@types/node": "^10.12.18",
-    "polymath-contract-artifacts": "git://github.com/PolymathNetwork/polymath-contract-artifacts.git#v2.1.0-beta",
+    "polymath-contract-artifacts": "git://github.com/PolymathNetwork/polymath-contract-artifacts.git#v2.1.0-beta-2",
     "shx": "^0.2.2"
   },
   "dependencies": {

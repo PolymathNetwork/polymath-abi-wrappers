@@ -11,23 +11,31 @@ import * as _ from 'lodash';
 // tslint:enable:no-unused-variable
 
 export type ModuleFactoryEventArgs =
+    | ModuleFactoryOwnershipRenouncedEventArgs
+    | ModuleFactoryOwnershipTransferredEventArgs
     | ModuleFactoryChangeFactorySetupFeeEventArgs
     | ModuleFactoryChangeFactoryUsageFeeEventArgs
     | ModuleFactoryChangeFactorySubscriptionFeeEventArgs
     | ModuleFactoryGenerateModuleFromFactoryEventArgs
-    | ModuleFactoryChangeSTVersionBoundEventArgs
-    | ModuleFactoryOwnershipRenouncedEventArgs
-    | ModuleFactoryOwnershipTransferredEventArgs
-    | ModuleFactoryGenerateModuleFromFactoryEventArgs;
+    | ModuleFactoryChangeSTVersionBoundEventArgs;
 
 export enum ModuleFactoryEvents {
+    OwnershipRenounced = 'OwnershipRenounced',
+    OwnershipTransferred = 'OwnershipTransferred',
     ChangeFactorySetupFee = 'ChangeFactorySetupFee',
     ChangeFactoryUsageFee = 'ChangeFactoryUsageFee',
     ChangeFactorySubscriptionFee = 'ChangeFactorySubscriptionFee',
     GenerateModuleFromFactory = 'GenerateModuleFromFactory',
     ChangeSTVersionBound = 'ChangeSTVersionBound',
-    OwnershipRenounced = 'OwnershipRenounced',
-    OwnershipTransferred = 'OwnershipTransferred',
+}
+
+export interface ModuleFactoryOwnershipRenouncedEventArgs extends DecodedLogArgs {
+    previousOwner: string;
+}
+
+export interface ModuleFactoryOwnershipTransferredEventArgs extends DecodedLogArgs {
+    previousOwner: string;
+    newOwner: string;
 }
 
 export interface ModuleFactoryChangeFactorySetupFeeEventArgs extends DecodedLogArgs {
@@ -53,6 +61,7 @@ export interface ModuleFactoryGenerateModuleFromFactoryEventArgs extends Decoded
     _moduleName: string;
     _moduleFactory: string;
     _creator: string;
+    _setupCost: BigNumber;
     _timestamp: BigNumber;
 }
 
@@ -61,24 +70,6 @@ export interface ModuleFactoryChangeSTVersionBoundEventArgs extends DecodedLogAr
     _major: BigNumber;
     _minor: BigNumber;
     _patch: BigNumber;
-}
-
-export interface ModuleFactoryOwnershipRenouncedEventArgs extends DecodedLogArgs {
-    previousOwner: string;
-}
-
-export interface ModuleFactoryOwnershipTransferredEventArgs extends DecodedLogArgs {
-    previousOwner: string;
-    newOwner: string;
-}
-
-export interface ModuleFactoryGenerateModuleFromFactoryEventArgs extends DecodedLogArgs {
-    _module: string;
-    _moduleName: string;
-    _moduleFactory: string;
-    _creator: string;
-    _setupCost: BigNumber;
-    _timestamp: BigNumber;
 }
 
 

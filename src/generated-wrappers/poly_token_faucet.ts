@@ -20,15 +20,15 @@ export enum PolyTokenFaucetEvents {
 }
 
 export interface PolyTokenFaucetTransferEventArgs extends DecodedLogArgs {
-    _from: string;
-    _to: string;
-    _value: BigNumber;
+    from: string;
+    to: string;
+    value: BigNumber;
 }
 
 export interface PolyTokenFaucetApprovalEventArgs extends DecodedLogArgs {
-    _owner: string;
-    _spender: string;
-    _value: BigNumber;
+    owner: string;
+    spender: string;
+    value: BigNumber;
 }
 
 

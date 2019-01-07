@@ -84,7 +84,7 @@ export interface USDTieredSTOReserveTokenMintEventArgs extends DecodedLogArgs {
 export interface USDTieredSTOSetAddressesEventArgs extends DecodedLogArgs {
     _wallet: string;
     _reserveWallet: string;
-    _usdToken: string;
+    _usdTokens: string[];
 }
 
 export interface USDTieredSTOSetLimitsEventArgs extends DecodedLogArgs {
@@ -571,6 +571,41 @@ export class USDTieredSTOContract extends BaseContract {
             return resultArray[0];
         },
     };
+    public stableCoinsRaised = {
+        async callAsync(
+            index_0: string,
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<BigNumber
+        > {
+            const self = this as any as USDTieredSTOContract;
+            const functionSignature = 'stableCoinsRaised(address)';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [index_0
+        ] = BaseContract._formatABIDataItemList(inputAbi, [index_0
+        ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [index_0
+        ]);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.stableCoinsRaised;
+            const encodedData = ethersFunction.encode([index_0
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'stableCoinsRaised'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray[0];
+        },
+    };
     public startTime = {
         async callAsync(
             callData: Partial<CallData> = {},
@@ -851,6 +886,41 @@ export class USDTieredSTOContract extends BaseContract {
             return resultArray;
         },
     };
+    public usdTokenEnabled = {
+        async callAsync(
+            index_0: string,
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<boolean
+        > {
+            const self = this as any as USDTieredSTOContract;
+            const functionSignature = 'usdTokenEnabled(address)';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [index_0
+        ] = BaseContract._formatABIDataItemList(inputAbi, [index_0
+        ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [index_0
+        ]);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.usdTokenEnabled;
+            const encodedData = ethersFunction.encode([index_0
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'usdTokenEnabled'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray[0];
+        },
+    };
     public isFinalized = {
         async callAsync(
             callData: Partial<CallData> = {},
@@ -1031,6 +1101,41 @@ export class USDTieredSTOContract extends BaseContract {
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             let resultArray = ethersFunction.decode(rawCallResult);
             const outputAbi = (_.find(self.abi, {name: 'securityToken'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray[0];
+        },
+    };
+    public usdTokens = {
+        async callAsync(
+            index_0: BigNumber,
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as USDTieredSTOContract;
+            const functionSignature = 'usdTokens(uint256)';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [index_0
+        ] = BaseContract._formatABIDataItemList(inputAbi, [index_0
+        ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [index_0
+        ]);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.usdTokens;
+            const encodedData = ethersFunction.encode([index_0
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'usdTokens'}) as MethodAbi).outputs;
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
             return resultArray[0];
@@ -1356,36 +1461,6 @@ export class USDTieredSTOContract extends BaseContract {
             return resultArray[0];
         },
     };
-    public usdToken = {
-        async callAsync(
-            callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as USDTieredSTOContract;
-            const functionSignature = 'usdToken()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.usdToken;
-            const encodedData = ethersFunction.encode([]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'usdToken'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
     public fundsRaisedUSD = {
         async callAsync(
             callData: Partial<CallData> = {},
@@ -1429,11 +1504,11 @@ export class USDTieredSTOContract extends BaseContract {
             _fundRaiseTypes: Array<number|BigNumber>,
             _wallet: string,
             _reserveWallet: string,
-            _usdToken: string,
+            _usdTokens: string[],
             txData: Partial<TxData> = {},
         ): Promise<string> {
             const self = this as any as USDTieredSTOContract;
-            const inputAbi = self._lookupAbi('configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address)').inputs;
+            const inputAbi = self._lookupAbi('configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address[])').inputs;
             [_startTime,
     _endTime,
     _ratePerTier,
@@ -1445,7 +1520,7 @@ export class USDTieredSTOContract extends BaseContract {
     _fundRaiseTypes,
     _wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ] = BaseContract._formatABIDataItemList(inputAbi, [_startTime,
     _endTime,
     _ratePerTier,
@@ -1457,7 +1532,7 @@ export class USDTieredSTOContract extends BaseContract {
     _fundRaiseTypes,
     _wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_startTime,
     _endTime,
@@ -1470,9 +1545,9 @@ export class USDTieredSTOContract extends BaseContract {
     _fundRaiseTypes,
     _wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ]);
-            const encodedData = self._lookupEthersInterface('configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address)').functions.configure.encode([_startTime,
+            const encodedData = self._lookupEthersInterface('configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address[])').functions.configure.encode([_startTime,
     _endTime,
     _ratePerTier,
     _ratePerTierDiscountPoly,
@@ -1483,7 +1558,7 @@ export class USDTieredSTOContract extends BaseContract {
     _fundRaiseTypes,
     _wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ]);
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
@@ -1505,7 +1580,7 @@ export class USDTieredSTOContract extends BaseContract {
                     _fundRaiseTypes,
                     _wallet,
                     _reserveWallet,
-                    _usdToken
+                    _usdTokens
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1523,11 +1598,11 @@ export class USDTieredSTOContract extends BaseContract {
             _fundRaiseTypes: Array<number|BigNumber>,
             _wallet: string,
             _reserveWallet: string,
-            _usdToken: string,
+            _usdTokens: string[],
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOContract;
-            const inputAbi = self._lookupAbi('configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address)').inputs;
+            const inputAbi = self._lookupAbi('configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address[])').inputs;
             [_startTime,
     _endTime,
     _ratePerTier,
@@ -1539,7 +1614,7 @@ export class USDTieredSTOContract extends BaseContract {
     _fundRaiseTypes,
     _wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ] = BaseContract._formatABIDataItemList(inputAbi, [_startTime,
     _endTime,
     _ratePerTier,
@@ -1551,9 +1626,9 @@ export class USDTieredSTOContract extends BaseContract {
     _fundRaiseTypes,
     _wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address)').functions.configure.encode([_startTime,
+            const encodedData = self._lookupEthersInterface('configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address[])').functions.configure.encode([_startTime,
     _endTime,
     _ratePerTier,
     _ratePerTierDiscountPoly,
@@ -1564,7 +1639,7 @@ export class USDTieredSTOContract extends BaseContract {
     _fundRaiseTypes,
     _wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ]);
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
@@ -1589,10 +1664,10 @@ export class USDTieredSTOContract extends BaseContract {
             _fundRaiseTypes: Array<number|BigNumber>,
             _wallet: string,
             _reserveWallet: string,
-            _usdToken: string,
+            _usdTokens: string[],
         ): string {
             const self = this as any as USDTieredSTOContract;
-            const inputAbi = self._lookupAbi('configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address)').inputs;
+            const inputAbi = self._lookupAbi('configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address[])').inputs;
             [_startTime,
     _endTime,
     _ratePerTier,
@@ -1604,7 +1679,7 @@ export class USDTieredSTOContract extends BaseContract {
     _fundRaiseTypes,
     _wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ] = BaseContract._formatABIDataItemList(inputAbi, [_startTime,
     _endTime,
     _ratePerTier,
@@ -1616,9 +1691,9 @@ export class USDTieredSTOContract extends BaseContract {
     _fundRaiseTypes,
     _wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address)').functions.configure.encode([_startTime,
+            const abiEncodedTransactionData = self._lookupEthersInterface('configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address[])').functions.configure.encode([_startTime,
     _endTime,
     _ratePerTier,
     _ratePerTierDiscountPoly,
@@ -1629,7 +1704,7 @@ export class USDTieredSTOContract extends BaseContract {
     _fundRaiseTypes,
     _wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ]);
             return abiEncodedTransactionData;
         },
@@ -1645,13 +1720,13 @@ export class USDTieredSTOContract extends BaseContract {
             _fundRaiseTypes: Array<number|BigNumber>,
             _wallet: string,
             _reserveWallet: string,
-            _usdToken: string,
+            _usdTokens: string[],
             callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as USDTieredSTOContract;
-            const functionSignature = 'configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address)';
+            const functionSignature = 'configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address[])';
             const inputAbi = self._lookupAbi(functionSignature).inputs;
             [_startTime,
         _endTime,
@@ -1664,7 +1739,7 @@ export class USDTieredSTOContract extends BaseContract {
         _fundRaiseTypes,
         _wallet,
         _reserveWallet,
-        _usdToken
+        _usdTokens
         ] = BaseContract._formatABIDataItemList(inputAbi, [_startTime,
         _endTime,
         _ratePerTier,
@@ -1676,7 +1751,7 @@ export class USDTieredSTOContract extends BaseContract {
         _fundRaiseTypes,
         _wallet,
         _reserveWallet,
-        _usdToken
+        _usdTokens
         ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_startTime,
         _endTime,
@@ -1689,7 +1764,7 @@ export class USDTieredSTOContract extends BaseContract {
         _fundRaiseTypes,
         _wallet,
         _reserveWallet,
-        _usdToken
+        _usdTokens
         ]);
             const ethersFunction = self._lookupEthersInterface(functionSignature).functions.configure;
             const encodedData = ethersFunction.encode([_startTime,
@@ -1703,7 +1778,7 @@ export class USDTieredSTOContract extends BaseContract {
         _fundRaiseTypes,
         _wallet,
         _reserveWallet,
-        _usdToken
+        _usdTokens
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
@@ -2209,25 +2284,25 @@ export class USDTieredSTOContract extends BaseContract {
         async sendTransactionAsync(
             _wallet: string,
             _reserveWallet: string,
-            _usdToken: string,
+            _usdTokens: string[],
             txData: Partial<TxData> = {},
         ): Promise<string> {
             const self = this as any as USDTieredSTOContract;
-            const inputAbi = self._lookupAbi('modifyAddresses(address,address,address)').inputs;
+            const inputAbi = self._lookupAbi('modifyAddresses(address,address,address[])').inputs;
             [_wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ] = BaseContract._formatABIDataItemList(inputAbi, [_wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ]);
-            const encodedData = self._lookupEthersInterface('modifyAddresses(address,address,address)').functions.modifyAddresses.encode([_wallet,
+            const encodedData = self._lookupEthersInterface('modifyAddresses(address,address,address[])').functions.modifyAddresses.encode([_wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ]);
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
@@ -2240,7 +2315,7 @@ export class USDTieredSTOContract extends BaseContract {
                     self,
                     _wallet,
                     _reserveWallet,
-                    _usdToken
+                    _usdTokens
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -2249,21 +2324,21 @@ export class USDTieredSTOContract extends BaseContract {
         async estimateGasAsync(
             _wallet: string,
             _reserveWallet: string,
-            _usdToken: string,
+            _usdTokens: string[],
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOContract;
-            const inputAbi = self._lookupAbi('modifyAddresses(address,address,address)').inputs;
+            const inputAbi = self._lookupAbi('modifyAddresses(address,address,address[])').inputs;
             [_wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ] = BaseContract._formatABIDataItemList(inputAbi, [_wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('modifyAddresses(address,address,address)').functions.modifyAddresses.encode([_wallet,
+            const encodedData = self._lookupEthersInterface('modifyAddresses(address,address,address[])').functions.modifyAddresses.encode([_wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ]);
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
@@ -2279,49 +2354,49 @@ export class USDTieredSTOContract extends BaseContract {
         getABIEncodedTransactionData(
             _wallet: string,
             _reserveWallet: string,
-            _usdToken: string,
+            _usdTokens: string[],
         ): string {
             const self = this as any as USDTieredSTOContract;
-            const inputAbi = self._lookupAbi('modifyAddresses(address,address,address)').inputs;
+            const inputAbi = self._lookupAbi('modifyAddresses(address,address,address[])').inputs;
             [_wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ] = BaseContract._formatABIDataItemList(inputAbi, [_wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('modifyAddresses(address,address,address)').functions.modifyAddresses.encode([_wallet,
+            const abiEncodedTransactionData = self._lookupEthersInterface('modifyAddresses(address,address,address[])').functions.modifyAddresses.encode([_wallet,
     _reserveWallet,
-    _usdToken
+    _usdTokens
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _wallet: string,
             _reserveWallet: string,
-            _usdToken: string,
+            _usdTokens: string[],
             callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as USDTieredSTOContract;
-            const functionSignature = 'modifyAddresses(address,address,address)';
+            const functionSignature = 'modifyAddresses(address,address,address[])';
             const inputAbi = self._lookupAbi(functionSignature).inputs;
             [_wallet,
         _reserveWallet,
-        _usdToken
+        _usdTokens
         ] = BaseContract._formatABIDataItemList(inputAbi, [_wallet,
         _reserveWallet,
-        _usdToken
+        _usdTokens
         ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_wallet,
         _reserveWallet,
-        _usdToken
+        _usdTokens
         ]);
             const ethersFunction = self._lookupEthersInterface(functionSignature).functions.modifyAddresses;
             const encodedData = ethersFunction.encode([_wallet,
         _reserveWallet,
-        _usdToken
+        _usdTokens
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
@@ -2963,21 +3038,26 @@ export class USDTieredSTOContract extends BaseContract {
     public buyWithUSD = {
         async sendTransactionAsync(
             _beneficiary: string,
-            _investedDAI: BigNumber,
+            _investedSC: BigNumber,
+            _usdToken: string,
             txData: Partial<TxData> = {},
         ): Promise<string> {
             const self = this as any as USDTieredSTOContract;
-            const inputAbi = self._lookupAbi('buyWithUSD(address,uint256)').inputs;
+            const inputAbi = self._lookupAbi('buyWithUSD(address,uint256,address)').inputs;
             [_beneficiary,
-    _investedDAI
+    _investedSC,
+    _usdToken
     ] = BaseContract._formatABIDataItemList(inputAbi, [_beneficiary,
-    _investedDAI
+    _investedSC,
+    _usdToken
     ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_beneficiary,
-    _investedDAI
+    _investedSC,
+    _usdToken
     ]);
-            const encodedData = self._lookupEthersInterface('buyWithUSD(address,uint256)').functions.buyWithUSD.encode([_beneficiary,
-    _investedDAI
+            const encodedData = self._lookupEthersInterface('buyWithUSD(address,uint256,address)').functions.buyWithUSD.encode([_beneficiary,
+    _investedSC,
+    _usdToken
     ]);
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
@@ -2989,7 +3069,8 @@ export class USDTieredSTOContract extends BaseContract {
                 self.buyWithUSD.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _beneficiary,
-                    _investedDAI
+                    _investedSC,
+                    _usdToken
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -2997,18 +3078,22 @@ export class USDTieredSTOContract extends BaseContract {
         },
         async estimateGasAsync(
             _beneficiary: string,
-            _investedDAI: BigNumber,
+            _investedSC: BigNumber,
+            _usdToken: string,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOContract;
-            const inputAbi = self._lookupAbi('buyWithUSD(address,uint256)').inputs;
+            const inputAbi = self._lookupAbi('buyWithUSD(address,uint256,address)').inputs;
             [_beneficiary,
-    _investedDAI
+    _investedSC,
+    _usdToken
     ] = BaseContract._formatABIDataItemList(inputAbi, [_beneficiary,
-    _investedDAI
+    _investedSC,
+    _usdToken
     ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('buyWithUSD(address,uint256)').functions.buyWithUSD.encode([_beneficiary,
-    _investedDAI
+            const encodedData = self._lookupEthersInterface('buyWithUSD(address,uint256,address)').functions.buyWithUSD.encode([_beneficiary,
+    _investedSC,
+    _usdToken
     ]);
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
@@ -3023,41 +3108,50 @@ export class USDTieredSTOContract extends BaseContract {
         },
         getABIEncodedTransactionData(
             _beneficiary: string,
-            _investedDAI: BigNumber,
+            _investedSC: BigNumber,
+            _usdToken: string,
         ): string {
             const self = this as any as USDTieredSTOContract;
-            const inputAbi = self._lookupAbi('buyWithUSD(address,uint256)').inputs;
+            const inputAbi = self._lookupAbi('buyWithUSD(address,uint256,address)').inputs;
             [_beneficiary,
-    _investedDAI
+    _investedSC,
+    _usdToken
     ] = BaseContract._formatABIDataItemList(inputAbi, [_beneficiary,
-    _investedDAI
+    _investedSC,
+    _usdToken
     ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('buyWithUSD(address,uint256)').functions.buyWithUSD.encode([_beneficiary,
-    _investedDAI
+            const abiEncodedTransactionData = self._lookupEthersInterface('buyWithUSD(address,uint256,address)').functions.buyWithUSD.encode([_beneficiary,
+    _investedSC,
+    _usdToken
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _beneficiary: string,
-            _investedDAI: BigNumber,
+            _investedSC: BigNumber,
+            _usdToken: string,
             callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as USDTieredSTOContract;
-            const functionSignature = 'buyWithUSD(address,uint256)';
+            const functionSignature = 'buyWithUSD(address,uint256,address)';
             const inputAbi = self._lookupAbi(functionSignature).inputs;
             [_beneficiary,
-        _investedDAI
+        _investedSC,
+        _usdToken
         ] = BaseContract._formatABIDataItemList(inputAbi, [_beneficiary,
-        _investedDAI
+        _investedSC,
+        _usdToken
         ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_beneficiary,
-        _investedDAI
+        _investedSC,
+        _usdToken
         ]);
             const ethersFunction = self._lookupEthersInterface(functionSignature).functions.buyWithUSD;
             const encodedData = ethersFunction.encode([_beneficiary,
-        _investedDAI
+        _investedSC,
+        _usdToken
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
@@ -3330,26 +3424,31 @@ export class USDTieredSTOContract extends BaseContract {
     public buyWithUSDRateLimited = {
         async sendTransactionAsync(
             _beneficiary: string,
-            _investedDAI: BigNumber,
+            _investedSC: BigNumber,
             _minTokens: BigNumber,
+            _usdToken: string,
             txData: Partial<TxData> = {},
         ): Promise<string> {
             const self = this as any as USDTieredSTOContract;
-            const inputAbi = self._lookupAbi('buyWithUSDRateLimited(address,uint256,uint256)').inputs;
+            const inputAbi = self._lookupAbi('buyWithUSDRateLimited(address,uint256,uint256,address)').inputs;
             [_beneficiary,
-    _investedDAI,
-    _minTokens
+    _investedSC,
+    _minTokens,
+    _usdToken
     ] = BaseContract._formatABIDataItemList(inputAbi, [_beneficiary,
-    _investedDAI,
-    _minTokens
+    _investedSC,
+    _minTokens,
+    _usdToken
     ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_beneficiary,
-    _investedDAI,
-    _minTokens
+    _investedSC,
+    _minTokens,
+    _usdToken
     ]);
-            const encodedData = self._lookupEthersInterface('buyWithUSDRateLimited(address,uint256,uint256)').functions.buyWithUSDRateLimited.encode([_beneficiary,
-    _investedDAI,
-    _minTokens
+            const encodedData = self._lookupEthersInterface('buyWithUSDRateLimited(address,uint256,uint256,address)').functions.buyWithUSDRateLimited.encode([_beneficiary,
+    _investedSC,
+    _minTokens,
+    _usdToken
     ]);
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
@@ -3361,8 +3460,9 @@ export class USDTieredSTOContract extends BaseContract {
                 self.buyWithUSDRateLimited.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _beneficiary,
-                    _investedDAI,
-                    _minTokens
+                    _investedSC,
+                    _minTokens,
+                    _usdToken
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -3370,22 +3470,26 @@ export class USDTieredSTOContract extends BaseContract {
         },
         async estimateGasAsync(
             _beneficiary: string,
-            _investedDAI: BigNumber,
+            _investedSC: BigNumber,
             _minTokens: BigNumber,
+            _usdToken: string,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOContract;
-            const inputAbi = self._lookupAbi('buyWithUSDRateLimited(address,uint256,uint256)').inputs;
+            const inputAbi = self._lookupAbi('buyWithUSDRateLimited(address,uint256,uint256,address)').inputs;
             [_beneficiary,
-    _investedDAI,
-    _minTokens
+    _investedSC,
+    _minTokens,
+    _usdToken
     ] = BaseContract._formatABIDataItemList(inputAbi, [_beneficiary,
-    _investedDAI,
-    _minTokens
+    _investedSC,
+    _minTokens,
+    _usdToken
     ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('buyWithUSDRateLimited(address,uint256,uint256)').functions.buyWithUSDRateLimited.encode([_beneficiary,
-    _investedDAI,
-    _minTokens
+            const encodedData = self._lookupEthersInterface('buyWithUSDRateLimited(address,uint256,uint256,address)').functions.buyWithUSDRateLimited.encode([_beneficiary,
+    _investedSC,
+    _minTokens,
+    _usdToken
     ]);
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
@@ -3400,50 +3504,59 @@ export class USDTieredSTOContract extends BaseContract {
         },
         getABIEncodedTransactionData(
             _beneficiary: string,
-            _investedDAI: BigNumber,
+            _investedSC: BigNumber,
             _minTokens: BigNumber,
+            _usdToken: string,
         ): string {
             const self = this as any as USDTieredSTOContract;
-            const inputAbi = self._lookupAbi('buyWithUSDRateLimited(address,uint256,uint256)').inputs;
+            const inputAbi = self._lookupAbi('buyWithUSDRateLimited(address,uint256,uint256,address)').inputs;
             [_beneficiary,
-    _investedDAI,
-    _minTokens
+    _investedSC,
+    _minTokens,
+    _usdToken
     ] = BaseContract._formatABIDataItemList(inputAbi, [_beneficiary,
-    _investedDAI,
-    _minTokens
+    _investedSC,
+    _minTokens,
+    _usdToken
     ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('buyWithUSDRateLimited(address,uint256,uint256)').functions.buyWithUSDRateLimited.encode([_beneficiary,
-    _investedDAI,
-    _minTokens
+            const abiEncodedTransactionData = self._lookupEthersInterface('buyWithUSDRateLimited(address,uint256,uint256,address)').functions.buyWithUSDRateLimited.encode([_beneficiary,
+    _investedSC,
+    _minTokens,
+    _usdToken
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _beneficiary: string,
-            _investedDAI: BigNumber,
+            _investedSC: BigNumber,
             _minTokens: BigNumber,
+            _usdToken: string,
             callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as USDTieredSTOContract;
-            const functionSignature = 'buyWithUSDRateLimited(address,uint256,uint256)';
+            const functionSignature = 'buyWithUSDRateLimited(address,uint256,uint256,address)';
             const inputAbi = self._lookupAbi(functionSignature).inputs;
             [_beneficiary,
-        _investedDAI,
-        _minTokens
+        _investedSC,
+        _minTokens,
+        _usdToken
         ] = BaseContract._formatABIDataItemList(inputAbi, [_beneficiary,
-        _investedDAI,
-        _minTokens
+        _investedSC,
+        _minTokens,
+        _usdToken
         ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_beneficiary,
-        _investedDAI,
-        _minTokens
+        _investedSC,
+        _minTokens,
+        _usdToken
         ]);
             const ethersFunction = self._lookupEthersInterface(functionSignature).functions.buyWithUSDRateLimited;
             const encodedData = ethersFunction.encode([_beneficiary,
-        _investedDAI,
-        _minTokens
+        _investedSC,
+        _minTokens,
+        _usdToken
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
@@ -3872,6 +3985,36 @@ export class USDTieredSTOContract extends BaseContract {
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             let resultArray = ethersFunction.decode(rawCallResult);
             const outputAbi = (_.find(self.abi, {name: 'getNumberOfTiers'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray[0];
+        },
+    };
+    public getUsdTokens = {
+        async callAsync(
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string[]
+        > {
+            const self = this as any as USDTieredSTOContract;
+            const functionSignature = 'getUsdTokens()';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getUsdTokens;
+            const encodedData = ethersFunction.encode([]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'getUsdTokens'}) as MethodAbi).outputs;
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
             return resultArray[0];

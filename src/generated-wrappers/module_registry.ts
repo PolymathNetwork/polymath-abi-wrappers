@@ -67,7 +67,147 @@ export interface ModuleRegistryOwnershipTransferredEventArgs extends DecodedLogA
 // tslint:disable:no-parameter-reassignment
 // tslint:disable-next-line:class-name
 export class ModuleRegistryContract extends BaseContract {
-    public getBoolValues = {
+    public getBytes32Value = {
+        async callAsync(
+            _variable: string,
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as ModuleRegistryContract;
+            const functionSignature = 'getBytes32Value(bytes32)';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [_variable
+        ] = BaseContract._formatABIDataItemList(inputAbi, [_variable
+        ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_variable
+        ]);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getBytes32Value;
+            const encodedData = ethersFunction.encode([_variable
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'getBytes32Value'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray[0];
+        },
+    };
+    public getBytesValue = {
+        async callAsync(
+            _variable: string,
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as ModuleRegistryContract;
+            const functionSignature = 'getBytesValue(bytes32)';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [_variable
+        ] = BaseContract._formatABIDataItemList(inputAbi, [_variable
+        ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_variable
+        ]);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getBytesValue;
+            const encodedData = ethersFunction.encode([_variable
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'getBytesValue'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray[0];
+        },
+    };
+    public getAddressValue = {
+        async callAsync(
+            _variable: string,
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as ModuleRegistryContract;
+            const functionSignature = 'getAddressValue(bytes32)';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [_variable
+        ] = BaseContract._formatABIDataItemList(inputAbi, [_variable
+        ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_variable
+        ]);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getAddressValue;
+            const encodedData = ethersFunction.encode([_variable
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'getAddressValue'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray[0];
+        },
+    };
+    public getArrayAddress = {
+        async callAsync(
+            _key: string,
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string[]
+        > {
+            const self = this as any as ModuleRegistryContract;
+            const functionSignature = 'getArrayAddress(bytes32)';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [_key
+        ] = BaseContract._formatABIDataItemList(inputAbi, [_key
+        ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_key
+        ]);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getArrayAddress;
+            const encodedData = ethersFunction.encode([_key
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'getArrayAddress'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray[0];
+        },
+    };
+    public getBoolValue = {
         async callAsync(
             _variable: string,
             callData: Partial<CallData> = {},
@@ -75,14 +215,14 @@ export class ModuleRegistryContract extends BaseContract {
         ): Promise<boolean
         > {
             const self = this as any as ModuleRegistryContract;
-            const functionSignature = 'getBoolValues(bytes32)';
+            const functionSignature = 'getBoolValue(bytes32)';
             const inputAbi = self._lookupAbi(functionSignature).inputs;
             [_variable
         ] = BaseContract._formatABIDataItemList(inputAbi, [_variable
         ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_variable
         ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getBoolValues;
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getBoolValue;
             const encodedData = ethersFunction.encode([_variable
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
@@ -96,13 +236,83 @@ export class ModuleRegistryContract extends BaseContract {
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getBoolValues'}) as MethodAbi).outputs;
+            const outputAbi = (_.find(self.abi, {name: 'getBoolValue'}) as MethodAbi).outputs;
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
             return resultArray[0];
         },
     };
-    public getUintValues = {
+    public getStringValue = {
+        async callAsync(
+            _variable: string,
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as ModuleRegistryContract;
+            const functionSignature = 'getStringValue(bytes32)';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [_variable
+        ] = BaseContract._formatABIDataItemList(inputAbi, [_variable
+        ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_variable
+        ]);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getStringValue;
+            const encodedData = ethersFunction.encode([_variable
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'getStringValue'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray[0];
+        },
+    };
+    public getArrayBytes32 = {
+        async callAsync(
+            _key: string,
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string[]
+        > {
+            const self = this as any as ModuleRegistryContract;
+            const functionSignature = 'getArrayBytes32(bytes32)';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [_key
+        ] = BaseContract._formatABIDataItemList(inputAbi, [_key
+        ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_key
+        ]);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getArrayBytes32;
+            const encodedData = ethersFunction.encode([_key
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'getArrayBytes32'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray[0];
+        },
+    };
+    public getUintValue = {
         async callAsync(
             _variable: string,
             callData: Partial<CallData> = {},
@@ -110,14 +320,14 @@ export class ModuleRegistryContract extends BaseContract {
         ): Promise<BigNumber
         > {
             const self = this as any as ModuleRegistryContract;
-            const functionSignature = 'getUintValues(bytes32)';
+            const functionSignature = 'getUintValue(bytes32)';
             const inputAbi = self._lookupAbi(functionSignature).inputs;
             [_variable
         ] = BaseContract._formatABIDataItemList(inputAbi, [_variable
         ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_variable
         ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getUintValues;
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getUintValue;
             const encodedData = ethersFunction.encode([_variable
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
@@ -131,29 +341,29 @@ export class ModuleRegistryContract extends BaseContract {
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getUintValues'}) as MethodAbi).outputs;
+            const outputAbi = (_.find(self.abi, {name: 'getUintValue'}) as MethodAbi).outputs;
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
             return resultArray[0];
         },
     };
-    public getStringValues = {
+    public getArrayUint = {
         async callAsync(
-            _variable: string,
+            _key: string,
             callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<string
+        ): Promise<BigNumber[]
         > {
             const self = this as any as ModuleRegistryContract;
-            const functionSignature = 'getStringValues(bytes32)';
+            const functionSignature = 'getArrayUint(bytes32)';
             const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_variable
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_variable
+            [_key
+        ] = BaseContract._formatABIDataItemList(inputAbi, [_key
         ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_variable
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_key
         ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getStringValues;
-            const encodedData = ethersFunction.encode([_variable
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getArrayUint;
+            const encodedData = ethersFunction.encode([_key
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
@@ -166,112 +376,7 @@ export class ModuleRegistryContract extends BaseContract {
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getStringValues'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
-    public getBytes32Values = {
-        async callAsync(
-            _variable: string,
-            callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as ModuleRegistryContract;
-            const functionSignature = 'getBytes32Values(bytes32)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_variable
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_variable
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_variable
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getBytes32Values;
-            const encodedData = ethersFunction.encode([_variable
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getBytes32Values'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
-    public getAddressValues = {
-        async callAsync(
-            _variable: string,
-            callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as ModuleRegistryContract;
-            const functionSignature = 'getAddressValues(bytes32)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_variable
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_variable
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_variable
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getAddressValues;
-            const encodedData = ethersFunction.encode([_variable
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getAddressValues'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
-    public getBytesValues = {
-        async callAsync(
-            _variable: string,
-            callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as ModuleRegistryContract;
-            const functionSignature = 'getBytesValues(bytes32)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_variable
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_variable
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_variable
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getBytesValues;
-            const encodedData = ethersFunction.encode([_variable
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getBytesValues'}) as MethodAbi).outputs;
+            const outputAbi = (_.find(self.abi, {name: 'getArrayUint'}) as MethodAbi).outputs;
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
             return resultArray[0];

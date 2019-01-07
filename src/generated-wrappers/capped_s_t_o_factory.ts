@@ -28,6 +28,7 @@ export enum CappedSTOFactoryEvents {
     ChangeSTVersionBound = 'ChangeSTVersionBound',
     OwnershipRenounced = 'OwnershipRenounced',
     OwnershipTransferred = 'OwnershipTransferred',
+    GenerateModuleFromFactory = 'GenerateModuleFromFactory',
 }
 
 export interface CappedSTOFactoryChangeFactorySetupFeeEventArgs extends DecodedLogArgs {

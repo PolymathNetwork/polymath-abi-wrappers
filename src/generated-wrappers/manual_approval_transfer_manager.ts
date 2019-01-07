@@ -1800,7 +1800,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _user: string,
             callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<BigNumber[]
+        ): Promise<[string[], string[], BigNumber[], BigNumber[], string[]]
         > {
             const self = this as any as ManualApprovalTransferManagerContract;
             const functionSignature = 'getActiveApprovalsToUser(address)';
@@ -1827,7 +1827,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             const outputAbi = (_.find(self.abi, {name: 'getActiveApprovalsToUser'}) as MethodAbi).outputs;
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
+            return resultArray;
         },
     };
     public getApprovalDetails = {
@@ -1898,6 +1898,36 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
             return resultArray[0];
+        },
+    };
+    public getAllApprovals = {
+        async callAsync(
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<[string[], string[], BigNumber[], BigNumber[], string[]]
+        > {
+            const self = this as any as ManualApprovalTransferManagerContract;
+            const functionSignature = 'getAllApprovals()';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getAllApprovals;
+            const encodedData = ethersFunction.encode([]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'getAllApprovals'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray;
         },
     };
     public getPermissions = {
