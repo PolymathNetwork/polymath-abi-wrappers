@@ -1616,7 +1616,7 @@ pinkie@^2.0.0:
 
 "polymath-contract-artifacts@git://github.com/PolymathNetwork/polymath-contract-artifacts.git#v2.1.0-beta":
   version "0.0.0"
-  resolved "git://github.com/PolymathNetwork/polymath-contract-artifacts.git#06cb80000e918b4b320f36c96b24e3c361019255"
+  resolved "git://github.com/PolymathNetwork/polymath-contract-artifacts.git#279775042424149f66f6c9a5a12dfd1c4880ce39"
 
 popper.js@1.14.3:
   version "1.14.3"
