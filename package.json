@@ -34,7 +34,7 @@
     "@0x/types": "1.4.1",
     "@types/lodash": "^4.14.119",
     "@types/node": "^10.12.18",
-    "polymath-contract-artifacts": "git://github.com/PolymathNetwork/polymath-contract-artifacts.git#v2.1.0-beta-2",
+    "polymath-contract-artifacts": "git://github.com/PolymathNetwork/polymath-contract-artifacts.git#v2.1.0-beta",
     "shx": "^0.2.2"
   },
   "dependencies": {
@@ -42,10 +42,10 @@
     "@0x/sol-compiler": "^1.1.16",
     "@0x/utils": "^2.0.8",
     "@0x/web3-wrapper": "^3.2.1",
-    "typescript": "3.2.1",
     "ethereum-types": "^1.1.4",
     "ethers": "^4.0.20",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "typescript": "3.2.1"
   },
   "publishConfig": {
     "access": "public"

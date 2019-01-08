@@ -1614,9 +1614,9 @@ pinkie@^2.0.0:
   resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
   integrity sha1-clVrgM+g1IqXToDnckjoDtT3+HA=
 
-"polymath-contract-artifacts@git://github.com/PolymathNetwork/polymath-contract-artifacts.git#v2.1.0-beta-2":
+"polymath-contract-artifacts@git://github.com/PolymathNetwork/polymath-contract-artifacts.git#v2.1.0-beta":
   version "0.0.0"
-  resolved "git://github.com/PolymathNetwork/polymath-contract-artifacts.git#1f205896b813bc11d9e34e335ef5d0cfe1f6a601"
+  resolved "git://github.com/PolymathNetwork/polymath-contract-artifacts.git#06cb80000e918b4b320f36c96b24e3c361019255"
 
 popper.js@1.14.3:
   version "1.14.3"
