@@ -2,7 +2,7 @@
 // tslint:disable:no-unused-variable
 // tslint:disable:no-unbound-method
 import { BaseContract } from '@0x/base-contract';
-import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact, DecodedLogArgs, MethodAbi, Provider, TxData, TxDataPayable } from 'ethereum-types';
+import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact, DecodedLogArgs, MethodAbi, Provider, TxData, TxDataPayable, TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import { BigNumber, classUtils, logUtils } from '@0x/utils';
 import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
@@ -96,7 +96,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _investors: string[],
             _withholding: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('setWithholdingFixed(address[],uint256)').inputs;
             [_investors,
@@ -124,7 +124,8 @@ export class EtherDividendCheckpointContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _investors: string[],
@@ -306,7 +307,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
         async sendTransactionAsync(
             _dividendIndex: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('pullDividendPayment(uint256)').inputs;
             [_dividendIndex
@@ -329,7 +330,8 @@ export class EtherDividendCheckpointContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _dividendIndex: BigNumber,
@@ -434,7 +436,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _dividendIndex: BigNumber,
             _payees: string[],
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('pushDividendPaymentToAddresses(uint256,address[])').inputs;
             [_dividendIndex,
@@ -462,7 +464,8 @@ export class EtherDividendCheckpointContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _dividendIndex: BigNumber,
@@ -694,7 +697,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
         async sendTransactionAsync(
             _amount: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('takeFee(uint256)').inputs;
             [_amount
@@ -717,7 +720,8 @@ export class EtherDividendCheckpointContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _amount: BigNumber,
@@ -997,7 +1001,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _investors: string[],
             _withholding: BigNumber[],
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('setWithholding(address[],uint256[])').inputs;
             [_investors,
@@ -1025,7 +1029,8 @@ export class EtherDividendCheckpointContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _investors: string[],
@@ -1267,7 +1272,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
         async sendTransactionAsync(
             _excluded: string[],
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('setDefaultExcluded(address[])').inputs;
             [_excluded
@@ -1290,7 +1295,8 @@ export class EtherDividendCheckpointContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _excluded: string[],
@@ -1396,7 +1402,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _start: BigNumber,
             _iterations: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('pushDividendPayment(uint256,uint256,uint256)').inputs;
             [_dividendIndex,
@@ -1429,7 +1435,8 @@ export class EtherDividendCheckpointContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _dividendIndex: BigNumber,
@@ -1593,7 +1600,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
     public createCheckpoint = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('createCheckpoint()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
@@ -1611,7 +1618,8 @@ export class EtherDividendCheckpointContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             txData: Partial<TxData> = {},
@@ -1674,7 +1682,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _expiry: BigNumber,
             _name: string,
             txData: Partial<TxDataPayable> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('createDividend(uint256,uint256,bytes32)').inputs;
             [_maturity,
@@ -1707,7 +1715,8 @@ export class EtherDividendCheckpointContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _maturity: BigNumber,
@@ -1810,7 +1819,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _checkpointId: BigNumber,
             _name: string,
             txData: Partial<TxDataPayable> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('createDividendWithCheckpoint(uint256,uint256,uint256,bytes32)').inputs;
             [_maturity,
@@ -1848,7 +1857,8 @@ export class EtherDividendCheckpointContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _maturity: BigNumber,
@@ -1964,7 +1974,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _excluded: string[],
             _name: string,
             txData: Partial<TxDataPayable> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('createDividendWithExclusions(uint256,uint256,address[],bytes32)').inputs;
             [_maturity,
@@ -2002,7 +2012,8 @@ export class EtherDividendCheckpointContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _maturity: BigNumber,
@@ -2119,7 +2130,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _excluded: string[],
             _name: string,
             txData: Partial<TxDataPayable> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('createDividendWithCheckpointAndExclusions(uint256,uint256,uint256,address[],bytes32)').inputs;
             [_maturity,
@@ -2162,7 +2173,8 @@ export class EtherDividendCheckpointContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _maturity: BigNumber,
@@ -2288,7 +2300,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
         async sendTransactionAsync(
             _dividendIndex: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('reclaimDividend(uint256)').inputs;
             [_dividendIndex
@@ -2311,7 +2323,8 @@ export class EtherDividendCheckpointContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _dividendIndex: BigNumber,
@@ -2385,7 +2398,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
         async sendTransactionAsync(
             _dividendIndex: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('withdrawWithholding(uint256)').inputs;
             [_dividendIndex
@@ -2408,7 +2421,8 @@ export class EtherDividendCheckpointContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _dividendIndex: BigNumber,

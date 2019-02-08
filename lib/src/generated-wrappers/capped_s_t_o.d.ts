@@ -1,5 +1,5 @@
 import { BaseContract } from '@0x/base-contract';
-import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, Provider, TxData, TxDataPayable } from 'ethereum-types';
+import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, Provider, TxData, TxDataPayable, TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 export declare type CappedSTOEventArgs = CappedSTOTokenPurchaseEventArgs | CappedSTOSetAllowBeneficialInvestmentsEventArgs | CappedSTOSetFundRaiseTypesEventArgs | CappedSTOPauseEventArgs | CappedSTOUnpauseEventArgs;
 export declare enum CappedSTOEvents {
@@ -41,7 +41,7 @@ export declare class CappedSTOContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
     };
     unpause: {
-        sendTransactionAsync(txData?: Partial<TxData>): Promise<string>;
+        sendTransactionAsync(txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
         estimateGasAsync(txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(): string;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
@@ -53,7 +53,7 @@ export declare class CappedSTOContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
     takeFee: {
-        sendTransactionAsync(_amount: BigNumber, txData?: Partial<TxData>): Promise<string>;
+        sendTransactionAsync(_amount: BigNumber, txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
         estimateGasAsync(_amount: BigNumber, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_amount: BigNumber): string;
         callAsync(_amount: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
@@ -71,13 +71,13 @@ export declare class CappedSTOContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
     };
     pause: {
-        sendTransactionAsync(txData?: Partial<TxData>): Promise<string>;
+        sendTransactionAsync(txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
         estimateGasAsync(txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(): string;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     reclaimERC20: {
-        sendTransactionAsync(_tokenContract: string, txData?: Partial<TxData>): Promise<string>;
+        sendTransactionAsync(_tokenContract: string, txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
         estimateGasAsync(_tokenContract: string, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_tokenContract: string): string;
         callAsync(_tokenContract: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
@@ -107,7 +107,7 @@ export declare class CappedSTOContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
     };
     configure: {
-        sendTransactionAsync(_startTime: BigNumber, _endTime: BigNumber, _cap: BigNumber, _rate: BigNumber, _fundRaiseTypes: (number | BigNumber)[], _fundsReceiver: string, txData?: Partial<TxData>): Promise<string>;
+        sendTransactionAsync(_startTime: BigNumber, _endTime: BigNumber, _cap: BigNumber, _rate: BigNumber, _fundRaiseTypes: (number | BigNumber)[], _fundsReceiver: string, txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
         estimateGasAsync(_startTime: BigNumber, _endTime: BigNumber, _cap: BigNumber, _rate: BigNumber, _fundRaiseTypes: (number | BigNumber)[], _fundsReceiver: string, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_startTime: BigNumber, _endTime: BigNumber, _cap: BigNumber, _rate: BigNumber, _fundRaiseTypes: (number | BigNumber)[], _fundsReceiver: string): string;
         callAsync(_startTime: BigNumber, _endTime: BigNumber, _cap: BigNumber, _rate: BigNumber, _fundRaiseTypes: (number | BigNumber)[], _fundsReceiver: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
@@ -116,19 +116,19 @@ export declare class CappedSTOContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     changeAllowBeneficialInvestments: {
-        sendTransactionAsync(_allowBeneficialInvestments: boolean, txData?: Partial<TxData>): Promise<string>;
+        sendTransactionAsync(_allowBeneficialInvestments: boolean, txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
         estimateGasAsync(_allowBeneficialInvestments: boolean, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_allowBeneficialInvestments: boolean): string;
         callAsync(_allowBeneficialInvestments: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     buyTokens: {
-        sendTransactionAsync(_beneficiary: string, txData?: Partial<TxDataPayable>): Promise<string>;
+        sendTransactionAsync(_beneficiary: string, txData?: Partial<TxDataPayable>): Promise<TransactionReceiptWithDecodedLogs>;
         estimateGasAsync(_beneficiary: string, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_beneficiary: string): string;
         callAsync(_beneficiary: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     buyTokensWithPoly: {
-        sendTransactionAsync(_investedPOLY: BigNumber, txData?: Partial<TxData>): Promise<string>;
+        sendTransactionAsync(_investedPOLY: BigNumber, txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
         estimateGasAsync(_investedPOLY: BigNumber, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_investedPOLY: BigNumber): string;
         callAsync(_investedPOLY: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;

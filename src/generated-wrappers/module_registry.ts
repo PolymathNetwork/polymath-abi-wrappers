@@ -2,7 +2,7 @@
 // tslint:disable:no-unused-variable
 // tslint:disable:no-unbound-method
 import { BaseContract } from '@0x/base-contract';
-import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact, DecodedLogArgs, MethodAbi, Provider, TxData, TxDataPayable } from 'ethereum-types';
+import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact, DecodedLogArgs, MethodAbi, Provider, TxData, TxDataPayable, TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import { BigNumber, classUtils, logUtils } from '@0x/utils';
 import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
@@ -387,7 +387,7 @@ export class ModuleRegistryContract extends BaseContract {
             _polymathRegistry: string,
             _owner: string,
             txData: Partial<TxDataPayable> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ModuleRegistryContract;
             const inputAbi = self._lookupAbi('initialize(address,address)').inputs;
             [_polymathRegistry,
@@ -415,7 +415,8 @@ export class ModuleRegistryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _polymathRegistry: string,
@@ -502,7 +503,7 @@ export class ModuleRegistryContract extends BaseContract {
         async sendTransactionAsync(
             _moduleFactory: string,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ModuleRegistryContract;
             const inputAbi = self._lookupAbi('useModule(address)').inputs;
             [_moduleFactory
@@ -525,7 +526,8 @@ export class ModuleRegistryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _moduleFactory: string,
@@ -599,7 +601,7 @@ export class ModuleRegistryContract extends BaseContract {
         async sendTransactionAsync(
             _moduleFactory: string,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ModuleRegistryContract;
             const inputAbi = self._lookupAbi('registerModule(address)').inputs;
             [_moduleFactory
@@ -622,7 +624,8 @@ export class ModuleRegistryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _moduleFactory: string,
@@ -696,7 +699,7 @@ export class ModuleRegistryContract extends BaseContract {
         async sendTransactionAsync(
             _moduleFactory: string,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ModuleRegistryContract;
             const inputAbi = self._lookupAbi('removeModule(address)').inputs;
             [_moduleFactory
@@ -719,7 +722,8 @@ export class ModuleRegistryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _moduleFactory: string,
@@ -794,7 +798,7 @@ export class ModuleRegistryContract extends BaseContract {
             _moduleFactory: string,
             _verified: boolean,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ModuleRegistryContract;
             const inputAbi = self._lookupAbi('verifyModule(address,bool)').inputs;
             [_moduleFactory,
@@ -822,7 +826,8 @@ export class ModuleRegistryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _moduleFactory: string,
@@ -1094,7 +1099,7 @@ export class ModuleRegistryContract extends BaseContract {
         async sendTransactionAsync(
             _tokenContract: string,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ModuleRegistryContract;
             const inputAbi = self._lookupAbi('reclaimERC20(address)').inputs;
             [_tokenContract
@@ -1117,7 +1122,8 @@ export class ModuleRegistryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _tokenContract: string,
@@ -1190,7 +1196,7 @@ export class ModuleRegistryContract extends BaseContract {
     public pause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ModuleRegistryContract;
             const inputAbi = self._lookupAbi('pause()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
@@ -1208,7 +1214,8 @@ export class ModuleRegistryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             txData: Partial<TxData> = {},
@@ -1268,7 +1275,7 @@ export class ModuleRegistryContract extends BaseContract {
     public unpause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ModuleRegistryContract;
             const inputAbi = self._lookupAbi('unpause()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
@@ -1286,7 +1293,8 @@ export class ModuleRegistryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             txData: Partial<TxData> = {},
@@ -1346,7 +1354,7 @@ export class ModuleRegistryContract extends BaseContract {
     public updateFromRegistry = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ModuleRegistryContract;
             const inputAbi = self._lookupAbi('updateFromRegistry()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
@@ -1364,7 +1372,8 @@ export class ModuleRegistryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             txData: Partial<TxData> = {},
@@ -1425,7 +1434,7 @@ export class ModuleRegistryContract extends BaseContract {
         async sendTransactionAsync(
             _newOwner: string,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ModuleRegistryContract;
             const inputAbi = self._lookupAbi('transferOwnership(address)').inputs;
             [_newOwner
@@ -1448,7 +1457,8 @@ export class ModuleRegistryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _newOwner: string,

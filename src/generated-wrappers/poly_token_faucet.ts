@@ -2,7 +2,7 @@
 // tslint:disable:no-unused-variable
 // tslint:disable:no-unbound-method
 import { BaseContract } from '@0x/base-contract';
-import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact, DecodedLogArgs, MethodAbi, Provider, TxData, TxDataPayable } from 'ethereum-types';
+import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact, DecodedLogArgs, MethodAbi, Provider, TxData, TxDataPayable, TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import { BigNumber, classUtils, logUtils } from '@0x/utils';
 import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
@@ -131,7 +131,7 @@ export class PolyTokenFaucetContract extends BaseContract {
             _amount: BigNumber,
             _recipient: string,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as PolyTokenFaucetContract;
             const inputAbi = self._lookupAbi('getTokens(uint256,address)').inputs;
             [_amount,
@@ -159,7 +159,8 @@ export class PolyTokenFaucetContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _amount: BigNumber,
@@ -247,7 +248,7 @@ export class PolyTokenFaucetContract extends BaseContract {
             _to: string,
             _value: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as PolyTokenFaucetContract;
             const inputAbi = self._lookupAbi('transfer(address,uint256)').inputs;
             [_to,
@@ -275,7 +276,8 @@ export class PolyTokenFaucetContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _to: string,
@@ -364,7 +366,7 @@ export class PolyTokenFaucetContract extends BaseContract {
             _to: string,
             _value: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as PolyTokenFaucetContract;
             const inputAbi = self._lookupAbi('transferFrom(address,address,uint256)').inputs;
             [_from,
@@ -397,7 +399,8 @@ export class PolyTokenFaucetContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _from: string,
@@ -533,7 +536,7 @@ export class PolyTokenFaucetContract extends BaseContract {
             _spender: string,
             _value: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as PolyTokenFaucetContract;
             const inputAbi = self._lookupAbi('approve(address,uint256)').inputs;
             [_spender,
@@ -561,7 +564,8 @@ export class PolyTokenFaucetContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _spender: string,
@@ -719,7 +723,7 @@ export class PolyTokenFaucetContract extends BaseContract {
             _spender: string,
             _addedValue: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as PolyTokenFaucetContract;
             const inputAbi = self._lookupAbi('increaseApproval(address,uint256)').inputs;
             [_spender,
@@ -747,7 +751,8 @@ export class PolyTokenFaucetContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _spender: string,
@@ -835,7 +840,7 @@ export class PolyTokenFaucetContract extends BaseContract {
             _spender: string,
             _subtractedValue: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as PolyTokenFaucetContract;
             const inputAbi = self._lookupAbi('decreaseApproval(address,uint256)').inputs;
             [_spender,
@@ -863,7 +868,8 @@ export class PolyTokenFaucetContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _spender: string,

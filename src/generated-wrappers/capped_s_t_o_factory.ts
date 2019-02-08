@@ -2,7 +2,7 @@
 // tslint:disable:no-unused-variable
 // tslint:disable:no-unbound-method
 import { BaseContract } from '@0x/base-contract';
-import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact, DecodedLogArgs, MethodAbi, Provider, TxData, TxDataPayable } from 'ethereum-types';
+import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact, DecodedLogArgs, MethodAbi, Provider, TxData, TxDataPayable, TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import { BigNumber, classUtils, logUtils } from '@0x/utils';
 import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
@@ -171,7 +171,7 @@ export class CappedSTOFactoryContract extends BaseContract {
         async sendTransactionAsync(
             _newTitle: string,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as CappedSTOFactoryContract;
             const inputAbi = self._lookupAbi('changeTitle(string)').inputs;
             [_newTitle
@@ -194,7 +194,8 @@ export class CappedSTOFactoryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _newTitle: string,
@@ -268,7 +269,7 @@ export class CappedSTOFactoryContract extends BaseContract {
         async sendTransactionAsync(
             _newSubscriptionCost: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as CappedSTOFactoryContract;
             const inputAbi = self._lookupAbi('changeFactorySubscriptionFee(uint256)').inputs;
             [_newSubscriptionCost
@@ -291,7 +292,8 @@ export class CappedSTOFactoryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _newSubscriptionCost: BigNumber,
@@ -425,7 +427,7 @@ export class CappedSTOFactoryContract extends BaseContract {
         async sendTransactionAsync(
             _newSetupCost: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as CappedSTOFactoryContract;
             const inputAbi = self._lookupAbi('changeFactorySetupFee(uint256)').inputs;
             [_newSetupCost
@@ -448,7 +450,8 @@ export class CappedSTOFactoryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _newSetupCost: BigNumber,
@@ -522,7 +525,7 @@ export class CappedSTOFactoryContract extends BaseContract {
         async sendTransactionAsync(
             _newVersion: string,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as CappedSTOFactoryContract;
             const inputAbi = self._lookupAbi('changeVersion(string)').inputs;
             [_newVersion
@@ -545,7 +548,8 @@ export class CappedSTOFactoryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _newVersion: string,
@@ -648,7 +652,7 @@ export class CappedSTOFactoryContract extends BaseContract {
     public renounceOwnership = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as CappedSTOFactoryContract;
             const inputAbi = self._lookupAbi('renounceOwnership()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
@@ -666,7 +670,8 @@ export class CappedSTOFactoryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             txData: Partial<TxData> = {},
@@ -817,7 +822,7 @@ export class CappedSTOFactoryContract extends BaseContract {
         async sendTransactionAsync(
             _newName: string,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as CappedSTOFactoryContract;
             const inputAbi = self._lookupAbi('changeName(bytes32)').inputs;
             [_newName
@@ -840,7 +845,8 @@ export class CappedSTOFactoryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _newName: string,
@@ -974,7 +980,7 @@ export class CappedSTOFactoryContract extends BaseContract {
         async sendTransactionAsync(
             _newUsageCost: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as CappedSTOFactoryContract;
             const inputAbi = self._lookupAbi('changeFactoryUsageFee(uint256)').inputs;
             [_newUsageCost
@@ -997,7 +1003,8 @@ export class CappedSTOFactoryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _newUsageCost: BigNumber,
@@ -1101,7 +1108,7 @@ export class CappedSTOFactoryContract extends BaseContract {
         async sendTransactionAsync(
             _newDesc: string,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as CappedSTOFactoryContract;
             const inputAbi = self._lookupAbi('changeDescription(string)').inputs;
             [_newDesc
@@ -1124,7 +1131,8 @@ export class CappedSTOFactoryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _newDesc: string,
@@ -1198,7 +1206,7 @@ export class CappedSTOFactoryContract extends BaseContract {
         async sendTransactionAsync(
             _newOwner: string,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as CappedSTOFactoryContract;
             const inputAbi = self._lookupAbi('transferOwnership(address)').inputs;
             [_newOwner
@@ -1221,7 +1229,8 @@ export class CappedSTOFactoryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _newOwner: string,
@@ -1326,7 +1335,7 @@ export class CappedSTOFactoryContract extends BaseContract {
             _boundType: string,
             _newVersion: Array<number|BigNumber>,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as CappedSTOFactoryContract;
             const inputAbi = self._lookupAbi('changeSTVersionBounds(string,uint8[])').inputs;
             [_boundType,
@@ -1354,7 +1363,8 @@ export class CappedSTOFactoryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _boundType: string,
@@ -1441,7 +1451,7 @@ export class CappedSTOFactoryContract extends BaseContract {
         async sendTransactionAsync(
             _data: string,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as CappedSTOFactoryContract;
             const inputAbi = self._lookupAbi('deploy(bytes)').inputs;
             [_data
@@ -1464,7 +1474,8 @@ export class CappedSTOFactoryContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _data: string,

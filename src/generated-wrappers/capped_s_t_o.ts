@@ -2,7 +2,7 @@
 // tslint:disable:no-unused-variable
 // tslint:disable:no-unbound-method
 import { BaseContract } from '@0x/base-contract';
-import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact, DecodedLogArgs, MethodAbi, Provider, TxData, TxDataPayable } from 'ethereum-types';
+import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact, DecodedLogArgs, MethodAbi, Provider, TxData, TxDataPayable, TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import { BigNumber, classUtils, logUtils } from '@0x/utils';
 import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
@@ -176,7 +176,7 @@ export class CappedSTOContract extends BaseContract {
     public unpause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as CappedSTOContract;
             const inputAbi = self._lookupAbi('unpause()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
@@ -194,7 +194,8 @@ export class CappedSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             txData: Partial<TxData> = {},
@@ -315,7 +316,7 @@ export class CappedSTOContract extends BaseContract {
         async sendTransactionAsync(
             _amount: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as CappedSTOContract;
             const inputAbi = self._lookupAbi('takeFee(uint256)').inputs;
             [_amount
@@ -338,7 +339,8 @@ export class CappedSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _amount: BigNumber,
@@ -536,7 +538,7 @@ export class CappedSTOContract extends BaseContract {
     public pause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as CappedSTOContract;
             const inputAbi = self._lookupAbi('pause()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
@@ -554,7 +556,8 @@ export class CappedSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             txData: Partial<TxData> = {},
@@ -615,7 +618,7 @@ export class CappedSTOContract extends BaseContract {
         async sendTransactionAsync(
             _tokenContract: string,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as CappedSTOContract;
             const inputAbi = self._lookupAbi('reclaimERC20(address)').inputs;
             [_tokenContract
@@ -638,7 +641,8 @@ export class CappedSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _tokenContract: string,
@@ -972,7 +976,7 @@ export class CappedSTOContract extends BaseContract {
             _fundRaiseTypes: Array<number|BigNumber>,
             _fundsReceiver: string,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as CappedSTOContract;
             const inputAbi = self._lookupAbi('configure(uint256,uint256,uint256,uint256,uint8[],address)').inputs;
             [_startTime,
@@ -1020,7 +1024,8 @@ export class CappedSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _startTime: BigNumber,
@@ -1189,7 +1194,7 @@ export class CappedSTOContract extends BaseContract {
         async sendTransactionAsync(
             _allowBeneficialInvestments: boolean,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as CappedSTOContract;
             const inputAbi = self._lookupAbi('changeAllowBeneficialInvestments(bool)').inputs;
             [_allowBeneficialInvestments
@@ -1212,7 +1217,8 @@ export class CappedSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _allowBeneficialInvestments: boolean,
@@ -1286,7 +1292,7 @@ export class CappedSTOContract extends BaseContract {
         async sendTransactionAsync(
             _beneficiary: string,
             txData: Partial<TxDataPayable> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as CappedSTOContract;
             const inputAbi = self._lookupAbi('buyTokens(address)').inputs;
             [_beneficiary
@@ -1309,7 +1315,8 @@ export class CappedSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _beneficiary: string,
@@ -1383,7 +1390,7 @@ export class CappedSTOContract extends BaseContract {
         async sendTransactionAsync(
             _investedPOLY: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as CappedSTOContract;
             const inputAbi = self._lookupAbi('buyTokensWithPoly(uint256)').inputs;
             [_investedPOLY
@@ -1406,7 +1413,8 @@ export class CappedSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _investedPOLY: BigNumber,

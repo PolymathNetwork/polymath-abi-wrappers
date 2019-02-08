@@ -2,7 +2,7 @@
 // tslint:disable:no-unused-variable
 // tslint:disable:no-unbound-method
 import { BaseContract } from '@0x/base-contract';
-import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact, DecodedLogArgs, MethodAbi, Provider, TxData, TxDataPayable } from 'ethereum-types';
+import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact, DecodedLogArgs, MethodAbi, Provider, TxData, TxDataPayable, TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import { BigNumber, classUtils, logUtils } from '@0x/utils';
 import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
@@ -254,7 +254,7 @@ export class USDTieredSTOContract extends BaseContract {
     public unpause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('unpause()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
@@ -272,7 +272,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             txData: Partial<TxData> = {},
@@ -423,7 +424,7 @@ export class USDTieredSTOContract extends BaseContract {
         async sendTransactionAsync(
             _amount: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('takeFee(uint256)').inputs;
             [_amount
@@ -446,7 +447,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _amount: BigNumber,
@@ -709,7 +711,7 @@ export class USDTieredSTOContract extends BaseContract {
     public pause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('pause()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
@@ -727,7 +729,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             txData: Partial<TxData> = {},
@@ -828,7 +831,7 @@ export class USDTieredSTOContract extends BaseContract {
         async sendTransactionAsync(
             _tokenContract: string,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('reclaimERC20(address)').inputs;
             [_tokenContract
@@ -851,7 +854,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _tokenContract: string,
@@ -1506,7 +1510,7 @@ export class USDTieredSTOContract extends BaseContract {
             _reserveWallet: string,
             _usdTokens: string[],
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address[])').inputs;
             [_startTime,
@@ -1584,7 +1588,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _startTime: BigNumber,
@@ -1801,7 +1806,7 @@ export class USDTieredSTOContract extends BaseContract {
         async sendTransactionAsync(
             _fundRaiseTypes: Array<number|BigNumber>,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('modifyFunding(uint8[])').inputs;
             [_fundRaiseTypes
@@ -1824,7 +1829,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _fundRaiseTypes: Array<number|BigNumber>,
@@ -1899,7 +1905,7 @@ export class USDTieredSTOContract extends BaseContract {
             _nonAccreditedLimitUSD: BigNumber,
             _minimumInvestmentUSD: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('modifyLimits(uint256,uint256)').inputs;
             [_nonAccreditedLimitUSD,
@@ -1927,7 +1933,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _nonAccreditedLimitUSD: BigNumber,
@@ -2017,7 +2024,7 @@ export class USDTieredSTOContract extends BaseContract {
             _tokensPerTierTotal: BigNumber[],
             _tokensPerTierDiscountPoly: BigNumber[],
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('modifyTiers(uint256[],uint256[],uint256[],uint256[])').inputs;
             [_ratePerTier,
@@ -2055,7 +2062,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _ratePerTier: BigNumber[],
@@ -2169,7 +2177,7 @@ export class USDTieredSTOContract extends BaseContract {
             _startTime: BigNumber,
             _endTime: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('modifyTimes(uint256,uint256)').inputs;
             [_startTime,
@@ -2197,7 +2205,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _startTime: BigNumber,
@@ -2286,7 +2295,7 @@ export class USDTieredSTOContract extends BaseContract {
             _reserveWallet: string,
             _usdTokens: string[],
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('modifyAddresses(address,address,address[])').inputs;
             [_wallet,
@@ -2319,7 +2328,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _wallet: string,
@@ -2418,7 +2428,7 @@ export class USDTieredSTOContract extends BaseContract {
     public finalize = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('finalize()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
@@ -2436,7 +2446,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             txData: Partial<TxData> = {},
@@ -2498,7 +2509,7 @@ export class USDTieredSTOContract extends BaseContract {
             _investors: string[],
             _accredited: boolean[],
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('changeAccredited(address[],bool[])').inputs;
             [_investors,
@@ -2526,7 +2537,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _investors: string[],
@@ -2614,7 +2626,7 @@ export class USDTieredSTOContract extends BaseContract {
             _investors: string[],
             _nonAccreditedLimit: BigNumber[],
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('changeNonAccreditedLimit(address[],uint256[])').inputs;
             [_investors,
@@ -2642,7 +2654,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _investors: string[],
@@ -2759,7 +2772,7 @@ export class USDTieredSTOContract extends BaseContract {
         async sendTransactionAsync(
             _allowBeneficialInvestments: boolean,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('changeAllowBeneficialInvestments(bool)').inputs;
             [_allowBeneficialInvestments
@@ -2782,7 +2795,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _allowBeneficialInvestments: boolean,
@@ -2856,7 +2870,7 @@ export class USDTieredSTOContract extends BaseContract {
         async sendTransactionAsync(
             _beneficiary: string,
             txData: Partial<TxDataPayable> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('buyWithETH(address)').inputs;
             [_beneficiary
@@ -2879,7 +2893,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _beneficiary: string,
@@ -2954,7 +2969,7 @@ export class USDTieredSTOContract extends BaseContract {
             _beneficiary: string,
             _investedPOLY: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('buyWithPOLY(address,uint256)').inputs;
             [_beneficiary,
@@ -2982,7 +2997,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _beneficiary: string,
@@ -3071,7 +3087,7 @@ export class USDTieredSTOContract extends BaseContract {
             _investedSC: BigNumber,
             _usdToken: string,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('buyWithUSD(address,uint256,address)').inputs;
             [_beneficiary,
@@ -3104,7 +3120,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _beneficiary: string,
@@ -3205,7 +3222,7 @@ export class USDTieredSTOContract extends BaseContract {
             _beneficiary: string,
             _minTokens: BigNumber,
             txData: Partial<TxDataPayable> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('buyWithETHRateLimited(address,uint256)').inputs;
             [_beneficiary,
@@ -3233,7 +3250,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _beneficiary: string,
@@ -3322,7 +3340,7 @@ export class USDTieredSTOContract extends BaseContract {
             _investedPOLY: BigNumber,
             _minTokens: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('buyWithPOLYRateLimited(address,uint256,uint256)').inputs;
             [_beneficiary,
@@ -3355,7 +3373,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _beneficiary: string,
@@ -3458,7 +3477,7 @@ export class USDTieredSTOContract extends BaseContract {
             _minTokens: BigNumber,
             _usdToken: string,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as USDTieredSTOContract;
             const inputAbi = self._lookupAbi('buyWithUSDRateLimited(address,uint256,uint256,address)').inputs;
             [_beneficiary,
@@ -3496,7 +3515,8 @@ export class USDTieredSTOContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _beneficiary: string,

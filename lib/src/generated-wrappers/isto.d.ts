@@ -1,5 +1,5 @@
 import { BaseContract } from '@0x/base-contract';
-import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, Provider, TxData } from 'ethereum-types';
+import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, Provider, TxData, TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 export declare type ISTOEventArgs = ISTOSetFundRaiseTypesEventArgs | ISTOPauseEventArgs | ISTOUnpauseEventArgs;
 export declare enum ISTOEvents {
@@ -30,7 +30,7 @@ export declare class ISTOContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
     takeFee: {
-        sendTransactionAsync(_amount: BigNumber, txData?: Partial<TxData>): Promise<string>;
+        sendTransactionAsync(_amount: BigNumber, txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
         estimateGasAsync(_amount: BigNumber, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_amount: BigNumber): string;
         callAsync(_amount: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
@@ -69,7 +69,7 @@ export declare class ISTOContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
     };
     reclaimERC20: {
-        sendTransactionAsync(_tokenContract: string, txData?: Partial<TxData>): Promise<string>;
+        sendTransactionAsync(_tokenContract: string, txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
         estimateGasAsync(_tokenContract: string, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_tokenContract: string): string;
         callAsync(_tokenContract: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
@@ -81,13 +81,13 @@ export declare class ISTOContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
     };
     pause: {
-        sendTransactionAsync(txData?: Partial<TxData>): Promise<string>;
+        sendTransactionAsync(txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
         estimateGasAsync(txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(): string;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     unpause: {
-        sendTransactionAsync(txData?: Partial<TxData>): Promise<string>;
+        sendTransactionAsync(txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
         estimateGasAsync(txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(): string;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;

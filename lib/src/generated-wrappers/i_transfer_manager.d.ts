@@ -1,5 +1,5 @@
 import { BaseContract } from '@0x/base-contract';
-import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, Provider, TxData } from 'ethereum-types';
+import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, Provider, TxData, TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 export declare type ITransferManagerEventArgs = ITransferManagerPauseEventArgs | ITransferManagerUnpauseEventArgs;
 export declare enum ITransferManagerEvents {
@@ -20,7 +20,7 @@ export declare class ITransferManagerContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
     takeFee: {
-        sendTransactionAsync(_amount: BigNumber, txData?: Partial<TxData>): Promise<string>;
+        sendTransactionAsync(_amount: BigNumber, txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
         estimateGasAsync(_amount: BigNumber, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_amount: BigNumber): string;
         callAsync(_amount: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
@@ -41,19 +41,19 @@ export declare class ITransferManagerContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     verifyTransfer: {
-        sendTransactionAsync(_from: string, _to: string, _amount: BigNumber, _data: string, _isTransfer: boolean, txData?: Partial<TxData>): Promise<string>;
+        sendTransactionAsync(_from: string, _to: string, _amount: BigNumber, _data: string, _isTransfer: boolean, txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
         estimateGasAsync(_from: string, _to: string, _amount: BigNumber, _data: string, _isTransfer: boolean, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_from: string, _to: string, _amount: BigNumber, _data: string, _isTransfer: boolean): string;
         callAsync(_from: string, _to: string, _amount: BigNumber, _data: string, _isTransfer: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
     };
     unpause: {
-        sendTransactionAsync(txData?: Partial<TxData>): Promise<string>;
+        sendTransactionAsync(txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
         estimateGasAsync(txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(): string;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     pause: {
-        sendTransactionAsync(txData?: Partial<TxData>): Promise<string>;
+        sendTransactionAsync(txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
         estimateGasAsync(txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(): string;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;

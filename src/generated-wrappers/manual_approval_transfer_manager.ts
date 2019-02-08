@@ -2,7 +2,7 @@
 // tslint:disable:no-unused-variable
 // tslint:disable:no-unbound-method
 import { BaseContract } from '@0x/base-contract';
-import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact, DecodedLogArgs, MethodAbi, Provider, TxData, TxDataPayable } from 'ethereum-types';
+import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact, DecodedLogArgs, MethodAbi, Provider, TxData, TxDataPayable, TransactionReceiptWithDecodedLogs } from 'ethereum-types';
 import { BigNumber, classUtils, logUtils } from '@0x/utils';
 import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
@@ -65,7 +65,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
     public unpause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('unpause()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
@@ -83,7 +83,8 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             txData: Partial<TxData> = {},
@@ -214,7 +215,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
         async sendTransactionAsync(
             _amount: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('takeFee(uint256)').inputs;
             [_amount
@@ -237,7 +238,8 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _amount: BigNumber,
@@ -375,7 +377,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
     public pause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('pause()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
@@ -393,7 +395,8 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             txData: Partial<TxData> = {},
@@ -668,7 +671,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             index_3: string,
             _isTransfer: boolean,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('verifyTransfer(address,address,uint256,bytes,bool)').inputs;
             [_from,
@@ -711,7 +714,8 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _from: string,
@@ -841,7 +845,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _expiryTime: BigNumber,
             _description: string,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('addManualApproval(address,address,uint256,uint256,bytes32)').inputs;
             [_from,
@@ -884,7 +888,8 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _from: string,
@@ -1014,7 +1019,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _expiryTimes: BigNumber[],
             _descriptions: string[],
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('addManualApprovalMulti(address[],address[],uint256[],uint256[],bytes32[])').inputs;
             [_from,
@@ -1057,7 +1062,8 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _from: string[],
@@ -1188,7 +1194,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _description: string,
             _change: number|BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('modifyManualApproval(address,address,uint256,uint256,bytes32,uint8)').inputs;
             [_from,
@@ -1236,7 +1242,8 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _from: string,
@@ -1380,7 +1387,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _descriptions: string[],
             _changes: Array<number|BigNumber>,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('modifyManualApprovalMulti(address[],address[],uint256[],uint256[],bytes32[],uint8[])').inputs;
             [_from,
@@ -1428,7 +1435,8 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _from: string[],
@@ -1568,7 +1576,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _from: string,
             _to: string,
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('revokeManualApproval(address,address)').inputs;
             [_from,
@@ -1596,7 +1604,8 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _from: string,
@@ -1684,7 +1693,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _from: string[],
             _to: string[],
             txData: Partial<TxData> = {},
-        ): Promise<string> {
+        ): Promise<TransactionReceiptWithDecodedLogs> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('revokeManualApprovalMulti(address[],address[])').inputs;
             [_from,
@@ -1712,7 +1721,8 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            return txHash;
+            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+            return receipt;
         },
         async estimateGasAsync(
             _from: string[],
