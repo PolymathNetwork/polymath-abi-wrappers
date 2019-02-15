@@ -6,6 +6,7 @@ import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact,
 import { BigNumber, classUtils, logUtils } from '@0x/utils';
 import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
+import { PolyResponse } from '../polyResponse';
 import * as ethers from 'ethers';
 import * as _ from 'lodash';
 // tslint:enable:no-unused-variable
@@ -66,7 +67,7 @@ export class OwnableContract extends BaseContract {
     public renounceOwnership = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
-        ): Promise<TransactionReceiptWithDecodedLogs> {
+        ): Promise<PolyResponse> {
             const self = this as any as OwnableContract;
             const inputAbi = self._lookupAbi('renounceOwnership()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
@@ -84,8 +85,9 @@ export class OwnableContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-            return receipt;
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
             txData: Partial<TxData> = {},
@@ -146,7 +148,7 @@ export class OwnableContract extends BaseContract {
         async sendTransactionAsync(
             _newOwner: string,
             txData: Partial<TxData> = {},
-        ): Promise<TransactionReceiptWithDecodedLogs> {
+        ): Promise<PolyResponse> {
             const self = this as any as OwnableContract;
             const inputAbi = self._lookupAbi('transferOwnership(address)').inputs;
             [_newOwner
@@ -169,8 +171,9 @@ export class OwnableContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-            return receipt;
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
             _newOwner: string,

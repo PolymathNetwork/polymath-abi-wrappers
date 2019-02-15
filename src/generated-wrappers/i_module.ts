@@ -6,6 +6,7 @@ import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact,
 import { BigNumber, classUtils, logUtils } from '@0x/utils';
 import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
+import { PolyResponse } from '../polyResponse';
 import * as ethers from 'ethers';
 import * as _ from 'lodash';
 // tslint:enable:no-unused-variable
@@ -79,7 +80,7 @@ export class IModuleContract extends BaseContract {
         async sendTransactionAsync(
             _amount: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<TransactionReceiptWithDecodedLogs> {
+        ): Promise<PolyResponse> {
             const self = this as any as IModuleContract;
             const inputAbi = self._lookupAbi('takeFee(uint256)').inputs;
             [_amount
@@ -102,8 +103,9 @@ export class IModuleContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-            return receipt;
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
             _amount: BigNumber,

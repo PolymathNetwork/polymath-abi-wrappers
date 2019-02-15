@@ -1,5 +1,6 @@
 import { BaseContract } from '@0x/base-contract';
-import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, Provider, TxData, TransactionReceiptWithDecodedLogs } from 'ethereum-types';
+import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, Provider, TxData } from 'ethereum-types';
+import { PolyResponse } from '../polyResponse';
 export declare type PolymathRegistryEventArgs = PolymathRegistryChangeAddressEventArgs | PolymathRegistryOwnershipRenouncedEventArgs | PolymathRegistryOwnershipTransferredEventArgs;
 export declare enum PolymathRegistryEvents {
     ChangeAddress = "ChangeAddress",
@@ -23,13 +24,13 @@ export declare class PolymathRegistryContract extends BaseContract {
         callAsync(index_0: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     renounceOwnership: {
-        sendTransactionAsync(txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
+        sendTransactionAsync(txData?: Partial<TxData>): Promise<PolyResponse>;
         estimateGasAsync(txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(): string;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     reclaimERC20: {
-        sendTransactionAsync(_tokenContract: string, txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
+        sendTransactionAsync(_tokenContract: string, txData?: Partial<TxData>): Promise<PolyResponse>;
         estimateGasAsync(_tokenContract: string, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_tokenContract: string): string;
         callAsync(_tokenContract: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
@@ -38,7 +39,7 @@ export declare class PolymathRegistryContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     transferOwnership: {
-        sendTransactionAsync(_newOwner: string, txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
+        sendTransactionAsync(_newOwner: string, txData?: Partial<TxData>): Promise<PolyResponse>;
         estimateGasAsync(_newOwner: string, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_newOwner: string): string;
         callAsync(_newOwner: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
@@ -47,7 +48,7 @@ export declare class PolymathRegistryContract extends BaseContract {
         callAsync(_nameKey: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     changeAddress: {
-        sendTransactionAsync(_nameKey: string, _newAddress: string, txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
+        sendTransactionAsync(_nameKey: string, _newAddress: string, txData?: Partial<TxData>): Promise<PolyResponse>;
         estimateGasAsync(_nameKey: string, _newAddress: string, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_nameKey: string, _newAddress: string): string;
         callAsync(_nameKey: string, _newAddress: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;

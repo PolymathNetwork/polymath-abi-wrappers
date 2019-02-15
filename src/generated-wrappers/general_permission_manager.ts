@@ -6,6 +6,7 @@ import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact,
 import { BigNumber, classUtils, logUtils } from '@0x/utils';
 import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
+import { PolyResponse } from '../polyResponse';
 import * as ethers from 'ethers';
 import * as _ from 'lodash';
 // tslint:enable:no-unused-variable
@@ -87,7 +88,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
         async sendTransactionAsync(
             _amount: BigNumber,
             txData: Partial<TxData> = {},
-        ): Promise<TransactionReceiptWithDecodedLogs> {
+        ): Promise<PolyResponse> {
             const self = this as any as GeneralPermissionManagerContract;
             const inputAbi = self._lookupAbi('takeFee(uint256)').inputs;
             [_amount
@@ -110,8 +111,9 @@ export class GeneralPermissionManagerContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-            return receipt;
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
             _amount: BigNumber,
@@ -481,7 +483,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             _delegate: string,
             _details: string,
             txData: Partial<TxData> = {},
-        ): Promise<TransactionReceiptWithDecodedLogs> {
+        ): Promise<PolyResponse> {
             const self = this as any as GeneralPermissionManagerContract;
             const inputAbi = self._lookupAbi('addDelegate(address,bytes32)').inputs;
             [_delegate,
@@ -509,8 +511,9 @@ export class GeneralPermissionManagerContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-            return receipt;
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
             _delegate: string,
@@ -597,7 +600,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
         async sendTransactionAsync(
             _delegate: string,
             txData: Partial<TxData> = {},
-        ): Promise<TransactionReceiptWithDecodedLogs> {
+        ): Promise<PolyResponse> {
             const self = this as any as GeneralPermissionManagerContract;
             const inputAbi = self._lookupAbi('deleteDelegate(address)').inputs;
             [_delegate
@@ -620,8 +623,9 @@ export class GeneralPermissionManagerContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-            return receipt;
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
             _delegate: string,
@@ -733,7 +737,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             _perm: string,
             _valid: boolean,
             txData: Partial<TxData> = {},
-        ): Promise<TransactionReceiptWithDecodedLogs> {
+        ): Promise<PolyResponse> {
             const self = this as any as GeneralPermissionManagerContract;
             const inputAbi = self._lookupAbi('changePermission(address,address,bytes32,bool)').inputs;
             [_delegate,
@@ -771,8 +775,9 @@ export class GeneralPermissionManagerContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-            return receipt;
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
             _delegate: string,
@@ -888,7 +893,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             _perms: string[],
             _valids: boolean[],
             txData: Partial<TxData> = {},
-        ): Promise<TransactionReceiptWithDecodedLogs> {
+        ): Promise<PolyResponse> {
             const self = this as any as GeneralPermissionManagerContract;
             const inputAbi = self._lookupAbi('changePermissionMulti(address,address[],bytes32[],bool[])').inputs;
             [_delegate,
@@ -926,8 +931,9 @@ export class GeneralPermissionManagerContract extends BaseContract {
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-            return receipt;
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
             _delegate: string,

@@ -1,0 +1,1 @@
+{"version":3,"file":"polyResponse.d.ts","sourceRoot":"","sources":["../../src/polyResponse.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,iCAAiC,EAAE,MAAM,gBAAgB,CAAC;AAEnE,qBAAa,YAAY;IACd,MAAM,EAAG,MAAM,CAAC;IAChB,YAAY,EAAG,OAAO,CAAC,iCAAiC,CAAC,CAAC;gBAEpD,MAAM,EAAE,MAAM,EAAE,YAAY,EAAE,OAAO,CAAC,iCAAiC,CAAC;CAIxF"}

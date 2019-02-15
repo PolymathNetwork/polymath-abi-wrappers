@@ -1,5 +1,6 @@
 import { BaseContract } from '@0x/base-contract';
-import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, Provider, TxData, TransactionReceiptWithDecodedLogs } from 'ethereum-types';
+import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, Provider, TxData } from 'ethereum-types';
+import { PolyResponse } from '../polyResponse';
 export declare type OwnableEventArgs = OwnableOwnershipRenouncedEventArgs | OwnableOwnershipTransferredEventArgs;
 export declare enum OwnableEvents {
     OwnershipRenounced = "OwnershipRenounced",
@@ -17,13 +18,13 @@ export declare class OwnableContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     renounceOwnership: {
-        sendTransactionAsync(txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
+        sendTransactionAsync(txData?: Partial<TxData>): Promise<PolyResponse>;
         estimateGasAsync(txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(): string;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     transferOwnership: {
-        sendTransactionAsync(_newOwner: string, txData?: Partial<TxData>): Promise<TransactionReceiptWithDecodedLogs>;
+        sendTransactionAsync(_newOwner: string, txData?: Partial<TxData>): Promise<PolyResponse>;
         estimateGasAsync(_newOwner: string, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_newOwner: string): string;
         callAsync(_newOwner: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
