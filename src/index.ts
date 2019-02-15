@@ -1,3 +1,4 @@
+export { PolyResponse } from './polyResponse';
 export * from './generated-wrappers/capped_s_t_o';
 export * from './generated-wrappers/capped_s_t_o_factory';
 export * from './generated-wrappers/erc20_dividend_checkpoint';
@@ -18,4 +19,4 @@ export * from './generated-wrappers/poly_token_faucet';
 export * from './generated-wrappers/security_token';
 export * from './generated-wrappers/security_token_registry';
 export * from './generated-wrappers/u_s_d_tiered_s_t_o';
-export * from './generated-wrappers/u_s_d_tiered_s_t_o_factory'
+export * from './generated-wrappers/u_s_d_tiered_s_t_o_factory';

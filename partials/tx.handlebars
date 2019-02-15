@@ -7,7 +7,7 @@ public {{this.tsName}} = {
     {{^this.payable}}
         txData: Partial<TxData> = {},
     {{/this.payable}}
-    ): Promise<TransactionReceiptWithDecodedLogs> {
+    ): Promise<PolyResponse> {
         const self = this as any as {{contractName}}Contract;
         const inputAbi = self._lookupAbi('{{this.functionSignature}}').inputs;
         [{{> params inputs=inputs}}] = BaseContract._formatABIDataItemList(inputAbi, [{{> params inputs=inputs}}], BaseContract._bigNumberToString.bind(self));
@@ -26,8 +26,9 @@ public {{this.tsName}} = {
             ),
         );
         const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-        const receipt = await self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-        return receipt;
+        const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+
+        return new PolyResponse(txHash, receipt);
     },
     async estimateGasAsync(
     {{> typed_params inputs=inputs}}
