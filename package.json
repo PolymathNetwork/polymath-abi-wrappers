@@ -1,14 +1,12 @@
 {
-  "name": "polymath-abi-wrappers",
-  "version": "0.0.0",
+  "name": "@polymathnetwork/abi-wrappers",
+  "version": "2.1.0-beta",
   "engines": {
     "node": ">=6.12"
   },
   "description": "Low-level Polymath smart contract wrappers generated using @0x/abi-gen",
   "main": "lib/src/index.js",
-  "directories": {
-    "test": "test"
-  },
+  "files": ["lib/**/*"],
   "scripts": {
     "build": "tsc -b",
     "build:ci": "yarn build",
@@ -18,7 +16,7 @@
     "generate_contract_wrappers": "node_modules/@0x/abi-gen/bin/abi-gen.js --abis ${npm_package_config_abis} --template contract.handlebars --partials 'partials/**/*.handlebars' --output src/generated-wrappers"
   },
   "config": {
-    "abis": "node_modules/polymath-contract-artifacts/artifacts/@(*).json"
+    "abis": "node_modules/@polymathnetwork/contract-artifacts/artifacts/@(*).json"
   },
   "repository": {
     "type": "git",
@@ -34,8 +32,9 @@
     "@0x/types": "1.4.1",
     "@types/lodash": "^4.14.119",
     "@types/node": "^10.12.18",
-    "polymath-contract-artifacts": "git://github.com/PolymathNetwork/polymath-contract-artifacts.git#v2.1.0-beta",
-    "shx": "^0.2.2"
+    "@polymathnetwork/contract-artifacts": "2.1.0-beta.1",
+    "shx": "^0.2.2",
+    "tslint": "5.11.0"
   },
   "dependencies": {
     "@0x/base-contract": "^3.0.10",

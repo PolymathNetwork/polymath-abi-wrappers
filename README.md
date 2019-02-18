@@ -1,24 +1,23 @@
-## polymath-abi-wrappers
+## @polymathnetwork/abi-wrappers
 
-Low-level Polymath smart contract wrappers generated using @0x/abi-gen with custom poly template. These
-low-level wrappers are imported by other packages and application developers are not expected to import this package directly.
+Low-level Polymath smart contract wrappers generated using @0x/abi-gen with custom poly template. These low-level wrappers are imported by other packages and application developers are not expected to import this package directly.
 
 ## Installation
 
 ```bash
-yarn add polymath-abi-wrappers
+yarn add @polymathnetwork/abi-wrappers
 ```
 
 **Import**
 
 ```typescript
-import * as wrappers from 'polymath-abi-wrappers';
+import * as wrappers from '@polymathnetwork/abi-wrappers';
 ```
 
 or
 
 ```javascript
-var wrappers = require('polymath-abi-wrappers');
+var wrappers = require('@polymathnetwork/abi-wrappers);
 ```
 
 ## Contributing
@@ -45,16 +44,4 @@ To build this package run the following from root directory:
 
 ```bash
 yarn pre_build && yarn build
-```
-
-### Clean
-
-```bash
-yarn clean
-```
-
-### Lint
-
-```bash
-yarn lint
 ```
