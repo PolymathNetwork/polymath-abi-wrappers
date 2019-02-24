@@ -21,8 +21,8 @@ export declare class ITransferManagerContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
     takeFee: {
-        sendTransactionAsync(_amount: BigNumber, txData?: Partial<TxData>): Promise<PolyResponse>;
-        estimateGasAsync(_amount: BigNumber, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_amount: BigNumber, txData?: Partial<TxData>, factor?: number): Promise<PolyResponse>;
+        estimateGasAsync(_amount: BigNumber, factor: number, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_amount: BigNumber): string;
         callAsync(_amount: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
@@ -42,20 +42,20 @@ export declare class ITransferManagerContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     verifyTransfer: {
-        sendTransactionAsync(_from: string, _to: string, _amount: BigNumber, _data: string, _isTransfer: boolean, txData?: Partial<TxData>): Promise<PolyResponse>;
-        estimateGasAsync(_from: string, _to: string, _amount: BigNumber, _data: string, _isTransfer: boolean, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_from: string, _to: string, _amount: BigNumber, _data: string, _isTransfer: boolean, txData?: Partial<TxData>, factor?: number): Promise<PolyResponse>;
+        estimateGasAsync(_from: string, _to: string, _amount: BigNumber, _data: string, _isTransfer: boolean, factor: number, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_from: string, _to: string, _amount: BigNumber, _data: string, _isTransfer: boolean): string;
         callAsync(_from: string, _to: string, _amount: BigNumber, _data: string, _isTransfer: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
     };
     unpause: {
-        sendTransactionAsync(txData?: Partial<TxData>): Promise<PolyResponse>;
-        estimateGasAsync(txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(txData?: Partial<TxData>, factor?: number): Promise<PolyResponse>;
+        estimateGasAsync(factor: number, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(): string;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     pause: {
-        sendTransactionAsync(txData?: Partial<TxData>): Promise<PolyResponse>;
-        estimateGasAsync(txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(txData?: Partial<TxData>, factor?: number): Promise<PolyResponse>;
+        estimateGasAsync(factor: number, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(): string;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };

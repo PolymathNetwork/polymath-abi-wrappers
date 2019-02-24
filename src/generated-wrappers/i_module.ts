@@ -80,6 +80,7 @@ export class IModuleContract extends BaseContract {
         async sendTransactionAsync(
             _amount: BigNumber,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as IModuleContract;
             const inputAbi = self._lookupAbi('takeFee(uint256)').inputs;
@@ -100,6 +101,8 @@ export class IModuleContract extends BaseContract {
                 self.takeFee.estimateGasAsync.bind<IModuleContract, any, Promise<number>>(
                     self,
                     _amount
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -109,6 +112,7 @@ export class IModuleContract extends BaseContract {
         },
         async estimateGasAsync(
             _amount: BigNumber,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as IModuleContract;
@@ -127,7 +131,9 @@ export class IModuleContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _amount: BigNumber,

@@ -88,6 +88,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
         async sendTransactionAsync(
             _amount: BigNumber,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as GeneralPermissionManagerContract;
             const inputAbi = self._lookupAbi('takeFee(uint256)').inputs;
@@ -108,6 +109,8 @@ export class GeneralPermissionManagerContract extends BaseContract {
                 self.takeFee.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
                     self,
                     _amount
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -117,6 +120,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
         },
         async estimateGasAsync(
             _amount: BigNumber,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as GeneralPermissionManagerContract;
@@ -135,7 +139,9 @@ export class GeneralPermissionManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _amount: BigNumber,
@@ -483,6 +489,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             _delegate: string,
             _details: string,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as GeneralPermissionManagerContract;
             const inputAbi = self._lookupAbi('addDelegate(address,bytes32)').inputs;
@@ -507,7 +514,9 @@ export class GeneralPermissionManagerContract extends BaseContract {
                 self.addDelegate.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
                     self,
                     _delegate,
-                    _details
+    _details
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -518,6 +527,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
         async estimateGasAsync(
             _delegate: string,
             _details: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as GeneralPermissionManagerContract;
@@ -539,7 +549,9 @@ export class GeneralPermissionManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _delegate: string,
@@ -600,6 +612,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
         async sendTransactionAsync(
             _delegate: string,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as GeneralPermissionManagerContract;
             const inputAbi = self._lookupAbi('deleteDelegate(address)').inputs;
@@ -620,6 +633,8 @@ export class GeneralPermissionManagerContract extends BaseContract {
                 self.deleteDelegate.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
                     self,
                     _delegate
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -629,6 +644,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
         },
         async estimateGasAsync(
             _delegate: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as GeneralPermissionManagerContract;
@@ -647,7 +663,9 @@ export class GeneralPermissionManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _delegate: string,
@@ -737,6 +755,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             _perm: string,
             _valid: boolean,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as GeneralPermissionManagerContract;
             const inputAbi = self._lookupAbi('changePermission(address,address,bytes32,bool)').inputs;
@@ -769,9 +788,11 @@ export class GeneralPermissionManagerContract extends BaseContract {
                 self.changePermission.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
                     self,
                     _delegate,
-                    _module,
-                    _perm,
-                    _valid
+    _module,
+    _perm,
+    _valid
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -784,6 +805,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             _module: string,
             _perm: string,
             _valid: boolean,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as GeneralPermissionManagerContract;
@@ -811,7 +833,9 @@ export class GeneralPermissionManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _delegate: string,
@@ -893,6 +917,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             _perms: string[],
             _valids: boolean[],
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as GeneralPermissionManagerContract;
             const inputAbi = self._lookupAbi('changePermissionMulti(address,address[],bytes32[],bool[])').inputs;
@@ -925,9 +950,11 @@ export class GeneralPermissionManagerContract extends BaseContract {
                 self.changePermissionMulti.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
                     self,
                     _delegate,
-                    _modules,
-                    _perms,
-                    _valids
+    _modules,
+    _perms,
+    _valids
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -940,6 +967,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             _modules: string[],
             _perms: string[],
             _valids: boolean[],
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as GeneralPermissionManagerContract;
@@ -967,7 +995,9 @@ export class GeneralPermissionManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _delegate: string,

@@ -18,14 +18,14 @@ export declare class OwnableContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     renounceOwnership: {
-        sendTransactionAsync(txData?: Partial<TxData>): Promise<PolyResponse>;
-        estimateGasAsync(txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(txData?: Partial<TxData>, factor?: number): Promise<PolyResponse>;
+        estimateGasAsync(factor: number, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(): string;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     transferOwnership: {
-        sendTransactionAsync(_newOwner: string, txData?: Partial<TxData>): Promise<PolyResponse>;
-        estimateGasAsync(_newOwner: string, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_newOwner: string, txData?: Partial<TxData>, factor?: number): Promise<PolyResponse>;
+        estimateGasAsync(_newOwner: string, factor: number, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_newOwner: string): string;
         callAsync(_newOwner: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };

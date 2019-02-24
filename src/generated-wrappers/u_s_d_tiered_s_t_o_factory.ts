@@ -172,6 +172,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         async sendTransactionAsync(
             _newTitle: string,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as USDTieredSTOFactoryContract;
             const inputAbi = self._lookupAbi('changeTitle(string)').inputs;
@@ -192,6 +193,8 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self.changeTitle.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _newTitle
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -201,6 +204,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         },
         async estimateGasAsync(
             _newTitle: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOFactoryContract;
@@ -219,7 +223,9 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _newTitle: string,
@@ -271,6 +277,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         async sendTransactionAsync(
             _newSubscriptionCost: BigNumber,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as USDTieredSTOFactoryContract;
             const inputAbi = self._lookupAbi('changeFactorySubscriptionFee(uint256)').inputs;
@@ -291,6 +298,8 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self.changeFactorySubscriptionFee.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _newSubscriptionCost
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -300,6 +309,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         },
         async estimateGasAsync(
             _newSubscriptionCost: BigNumber,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOFactoryContract;
@@ -318,7 +328,9 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _newSubscriptionCost: BigNumber,
@@ -430,6 +442,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         async sendTransactionAsync(
             _newSetupCost: BigNumber,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as USDTieredSTOFactoryContract;
             const inputAbi = self._lookupAbi('changeFactorySetupFee(uint256)').inputs;
@@ -450,6 +463,8 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self.changeFactorySetupFee.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _newSetupCost
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -459,6 +474,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         },
         async estimateGasAsync(
             _newSetupCost: BigNumber,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOFactoryContract;
@@ -477,7 +493,9 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _newSetupCost: BigNumber,
@@ -529,6 +547,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         async sendTransactionAsync(
             _newVersion: string,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as USDTieredSTOFactoryContract;
             const inputAbi = self._lookupAbi('changeVersion(string)').inputs;
@@ -549,6 +568,8 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self.changeVersion.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _newVersion
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -558,6 +579,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         },
         async estimateGasAsync(
             _newVersion: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOFactoryContract;
@@ -576,7 +598,9 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _newVersion: string,
@@ -657,6 +681,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
     public renounceOwnership = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as USDTieredSTOFactoryContract;
             const inputAbi = self._lookupAbi('renounceOwnership()').inputs;
@@ -672,6 +697,8 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
                 self.renounceOwnership.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
+                    
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -680,6 +707,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOFactoryContract;
@@ -695,7 +723,9 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
         ): string {
@@ -828,6 +858,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         async sendTransactionAsync(
             _newName: string,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as USDTieredSTOFactoryContract;
             const inputAbi = self._lookupAbi('changeName(bytes32)').inputs;
@@ -848,6 +879,8 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self.changeName.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _newName
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -857,6 +890,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         },
         async estimateGasAsync(
             _newName: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOFactoryContract;
@@ -875,7 +909,9 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _newName: string,
@@ -987,6 +1023,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         async sendTransactionAsync(
             _newUsageCost: BigNumber,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as USDTieredSTOFactoryContract;
             const inputAbi = self._lookupAbi('changeFactoryUsageFee(uint256)').inputs;
@@ -1007,6 +1044,8 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self.changeFactoryUsageFee.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _newUsageCost
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1016,6 +1055,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         },
         async estimateGasAsync(
             _newUsageCost: BigNumber,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOFactoryContract;
@@ -1034,7 +1074,9 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _newUsageCost: BigNumber,
@@ -1146,6 +1188,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         async sendTransactionAsync(
             _newDesc: string,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as USDTieredSTOFactoryContract;
             const inputAbi = self._lookupAbi('changeDescription(string)').inputs;
@@ -1166,6 +1209,8 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self.changeDescription.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _newDesc
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1175,6 +1220,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         },
         async estimateGasAsync(
             _newDesc: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOFactoryContract;
@@ -1193,7 +1239,9 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _newDesc: string,
@@ -1245,6 +1293,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         async sendTransactionAsync(
             _newOwner: string,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as USDTieredSTOFactoryContract;
             const inputAbi = self._lookupAbi('transferOwnership(address)').inputs;
@@ -1265,6 +1314,8 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self.transferOwnership.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _newOwner
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1274,6 +1325,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         },
         async estimateGasAsync(
             _newOwner: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOFactoryContract;
@@ -1292,7 +1344,9 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _newOwner: string,
@@ -1375,6 +1429,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             _boundType: string,
             _newVersion: Array<number|BigNumber>,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as USDTieredSTOFactoryContract;
             const inputAbi = self._lookupAbi('changeSTVersionBounds(string,uint8[])').inputs;
@@ -1399,7 +1454,9 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self.changeSTVersionBounds.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _boundType,
-                    _newVersion
+    _newVersion
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1410,6 +1467,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         async estimateGasAsync(
             _boundType: string,
             _newVersion: Array<number|BigNumber>,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOFactoryContract;
@@ -1431,7 +1489,9 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _boundType: string,
@@ -1492,6 +1552,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         async sendTransactionAsync(
             _data: string,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as USDTieredSTOFactoryContract;
             const inputAbi = self._lookupAbi('deploy(bytes)').inputs;
@@ -1512,6 +1573,8 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self.deploy.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
                     _data
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1521,6 +1584,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         },
         async estimateGasAsync(
             _data: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOFactoryContract;
@@ -1539,7 +1603,9 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _data: string,

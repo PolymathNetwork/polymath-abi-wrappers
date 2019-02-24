@@ -67,6 +67,7 @@ export class OwnableContract extends BaseContract {
     public renounceOwnership = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as OwnableContract;
             const inputAbi = self._lookupAbi('renounceOwnership()').inputs;
@@ -82,6 +83,8 @@ export class OwnableContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
                 self.renounceOwnership.estimateGasAsync.bind<OwnableContract, any, Promise<number>>(
                     self,
+                    
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -90,6 +93,7 @@ export class OwnableContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as OwnableContract;
@@ -105,7 +109,9 @@ export class OwnableContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
         ): string {
@@ -148,6 +154,7 @@ export class OwnableContract extends BaseContract {
         async sendTransactionAsync(
             _newOwner: string,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as OwnableContract;
             const inputAbi = self._lookupAbi('transferOwnership(address)').inputs;
@@ -168,6 +175,8 @@ export class OwnableContract extends BaseContract {
                 self.transferOwnership.estimateGasAsync.bind<OwnableContract, any, Promise<number>>(
                     self,
                     _newOwner
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -177,6 +186,7 @@ export class OwnableContract extends BaseContract {
         },
         async estimateGasAsync(
             _newOwner: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as OwnableContract;
@@ -195,7 +205,9 @@ export class OwnableContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _newOwner: string,

@@ -426,6 +426,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _polyToken: string,
             _owner: string,
             txData: Partial<TxDataPayable> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
             const inputAbi = self._lookupAbi('initialize(address,address,uint256,uint256,address,address)').inputs;
@@ -466,11 +467,13 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self.initialize.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _polymathRegistry,
-                    _STFactory,
-                    _stLaunchFee,
-                    _tickerRegFee,
-                    _polyToken,
-                    _owner
+    _STFactory,
+    _stLaunchFee,
+    _tickerRegFee,
+    _polyToken,
+    _owner
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -485,6 +488,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _tickerRegFee: BigNumber,
             _polyToken: string,
             _owner: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
@@ -518,7 +522,9 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _polymathRegistry: string,
@@ -617,6 +623,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _ticker: string,
             _tokenName: string,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
             const inputAbi = self._lookupAbi('registerTicker(address,string,string)').inputs;
@@ -645,8 +652,10 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self.registerTicker.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _owner,
-                    _ticker,
-                    _tokenName
+    _ticker,
+    _tokenName
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -658,6 +667,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _owner: string,
             _ticker: string,
             _tokenName: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
@@ -682,7 +692,9 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _owner: string,
@@ -757,6 +769,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _expiryDate: BigNumber,
             _status: boolean,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
             const inputAbi = self._lookupAbi('modifyTicker(address,string,string,uint256,uint256,bool)').inputs;
@@ -797,11 +810,13 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self.modifyTicker.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _owner,
-                    _ticker,
-                    _tokenName,
-                    _registrationDate,
-                    _expiryDate,
-                    _status
+    _ticker,
+    _tokenName,
+    _registrationDate,
+    _expiryDate,
+    _status
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -816,6 +831,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _registrationDate: BigNumber,
             _expiryDate: BigNumber,
             _status: boolean,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
@@ -849,7 +865,9 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _owner: string,
@@ -946,6 +964,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
         async sendTransactionAsync(
             _ticker: string,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
             const inputAbi = self._lookupAbi('removeTicker(string)').inputs;
@@ -966,6 +985,8 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self.removeTicker.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _ticker
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -975,6 +996,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
         },
         async estimateGasAsync(
             _ticker: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
@@ -993,7 +1015,9 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _ticker: string,
@@ -1046,6 +1070,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _newOwner: string,
             _ticker: string,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
             const inputAbi = self._lookupAbi('transferTickerOwnership(address,string)').inputs;
@@ -1070,7 +1095,9 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self.transferTickerOwnership.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _newOwner,
-                    _ticker
+    _ticker
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1081,6 +1108,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
         async estimateGasAsync(
             _newOwner: string,
             _ticker: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
@@ -1102,7 +1130,9 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _newOwner: string,
@@ -1163,6 +1193,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
         async sendTransactionAsync(
             _newExpiry: BigNumber,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
             const inputAbi = self._lookupAbi('changeExpiryLimit(uint256)').inputs;
@@ -1183,6 +1214,8 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self.changeExpiryLimit.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _newExpiry
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1192,6 +1225,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
         },
         async estimateGasAsync(
             _newExpiry: BigNumber,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
@@ -1210,7 +1244,9 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _newExpiry: BigNumber,
@@ -1370,6 +1406,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _tokenDetails: string,
             _divisible: boolean,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
             const inputAbi = self._lookupAbi('generateSecurityToken(string,string,string,bool)').inputs;
@@ -1402,9 +1439,11 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self.generateSecurityToken.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _name,
-                    _ticker,
-                    _tokenDetails,
-                    _divisible
+    _ticker,
+    _tokenDetails,
+    _divisible
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1417,6 +1456,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _ticker: string,
             _tokenDetails: string,
             _divisible: boolean,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
@@ -1444,7 +1484,9 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _name: string,
@@ -1528,6 +1570,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _tokenDetails: string,
             _deployedAt: BigNumber,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
             const inputAbi = self._lookupAbi('modifySecurityToken(string,string,address,address,string,uint256)').inputs;
@@ -1568,11 +1611,13 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self.modifySecurityToken.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _name,
-                    _ticker,
-                    _owner,
-                    _securityToken,
-                    _tokenDetails,
-                    _deployedAt
+    _ticker,
+    _owner,
+    _securityToken,
+    _tokenDetails,
+    _deployedAt
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1587,6 +1632,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _securityToken: string,
             _tokenDetails: string,
             _deployedAt: BigNumber,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
@@ -1620,7 +1666,9 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _name: string,
@@ -1822,6 +1870,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
         async sendTransactionAsync(
             _newOwner: string,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
             const inputAbi = self._lookupAbi('transferOwnership(address)').inputs;
@@ -1842,6 +1891,8 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self.transferOwnership.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _newOwner
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1851,6 +1902,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
         },
         async estimateGasAsync(
             _newOwner: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
@@ -1869,7 +1921,9 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _newOwner: string,
@@ -1920,6 +1974,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
     public pause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
             const inputAbi = self._lookupAbi('pause()').inputs;
@@ -1935,6 +1990,8 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
                 self.pause.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
+                    
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1943,6 +2000,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
@@ -1958,7 +2016,9 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
         ): string {
@@ -2000,6 +2060,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
     public unpause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
             const inputAbi = self._lookupAbi('unpause()').inputs;
@@ -2015,6 +2076,8 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
                 self.unpause.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
+                    
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -2023,6 +2086,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
@@ -2038,7 +2102,9 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
         ): string {
@@ -2081,6 +2147,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
         async sendTransactionAsync(
             _tickerRegFee: BigNumber,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
             const inputAbi = self._lookupAbi('changeTickerRegistrationFee(uint256)').inputs;
@@ -2101,6 +2168,8 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self.changeTickerRegistrationFee.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _tickerRegFee
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -2110,6 +2179,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
         },
         async estimateGasAsync(
             _tickerRegFee: BigNumber,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
@@ -2128,7 +2198,9 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _tickerRegFee: BigNumber,
@@ -2180,6 +2252,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
         async sendTransactionAsync(
             _stLaunchFee: BigNumber,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
             const inputAbi = self._lookupAbi('changeSecurityLaunchFee(uint256)').inputs;
@@ -2200,6 +2273,8 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self.changeSecurityLaunchFee.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _stLaunchFee
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -2209,6 +2284,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
         },
         async estimateGasAsync(
             _stLaunchFee: BigNumber,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
@@ -2227,7 +2303,9 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _stLaunchFee: BigNumber,
@@ -2279,6 +2357,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
         async sendTransactionAsync(
             _tokenContract: string,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
             const inputAbi = self._lookupAbi('reclaimERC20(address)').inputs;
@@ -2299,6 +2378,8 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self.reclaimERC20.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _tokenContract
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -2308,6 +2389,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
         },
         async estimateGasAsync(
             _tokenContract: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
@@ -2326,7 +2408,9 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _tokenContract: string,
@@ -2381,6 +2465,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _minor: number|BigNumber,
             _patch: number|BigNumber,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
             const inputAbi = self._lookupAbi('setProtocolVersion(address,uint8,uint8,uint8)').inputs;
@@ -2413,9 +2498,11 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self.setProtocolVersion.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _STFactoryAddress,
-                    _major,
-                    _minor,
-                    _patch
+    _major,
+    _minor,
+    _patch
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -2428,6 +2515,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _major: number|BigNumber,
             _minor: number|BigNumber,
             _patch: number|BigNumber,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
@@ -2455,7 +2543,9 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _STFactoryAddress: string,
@@ -2594,6 +2684,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
         async sendTransactionAsync(
             _newAddress: string,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
             const inputAbi = self._lookupAbi('updatePolyTokenAddress(address)').inputs;
@@ -2614,6 +2705,8 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self.updatePolyTokenAddress.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _newAddress
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -2623,6 +2716,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
         },
         async estimateGasAsync(
             _newAddress: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
@@ -2641,7 +2735,9 @@ export class SecurityTokenRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _newAddress: string,

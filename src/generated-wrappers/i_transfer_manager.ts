@@ -97,6 +97,7 @@ export class ITransferManagerContract extends BaseContract {
         async sendTransactionAsync(
             _amount: BigNumber,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as ITransferManagerContract;
             const inputAbi = self._lookupAbi('takeFee(uint256)').inputs;
@@ -117,6 +118,8 @@ export class ITransferManagerContract extends BaseContract {
                 self.takeFee.estimateGasAsync.bind<ITransferManagerContract, any, Promise<number>>(
                     self,
                     _amount
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -126,6 +129,7 @@ export class ITransferManagerContract extends BaseContract {
         },
         async estimateGasAsync(
             _amount: BigNumber,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ITransferManagerContract;
@@ -144,7 +148,9 @@ export class ITransferManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _amount: BigNumber,
@@ -350,6 +356,7 @@ export class ITransferManagerContract extends BaseContract {
             _data: string,
             _isTransfer: boolean,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as ITransferManagerContract;
             const inputAbi = self._lookupAbi('verifyTransfer(address,address,uint256,bytes,bool)').inputs;
@@ -386,10 +393,12 @@ export class ITransferManagerContract extends BaseContract {
                 self.verifyTransfer.estimateGasAsync.bind<ITransferManagerContract, any, Promise<number>>(
                     self,
                     _from,
-                    _to,
-                    _amount,
-                    _data,
-                    _isTransfer
+    _to,
+    _amount,
+    _data,
+    _isTransfer
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -403,6 +412,7 @@ export class ITransferManagerContract extends BaseContract {
             _amount: BigNumber,
             _data: string,
             _isTransfer: boolean,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ITransferManagerContract;
@@ -433,7 +443,9 @@ export class ITransferManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _from: string,
@@ -520,6 +532,7 @@ export class ITransferManagerContract extends BaseContract {
     public unpause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as ITransferManagerContract;
             const inputAbi = self._lookupAbi('unpause()').inputs;
@@ -535,6 +548,8 @@ export class ITransferManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
                 self.unpause.estimateGasAsync.bind<ITransferManagerContract, any, Promise<number>>(
                     self,
+                    
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -543,6 +558,7 @@ export class ITransferManagerContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ITransferManagerContract;
@@ -558,7 +574,9 @@ export class ITransferManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
         ): string {
@@ -600,6 +618,7 @@ export class ITransferManagerContract extends BaseContract {
     public pause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as ITransferManagerContract;
             const inputAbi = self._lookupAbi('pause()').inputs;
@@ -615,6 +634,8 @@ export class ITransferManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
                 self.pause.estimateGasAsync.bind<ITransferManagerContract, any, Promise<number>>(
                     self,
+                    
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -623,6 +644,7 @@ export class ITransferManagerContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ITransferManagerContract;
@@ -638,7 +660,9 @@ export class ITransferManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
         ): string {

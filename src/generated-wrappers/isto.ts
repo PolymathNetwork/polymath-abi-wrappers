@@ -163,6 +163,7 @@ export class ISTOContract extends BaseContract {
         async sendTransactionAsync(
             _amount: BigNumber,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as ISTOContract;
             const inputAbi = self._lookupAbi('takeFee(uint256)').inputs;
@@ -183,6 +184,8 @@ export class ISTOContract extends BaseContract {
                 self.takeFee.estimateGasAsync.bind<ISTOContract, any, Promise<number>>(
                     self,
                     _amount
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -192,6 +195,7 @@ export class ISTOContract extends BaseContract {
         },
         async estimateGasAsync(
             _amount: BigNumber,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ISTOContract;
@@ -210,7 +214,9 @@ export class ISTOContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _amount: BigNumber,
@@ -602,6 +608,7 @@ export class ISTOContract extends BaseContract {
         async sendTransactionAsync(
             _tokenContract: string,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as ISTOContract;
             const inputAbi = self._lookupAbi('reclaimERC20(address)').inputs;
@@ -622,6 +629,8 @@ export class ISTOContract extends BaseContract {
                 self.reclaimERC20.estimateGasAsync.bind<ISTOContract, any, Promise<number>>(
                     self,
                     _tokenContract
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -631,6 +640,7 @@ export class ISTOContract extends BaseContract {
         },
         async estimateGasAsync(
             _tokenContract: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ISTOContract;
@@ -649,7 +659,9 @@ export class ISTOContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _tokenContract: string,
@@ -765,6 +777,7 @@ export class ISTOContract extends BaseContract {
     public pause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as ISTOContract;
             const inputAbi = self._lookupAbi('pause()').inputs;
@@ -780,6 +793,8 @@ export class ISTOContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
                 self.pause.estimateGasAsync.bind<ISTOContract, any, Promise<number>>(
                     self,
+                    
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -788,6 +803,7 @@ export class ISTOContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ISTOContract;
@@ -803,7 +819,9 @@ export class ISTOContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
         ): string {
@@ -845,6 +863,7 @@ export class ISTOContract extends BaseContract {
     public unpause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as ISTOContract;
             const inputAbi = self._lookupAbi('unpause()').inputs;
@@ -860,6 +879,8 @@ export class ISTOContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
                 self.unpause.estimateGasAsync.bind<ISTOContract, any, Promise<number>>(
                     self,
+                    
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -868,6 +889,7 @@ export class ISTOContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ISTOContract;
@@ -883,7 +905,9 @@ export class ISTOContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
         ): string {

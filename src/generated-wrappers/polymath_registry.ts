@@ -80,6 +80,7 @@ export class PolymathRegistryContract extends BaseContract {
     public renounceOwnership = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as PolymathRegistryContract;
             const inputAbi = self._lookupAbi('renounceOwnership()').inputs;
@@ -95,6 +96,8 @@ export class PolymathRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
                 self.renounceOwnership.estimateGasAsync.bind<PolymathRegistryContract, any, Promise<number>>(
                     self,
+                    
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -103,6 +106,7 @@ export class PolymathRegistryContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as PolymathRegistryContract;
@@ -118,7 +122,9 @@ export class PolymathRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
         ): string {
@@ -161,6 +167,7 @@ export class PolymathRegistryContract extends BaseContract {
         async sendTransactionAsync(
             _tokenContract: string,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as PolymathRegistryContract;
             const inputAbi = self._lookupAbi('reclaimERC20(address)').inputs;
@@ -181,6 +188,8 @@ export class PolymathRegistryContract extends BaseContract {
                 self.reclaimERC20.estimateGasAsync.bind<PolymathRegistryContract, any, Promise<number>>(
                     self,
                     _tokenContract
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -190,6 +199,7 @@ export class PolymathRegistryContract extends BaseContract {
         },
         async estimateGasAsync(
             _tokenContract: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as PolymathRegistryContract;
@@ -208,7 +218,9 @@ export class PolymathRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _tokenContract: string,
@@ -290,6 +302,7 @@ export class PolymathRegistryContract extends BaseContract {
         async sendTransactionAsync(
             _newOwner: string,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as PolymathRegistryContract;
             const inputAbi = self._lookupAbi('transferOwnership(address)').inputs;
@@ -310,6 +323,8 @@ export class PolymathRegistryContract extends BaseContract {
                 self.transferOwnership.estimateGasAsync.bind<PolymathRegistryContract, any, Promise<number>>(
                     self,
                     _newOwner
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -319,6 +334,7 @@ export class PolymathRegistryContract extends BaseContract {
         },
         async estimateGasAsync(
             _newOwner: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as PolymathRegistryContract;
@@ -337,7 +353,9 @@ export class PolymathRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _newOwner: string,
@@ -425,6 +443,7 @@ export class PolymathRegistryContract extends BaseContract {
             _nameKey: string,
             _newAddress: string,
             txData: Partial<TxData> = {},
+            factor: number = 1.2,
         ): Promise<PolyResponse> {
             const self = this as any as PolymathRegistryContract;
             const inputAbi = self._lookupAbi('changeAddress(string,address)').inputs;
@@ -449,7 +468,9 @@ export class PolymathRegistryContract extends BaseContract {
                 self.changeAddress.estimateGasAsync.bind<PolymathRegistryContract, any, Promise<number>>(
                     self,
                     _nameKey,
-                    _newAddress
+    _newAddress
+    ,
+                    factor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -460,6 +481,7 @@ export class PolymathRegistryContract extends BaseContract {
         async estimateGasAsync(
             _nameKey: string,
             _newAddress: string,
+            factor: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as PolymathRegistryContract;
@@ -481,7 +503,9 @@ export class PolymathRegistryContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factorGas = Math.round(factor * gas);
+            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
         },
         getABIEncodedTransactionData(
             _nameKey: string,
