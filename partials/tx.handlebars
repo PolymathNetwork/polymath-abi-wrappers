@@ -14,13 +14,20 @@ public {{this.tsName}} = {
         [{{> params inputs=inputs}}] = BaseContract._formatABIDataItemList(inputAbi, [{{> params inputs=inputs}}], BaseContract._bigNumberToString.bind(self));
         BaseContract.strictArgumentEncodingCheck(inputAbi, [{{> params inputs=inputs}}]);
         const encodedData = self._lookupEthersInterface('{{this.functionSignature}}').functions.{{this.name}}.encode([{{> params inputs=inputs}}]);
+        const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+        const contractDefaults = _.defaults(
+                self._web3Wrapper.getContractDefaults(),
+                {
+                    from: defaultFromAddress 
+                }
+            );
         const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
                 to: self.address,
                 ...txData,
                 data: encodedData,
             },
-            self._web3Wrapper.getContractDefaults(),
+            contractDefaults,
             self.{{this.tsName}}.estimateGasAsync.bind<{{contractName}}Contract, any, Promise<number>>(
                 self,
                 {{> params inputs=inputs}}{{#if inputs.length}},{{/if}}
@@ -41,13 +48,20 @@ public {{this.tsName}} = {
         const inputAbi = self._lookupAbi('{{this.functionSignature}}').inputs;
         [{{> params inputs=inputs}}] = BaseContract._formatABIDataItemList(inputAbi, [{{> params inputs=inputs}}], BaseContract._bigNumberToString);
         const encodedData = self._lookupEthersInterface('{{this.functionSignature}}').functions.{{this.name}}.encode([{{> params inputs=inputs}}]);
+        const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+        const contractDefaults = _.defaults(
+                self._web3Wrapper.getContractDefaults(),
+                {
+                    from: defaultFromAddress 
+                }
+            );
         const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
                 to: self.address,
                 ...txData,
                 data: encodedData,
             },
-            self._web3Wrapper.getContractDefaults(),
+            contractDefaults
         );
         const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
         const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
