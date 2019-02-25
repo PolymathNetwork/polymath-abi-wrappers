@@ -7,7 +7,7 @@ public {{this.tsName}} = {
     {{^this.payable}}
         txData: Partial<TxData> = {},
     {{/this.payable}}
-        factor: number = 1.2,
+        estimateGasFactor?: number,
     ): Promise<PolyResponse> {
         const self = this as any as {{contractName}}Contract;
         const inputAbi = self._lookupAbi('{{this.functionSignature}}').inputs;
@@ -24,7 +24,7 @@ public {{this.tsName}} = {
             self.{{this.tsName}}.estimateGasAsync.bind<{{contractName}}Contract, any, Promise<number>>(
                 self,
                 {{> params inputs=inputs}}{{#if inputs.length}},{{/if}}
-                factor,
+                estimateGasFactor,
             ),
         );
         const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -34,7 +34,7 @@ public {{this.tsName}} = {
     },
     async estimateGasAsync(
     {{> typed_params inputs=inputs}}
-        factor: number,
+        factor?: number,
         txData: Partial<TxData> = {},
     ): Promise<number> {
         const self = this as any as {{contractName}}Contract;
@@ -51,8 +51,9 @@ public {{this.tsName}} = {
         );
         const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
         const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-        const _factorGas = Math.round(factor * gas);
-        return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
+        const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+        const _safetyGasEstimation = Math.round(_factor * gas);
+        return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
     },
     getABIEncodedTransactionData(
     {{> typed_params inputs=inputs}}
