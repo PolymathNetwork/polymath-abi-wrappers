@@ -16,6 +16,7 @@ import * as _ from 'lodash';
 // tslint:disable:no-parameter-reassignment
 // tslint:disable-next-line:class-name
 export class IModuleContract extends BaseContract {
+    private _defaultEstimateGasFactor: number;
     public getInitFunction = {
         async callAsync(
             callData: Partial<CallData> = {},
@@ -80,6 +81,7 @@ export class IModuleContract extends BaseContract {
         async sendTransactionAsync(
             _amount: BigNumber,
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as IModuleContract;
             const inputAbi = self._lookupAbi('takeFee(uint256)').inputs;
@@ -100,6 +102,8 @@ export class IModuleContract extends BaseContract {
                 self.takeFee.estimateGasAsync.bind<IModuleContract, any, Promise<number>>(
                     self,
                     _amount
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -109,6 +113,7 @@ export class IModuleContract extends BaseContract {
         },
         async estimateGasAsync(
             _amount: BigNumber,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as IModuleContract;
@@ -127,7 +132,10 @@ export class IModuleContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _amount: BigNumber,
@@ -175,9 +183,10 @@ export class IModuleContract extends BaseContract {
             return resultArray[0];
         },
     };
-    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>) {
+    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number) {
         super('IModule', abi, address, provider, txDefaults);
-        classUtils.bindAll(this, ['_ethersInterfacesByFunctionSignature', 'address', 'abi', '_web3Wrapper']);
+        this._defaultEstimateGasFactor = _.isUndefined(defaultEstimateGasFactor) ? 1 : defaultEstimateGasFactor;
+        classUtils.bindAll(this, ['_ethersInterfacesByFunctionSignature', 'address', 'abi', '_web3Wrapper', '_defaultEstimateGasFactor']);
     }
 } // tslint:disable:max-file-line-count
 // tslint:enable:no-unbound-method

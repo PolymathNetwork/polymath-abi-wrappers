@@ -87,11 +87,13 @@ export interface ERC20DividendCheckpointSetWithholdingFixedEventArgs extends Dec
 // tslint:disable:no-parameter-reassignment
 // tslint:disable-next-line:class-name
 export class ERC20DividendCheckpointContract extends BaseContract {
+    private _defaultEstimateGasFactor: number;
     public setWithholdingFixed = {
         async sendTransactionAsync(
             _investors: string[],
             _withholding: BigNumber,
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ERC20DividendCheckpointContract;
             const inputAbi = self._lookupAbi('setWithholdingFixed(address[],uint256)').inputs;
@@ -116,7 +118,9 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self.setWithholdingFixed.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _investors,
-                    _withholding
+    _withholding
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -127,6 +131,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
         async estimateGasAsync(
             _investors: string[],
             _withholding: BigNumber,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ERC20DividendCheckpointContract;
@@ -148,7 +153,10 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _investors: string[],
@@ -304,6 +312,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
         async sendTransactionAsync(
             _dividendIndex: BigNumber,
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ERC20DividendCheckpointContract;
             const inputAbi = self._lookupAbi('pullDividendPayment(uint256)').inputs;
@@ -324,6 +333,8 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self.pullDividendPayment.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _dividendIndex
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -333,6 +344,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
         },
         async estimateGasAsync(
             _dividendIndex: BigNumber,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ERC20DividendCheckpointContract;
@@ -351,7 +363,10 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _dividendIndex: BigNumber,
@@ -434,6 +449,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             _dividendIndex: BigNumber,
             _payees: string[],
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ERC20DividendCheckpointContract;
             const inputAbi = self._lookupAbi('pushDividendPaymentToAddresses(uint256,address[])').inputs;
@@ -458,7 +474,9 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self.pushDividendPaymentToAddresses.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _dividendIndex,
-                    _payees
+    _payees
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -469,6 +487,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
         async estimateGasAsync(
             _dividendIndex: BigNumber,
             _payees: string[],
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ERC20DividendCheckpointContract;
@@ -490,7 +509,10 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _dividendIndex: BigNumber,
@@ -696,6 +718,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
         async sendTransactionAsync(
             _amount: BigNumber,
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ERC20DividendCheckpointContract;
             const inputAbi = self._lookupAbi('takeFee(uint256)').inputs;
@@ -716,6 +739,8 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self.takeFee.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _amount
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -725,6 +750,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
         },
         async estimateGasAsync(
             _amount: BigNumber,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ERC20DividendCheckpointContract;
@@ -743,7 +769,10 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _amount: BigNumber,
@@ -1001,6 +1030,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             _investors: string[],
             _withholding: BigNumber[],
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ERC20DividendCheckpointContract;
             const inputAbi = self._lookupAbi('setWithholding(address[],uint256[])').inputs;
@@ -1025,7 +1055,9 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self.setWithholding.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _investors,
-                    _withholding
+    _withholding
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1036,6 +1068,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
         async estimateGasAsync(
             _investors: string[],
             _withholding: BigNumber[],
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ERC20DividendCheckpointContract;
@@ -1057,7 +1090,10 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _investors: string[],
@@ -1308,6 +1344,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
         async sendTransactionAsync(
             _excluded: string[],
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ERC20DividendCheckpointContract;
             const inputAbi = self._lookupAbi('setDefaultExcluded(address[])').inputs;
@@ -1328,6 +1365,8 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self.setDefaultExcluded.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _excluded
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1337,6 +1376,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
         },
         async estimateGasAsync(
             _excluded: string[],
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ERC20DividendCheckpointContract;
@@ -1355,7 +1395,10 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _excluded: string[],
@@ -1439,6 +1482,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             _start: BigNumber,
             _iterations: BigNumber,
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ERC20DividendCheckpointContract;
             const inputAbi = self._lookupAbi('pushDividendPayment(uint256,uint256,uint256)').inputs;
@@ -1467,8 +1511,10 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self.pushDividendPayment.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _dividendIndex,
-                    _start,
-                    _iterations
+    _start,
+    _iterations
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1480,6 +1526,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             _dividendIndex: BigNumber,
             _start: BigNumber,
             _iterations: BigNumber,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ERC20DividendCheckpointContract;
@@ -1504,7 +1551,10 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _dividendIndex: BigNumber,
@@ -1638,6 +1688,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     public createCheckpoint = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ERC20DividendCheckpointContract;
             const inputAbi = self._lookupAbi('createCheckpoint()').inputs;
@@ -1653,6 +1704,8 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
                 self.createCheckpoint.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
+                    
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1661,6 +1714,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ERC20DividendCheckpointContract;
@@ -1676,7 +1730,10 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
         ): string {
@@ -1723,6 +1780,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             _amount: BigNumber,
             _name: string,
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ERC20DividendCheckpointContract;
             const inputAbi = self._lookupAbi('createDividend(uint256,uint256,address,uint256,bytes32)').inputs;
@@ -1759,10 +1817,12 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self.createDividend.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _maturity,
-                    _expiry,
-                    _token,
-                    _amount,
-                    _name
+    _expiry,
+    _token,
+    _amount,
+    _name
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1776,6 +1836,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             _token: string,
             _amount: BigNumber,
             _name: string,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ERC20DividendCheckpointContract;
@@ -1806,7 +1867,10 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _maturity: BigNumber,
@@ -1899,6 +1963,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             _checkpointId: BigNumber,
             _name: string,
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ERC20DividendCheckpointContract;
             const inputAbi = self._lookupAbi('createDividendWithCheckpoint(uint256,uint256,address,uint256,uint256,bytes32)').inputs;
@@ -1939,11 +2004,13 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self.createDividendWithCheckpoint.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _maturity,
-                    _expiry,
-                    _token,
-                    _amount,
-                    _checkpointId,
-                    _name
+    _expiry,
+    _token,
+    _amount,
+    _checkpointId,
+    _name
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1958,6 +2025,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             _amount: BigNumber,
             _checkpointId: BigNumber,
             _name: string,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ERC20DividendCheckpointContract;
@@ -1991,7 +2059,10 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _maturity: BigNumber,
@@ -2093,6 +2164,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             _excluded: string[],
             _name: string,
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ERC20DividendCheckpointContract;
             const inputAbi = self._lookupAbi('createDividendWithExclusions(uint256,uint256,address,uint256,address[],bytes32)').inputs;
@@ -2133,11 +2205,13 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self.createDividendWithExclusions.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _maturity,
-                    _expiry,
-                    _token,
-                    _amount,
-                    _excluded,
-                    _name
+    _expiry,
+    _token,
+    _amount,
+    _excluded,
+    _name
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -2152,6 +2226,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             _amount: BigNumber,
             _excluded: string[],
             _name: string,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ERC20DividendCheckpointContract;
@@ -2185,7 +2260,10 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _maturity: BigNumber,
@@ -2288,6 +2366,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             _excluded: string[],
             _name: string,
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ERC20DividendCheckpointContract;
             const inputAbi = self._lookupAbi('createDividendWithCheckpointAndExclusions(uint256,uint256,address,uint256,uint256,address[],bytes32)').inputs;
@@ -2332,12 +2411,14 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self.createDividendWithCheckpointAndExclusions.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _maturity,
-                    _expiry,
-                    _token,
-                    _amount,
-                    _checkpointId,
-                    _excluded,
-                    _name
+    _expiry,
+    _token,
+    _amount,
+    _checkpointId,
+    _excluded,
+    _name
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -2353,6 +2434,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             _checkpointId: BigNumber,
             _excluded: string[],
             _name: string,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ERC20DividendCheckpointContract;
@@ -2389,7 +2471,10 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _maturity: BigNumber,
@@ -2495,6 +2580,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
         async sendTransactionAsync(
             _dividendIndex: BigNumber,
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ERC20DividendCheckpointContract;
             const inputAbi = self._lookupAbi('reclaimDividend(uint256)').inputs;
@@ -2515,6 +2601,8 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self.reclaimDividend.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _dividendIndex
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -2524,6 +2612,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
         },
         async estimateGasAsync(
             _dividendIndex: BigNumber,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ERC20DividendCheckpointContract;
@@ -2542,7 +2631,10 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _dividendIndex: BigNumber,
@@ -2594,6 +2686,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
         async sendTransactionAsync(
             _dividendIndex: BigNumber,
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ERC20DividendCheckpointContract;
             const inputAbi = self._lookupAbi('withdrawWithholding(uint256)').inputs;
@@ -2614,6 +2707,8 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self.withdrawWithholding.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _dividendIndex
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -2623,6 +2718,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
         },
         async estimateGasAsync(
             _dividendIndex: BigNumber,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ERC20DividendCheckpointContract;
@@ -2641,7 +2737,10 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _dividendIndex: BigNumber,
@@ -2689,9 +2788,10 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             return resultArray;
         },
     };
-    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>) {
+    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number) {
         super('ERC20DividendCheckpoint', abi, address, provider, txDefaults);
-        classUtils.bindAll(this, ['_ethersInterfacesByFunctionSignature', 'address', 'abi', '_web3Wrapper']);
+        this._defaultEstimateGasFactor = _.isUndefined(defaultEstimateGasFactor) ? 1 : defaultEstimateGasFactor;
+        classUtils.bindAll(this, ['_ethersInterfacesByFunctionSignature', 'address', 'abi', '_web3Wrapper', '_defaultEstimateGasFactor']);
     }
 } // tslint:disable:max-file-line-count
 // tslint:enable:no-unbound-method

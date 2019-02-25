@@ -63,9 +63,11 @@ export interface ManualApprovalTransferManagerUnpauseEventArgs extends DecodedLo
 // tslint:disable:no-parameter-reassignment
 // tslint:disable-next-line:class-name
 export class ManualApprovalTransferManagerContract extends BaseContract {
+    private _defaultEstimateGasFactor: number;
     public unpause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('unpause()').inputs;
@@ -81,6 +83,8 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
                 self.unpause.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
+                    
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -89,6 +93,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ManualApprovalTransferManagerContract;
@@ -104,7 +109,10 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
         ): string {
@@ -217,6 +225,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
         async sendTransactionAsync(
             _amount: BigNumber,
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('takeFee(uint256)').inputs;
@@ -237,6 +246,8 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self.takeFee.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
                     _amount
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -246,6 +257,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
         },
         async estimateGasAsync(
             _amount: BigNumber,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ManualApprovalTransferManagerContract;
@@ -264,7 +276,10 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _amount: BigNumber,
@@ -380,6 +395,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
     public pause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('pause()').inputs;
@@ -395,6 +411,8 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
                 self.pause.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
+                    
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -403,6 +421,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ManualApprovalTransferManagerContract;
@@ -418,7 +437,10 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
         ): string {
@@ -675,6 +697,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             index_3: string,
             _isTransfer: boolean,
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('verifyTransfer(address,address,uint256,bytes,bool)').inputs;
@@ -711,10 +734,12 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self.verifyTransfer.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
                     _from,
-                    _to,
-                    _amount,
-                    index_3,
-                    _isTransfer
+    _to,
+    _amount,
+    index_3,
+    _isTransfer
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -728,6 +753,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _amount: BigNumber,
             index_3: string,
             _isTransfer: boolean,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ManualApprovalTransferManagerContract;
@@ -758,7 +784,10 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _from: string,
@@ -850,6 +879,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _expiryTime: BigNumber,
             _description: string,
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('addManualApproval(address,address,uint256,uint256,bytes32)').inputs;
@@ -886,10 +916,12 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self.addManualApproval.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
                     _from,
-                    _to,
-                    _allowance,
-                    _expiryTime,
-                    _description
+    _to,
+    _allowance,
+    _expiryTime,
+    _description
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -903,6 +935,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _allowance: BigNumber,
             _expiryTime: BigNumber,
             _description: string,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ManualApprovalTransferManagerContract;
@@ -933,7 +966,10 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _from: string,
@@ -1025,6 +1061,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _expiryTimes: BigNumber[],
             _descriptions: string[],
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('addManualApprovalMulti(address[],address[],uint256[],uint256[],bytes32[])').inputs;
@@ -1061,10 +1098,12 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self.addManualApprovalMulti.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
                     _from,
-                    _to,
-                    _allowances,
-                    _expiryTimes,
-                    _descriptions
+    _to,
+    _allowances,
+    _expiryTimes,
+    _descriptions
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1078,6 +1117,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _allowances: BigNumber[],
             _expiryTimes: BigNumber[],
             _descriptions: string[],
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ManualApprovalTransferManagerContract;
@@ -1108,7 +1148,10 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _from: string[],
@@ -1201,6 +1244,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _description: string,
             _change: number|BigNumber,
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('modifyManualApproval(address,address,uint256,uint256,bytes32,uint8)').inputs;
@@ -1241,11 +1285,13 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self.modifyManualApproval.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
                     _from,
-                    _to,
-                    _expiryTime,
-                    _changedAllowance,
-                    _description,
-                    _change
+    _to,
+    _expiryTime,
+    _changedAllowance,
+    _description,
+    _change
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1260,6 +1306,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _changedAllowance: BigNumber,
             _description: string,
             _change: number|BigNumber,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ManualApprovalTransferManagerContract;
@@ -1293,7 +1340,10 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _from: string,
@@ -1395,6 +1445,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _descriptions: string[],
             _changes: Array<number|BigNumber>,
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('modifyManualApprovalMulti(address[],address[],uint256[],uint256[],bytes32[],uint8[])').inputs;
@@ -1435,11 +1486,13 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self.modifyManualApprovalMulti.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
                     _from,
-                    _to,
-                    _expiryTimes,
-                    _changedAllowances,
-                    _descriptions,
-                    _changes
+    _to,
+    _expiryTimes,
+    _changedAllowances,
+    _descriptions,
+    _changes
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1454,6 +1507,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _changedAllowances: BigNumber[],
             _descriptions: string[],
             _changes: Array<number|BigNumber>,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ManualApprovalTransferManagerContract;
@@ -1487,7 +1541,10 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _from: string[],
@@ -1585,6 +1642,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _from: string,
             _to: string,
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('revokeManualApproval(address,address)').inputs;
@@ -1609,7 +1667,9 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self.revokeManualApproval.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
                     _from,
-                    _to
+    _to
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1620,6 +1680,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
         async estimateGasAsync(
             _from: string,
             _to: string,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ManualApprovalTransferManagerContract;
@@ -1641,7 +1702,10 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _from: string,
@@ -1703,6 +1767,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _from: string[],
             _to: string[],
             txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ManualApprovalTransferManagerContract;
             const inputAbi = self._lookupAbi('revokeManualApprovalMulti(address[],address[])').inputs;
@@ -1727,7 +1792,9 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self.revokeManualApprovalMulti.estimateGasAsync.bind<ManualApprovalTransferManagerContract, any, Promise<number>>(
                     self,
                     _from,
-                    _to
+    _to
+    ,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1738,6 +1805,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
         async estimateGasAsync(
             _from: string[],
             _to: string[],
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ManualApprovalTransferManagerContract;
@@ -1759,7 +1827,10 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                 self._web3Wrapper.getContractDefaults(),
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            return gas;
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _from: string[],
@@ -1981,9 +2052,10 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             return resultArray[0];
         },
     };
-    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>) {
+    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number) {
         super('ManualApprovalTransferManager', abi, address, provider, txDefaults);
-        classUtils.bindAll(this, ['_ethersInterfacesByFunctionSignature', 'address', 'abi', '_web3Wrapper']);
+        this._defaultEstimateGasFactor = _.isUndefined(defaultEstimateGasFactor) ? 1 : defaultEstimateGasFactor;
+        classUtils.bindAll(this, ['_ethersInterfacesByFunctionSignature', 'address', 'abi', '_web3Wrapper', '_defaultEstimateGasFactor']);
     }
 } // tslint:disable:max-file-line-count
 // tslint:enable:no-unbound-method
