@@ -20,12 +20,13 @@ export interface GeneralPermissionManagerAddDelegateEventArgs extends DecodedLog
     _timestamp: BigNumber;
 }
 export declare class GeneralPermissionManagerContract extends BaseContract {
+    private _defaultEstimateGasFactor;
     perms: {
         callAsync(index_0: string, index_1: string, index_2: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
     takeFee: {
-        sendTransactionAsync(_amount: BigNumber, txData?: Partial<TxData>, factor?: number): Promise<PolyResponse>;
-        estimateGasAsync(_amount: BigNumber, factor: number, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_amount: BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_amount: BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_amount: BigNumber): string;
         callAsync(_amount: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
@@ -57,14 +58,14 @@ export declare class GeneralPermissionManagerContract extends BaseContract {
         callAsync(_delegate: string, _module: string, _perm: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
     addDelegate: {
-        sendTransactionAsync(_delegate: string, _details: string, txData?: Partial<TxData>, factor?: number): Promise<PolyResponse>;
-        estimateGasAsync(_delegate: string, _details: string, factor: number, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_delegate: string, _details: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_delegate: string, _details: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_delegate: string, _details: string): string;
         callAsync(_delegate: string, _details: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     deleteDelegate: {
-        sendTransactionAsync(_delegate: string, txData?: Partial<TxData>, factor?: number): Promise<PolyResponse>;
-        estimateGasAsync(_delegate: string, factor: number, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_delegate: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_delegate: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_delegate: string): string;
         callAsync(_delegate: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
@@ -72,14 +73,14 @@ export declare class GeneralPermissionManagerContract extends BaseContract {
         callAsync(_potentialDelegate: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
     changePermission: {
-        sendTransactionAsync(_delegate: string, _module: string, _perm: string, _valid: boolean, txData?: Partial<TxData>, factor?: number): Promise<PolyResponse>;
-        estimateGasAsync(_delegate: string, _module: string, _perm: string, _valid: boolean, factor: number, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_delegate: string, _module: string, _perm: string, _valid: boolean, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_delegate: string, _module: string, _perm: string, _valid: boolean, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_delegate: string, _module: string, _perm: string, _valid: boolean): string;
         callAsync(_delegate: string, _module: string, _perm: string, _valid: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     changePermissionMulti: {
-        sendTransactionAsync(_delegate: string, _modules: string[], _perms: string[], _valids: boolean[], txData?: Partial<TxData>, factor?: number): Promise<PolyResponse>;
-        estimateGasAsync(_delegate: string, _modules: string[], _perms: string[], _valids: boolean[], factor: number, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_delegate: string, _modules: string[], _perms: string[], _valids: boolean[], txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_delegate: string, _modules: string[], _perms: string[], _valids: boolean[], factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_delegate: string, _modules: string[], _perms: string[], _valids: boolean[]): string;
         callAsync(_delegate: string, _modules: string[], _perms: string[], _valids: boolean[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
@@ -95,6 +96,6 @@ export declare class GeneralPermissionManagerContract extends BaseContract {
     getPermissions: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
     };
-    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>);
+    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=general_permission_manager.d.ts.map

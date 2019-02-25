@@ -14,21 +14,22 @@ export interface OwnableOwnershipTransferredEventArgs extends DecodedLogArgs {
     newOwner: string;
 }
 export declare class OwnableContract extends BaseContract {
+    private _defaultEstimateGasFactor;
     owner: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     renounceOwnership: {
-        sendTransactionAsync(txData?: Partial<TxData>, factor?: number): Promise<PolyResponse>;
-        estimateGasAsync(factor: number, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(): string;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     transferOwnership: {
-        sendTransactionAsync(_newOwner: string, txData?: Partial<TxData>, factor?: number): Promise<PolyResponse>;
-        estimateGasAsync(_newOwner: string, factor: number, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_newOwner: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_newOwner: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_newOwner: string): string;
         callAsync(_newOwner: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
-    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>);
+    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=ownable.d.ts.map

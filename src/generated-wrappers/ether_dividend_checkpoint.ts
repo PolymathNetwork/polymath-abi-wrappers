@@ -92,12 +92,13 @@ export interface EtherDividendCheckpointSetWithholdingFixedEventArgs extends Dec
 // tslint:disable:no-parameter-reassignment
 // tslint:disable-next-line:class-name
 export class EtherDividendCheckpointContract extends BaseContract {
+    private _defaultEstimateGasFactor: number;
     public setWithholdingFixed = {
         async sendTransactionAsync(
             _investors: string[],
             _withholding: BigNumber,
             txData: Partial<TxData> = {},
-            factor: number = 1.2,
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('setWithholdingFixed(address[],uint256)').inputs;
@@ -124,7 +125,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
                     _investors,
     _withholding
     ,
-                    factor,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -135,7 +136,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
         async estimateGasAsync(
             _investors: string[],
             _withholding: BigNumber,
-            factor: number,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as EtherDividendCheckpointContract;
@@ -158,8 +159,9 @@ export class EtherDividendCheckpointContract extends BaseContract {
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factorGas = Math.round(factor * gas);
-            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _investors: string[],
@@ -315,7 +317,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
         async sendTransactionAsync(
             _dividendIndex: BigNumber,
             txData: Partial<TxData> = {},
-            factor: number = 1.2,
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('pullDividendPayment(uint256)').inputs;
@@ -337,7 +339,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
                     self,
                     _dividendIndex
     ,
-                    factor,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -347,7 +349,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
         },
         async estimateGasAsync(
             _dividendIndex: BigNumber,
-            factor: number,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as EtherDividendCheckpointContract;
@@ -367,8 +369,9 @@ export class EtherDividendCheckpointContract extends BaseContract {
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factorGas = Math.round(factor * gas);
-            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _dividendIndex: BigNumber,
@@ -451,7 +454,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _dividendIndex: BigNumber,
             _payees: string[],
             txData: Partial<TxData> = {},
-            factor: number = 1.2,
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('pushDividendPaymentToAddresses(uint256,address[])').inputs;
@@ -478,7 +481,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
                     _dividendIndex,
     _payees
     ,
-                    factor,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -489,7 +492,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
         async estimateGasAsync(
             _dividendIndex: BigNumber,
             _payees: string[],
-            factor: number,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as EtherDividendCheckpointContract;
@@ -512,8 +515,9 @@ export class EtherDividendCheckpointContract extends BaseContract {
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factorGas = Math.round(factor * gas);
-            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _dividendIndex: BigNumber,
@@ -719,7 +723,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
         async sendTransactionAsync(
             _amount: BigNumber,
             txData: Partial<TxData> = {},
-            factor: number = 1.2,
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('takeFee(uint256)').inputs;
@@ -741,7 +745,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
                     self,
                     _amount
     ,
-                    factor,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -751,7 +755,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
         },
         async estimateGasAsync(
             _amount: BigNumber,
-            factor: number,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as EtherDividendCheckpointContract;
@@ -771,8 +775,9 @@ export class EtherDividendCheckpointContract extends BaseContract {
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factorGas = Math.round(factor * gas);
-            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _amount: BigNumber,
@@ -1030,7 +1035,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _investors: string[],
             _withholding: BigNumber[],
             txData: Partial<TxData> = {},
-            factor: number = 1.2,
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('setWithholding(address[],uint256[])').inputs;
@@ -1057,7 +1062,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
                     _investors,
     _withholding
     ,
-                    factor,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1068,7 +1073,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
         async estimateGasAsync(
             _investors: string[],
             _withholding: BigNumber[],
-            factor: number,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as EtherDividendCheckpointContract;
@@ -1091,8 +1096,9 @@ export class EtherDividendCheckpointContract extends BaseContract {
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factorGas = Math.round(factor * gas);
-            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _investors: string[],
@@ -1308,7 +1314,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
         async sendTransactionAsync(
             _excluded: string[],
             txData: Partial<TxData> = {},
-            factor: number = 1.2,
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('setDefaultExcluded(address[])').inputs;
@@ -1330,7 +1336,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
                     self,
                     _excluded
     ,
-                    factor,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1340,7 +1346,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
         },
         async estimateGasAsync(
             _excluded: string[],
-            factor: number,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as EtherDividendCheckpointContract;
@@ -1360,8 +1366,9 @@ export class EtherDividendCheckpointContract extends BaseContract {
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factorGas = Math.round(factor * gas);
-            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _excluded: string[],
@@ -1445,7 +1452,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _start: BigNumber,
             _iterations: BigNumber,
             txData: Partial<TxData> = {},
-            factor: number = 1.2,
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('pushDividendPayment(uint256,uint256,uint256)').inputs;
@@ -1477,7 +1484,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
     _start,
     _iterations
     ,
-                    factor,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1489,7 +1496,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _dividendIndex: BigNumber,
             _start: BigNumber,
             _iterations: BigNumber,
-            factor: number,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as EtherDividendCheckpointContract;
@@ -1515,8 +1522,9 @@ export class EtherDividendCheckpointContract extends BaseContract {
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factorGas = Math.round(factor * gas);
-            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _dividendIndex: BigNumber,
@@ -1650,7 +1658,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
     public createCheckpoint = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
-            factor: number = 1.2,
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('createCheckpoint()').inputs;
@@ -1667,7 +1675,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
                 self.createCheckpoint.estimateGasAsync.bind<EtherDividendCheckpointContract, any, Promise<number>>(
                     self,
                     
-                    factor,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1676,7 +1684,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
-            factor: number,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as EtherDividendCheckpointContract;
@@ -1693,8 +1701,9 @@ export class EtherDividendCheckpointContract extends BaseContract {
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factorGas = Math.round(factor * gas);
-            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
         ): string {
@@ -1739,7 +1748,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _expiry: BigNumber,
             _name: string,
             txData: Partial<TxDataPayable> = {},
-            factor: number = 1.2,
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('createDividend(uint256,uint256,bytes32)').inputs;
@@ -1771,7 +1780,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
     _expiry,
     _name
     ,
-                    factor,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1783,7 +1792,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _maturity: BigNumber,
             _expiry: BigNumber,
             _name: string,
-            factor: number,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as EtherDividendCheckpointContract;
@@ -1809,8 +1818,9 @@ export class EtherDividendCheckpointContract extends BaseContract {
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factorGas = Math.round(factor * gas);
-            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _maturity: BigNumber,
@@ -1883,7 +1893,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _checkpointId: BigNumber,
             _name: string,
             txData: Partial<TxDataPayable> = {},
-            factor: number = 1.2,
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('createDividendWithCheckpoint(uint256,uint256,uint256,bytes32)').inputs;
@@ -1920,7 +1930,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
     _checkpointId,
     _name
     ,
-                    factor,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -1933,7 +1943,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _expiry: BigNumber,
             _checkpointId: BigNumber,
             _name: string,
-            factor: number,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as EtherDividendCheckpointContract;
@@ -1962,8 +1972,9 @@ export class EtherDividendCheckpointContract extends BaseContract {
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factorGas = Math.round(factor * gas);
-            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _maturity: BigNumber,
@@ -2045,7 +2056,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _excluded: string[],
             _name: string,
             txData: Partial<TxDataPayable> = {},
-            factor: number = 1.2,
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('createDividendWithExclusions(uint256,uint256,address[],bytes32)').inputs;
@@ -2082,7 +2093,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
     _excluded,
     _name
     ,
-                    factor,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -2095,7 +2106,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _expiry: BigNumber,
             _excluded: string[],
             _name: string,
-            factor: number,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as EtherDividendCheckpointContract;
@@ -2124,8 +2135,9 @@ export class EtherDividendCheckpointContract extends BaseContract {
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factorGas = Math.round(factor * gas);
-            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _maturity: BigNumber,
@@ -2208,7 +2220,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _excluded: string[],
             _name: string,
             txData: Partial<TxDataPayable> = {},
-            factor: number = 1.2,
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('createDividendWithCheckpointAndExclusions(uint256,uint256,uint256,address[],bytes32)').inputs;
@@ -2250,7 +2262,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
     _excluded,
     _name
     ,
-                    factor,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -2264,7 +2276,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
             _checkpointId: BigNumber,
             _excluded: string[],
             _name: string,
-            factor: number,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as EtherDividendCheckpointContract;
@@ -2296,8 +2308,9 @@ export class EtherDividendCheckpointContract extends BaseContract {
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factorGas = Math.round(factor * gas);
-            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _maturity: BigNumber,
@@ -2385,7 +2398,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
         async sendTransactionAsync(
             _dividendIndex: BigNumber,
             txData: Partial<TxData> = {},
-            factor: number = 1.2,
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('reclaimDividend(uint256)').inputs;
@@ -2407,7 +2420,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
                     self,
                     _dividendIndex
     ,
-                    factor,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -2417,7 +2430,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
         },
         async estimateGasAsync(
             _dividendIndex: BigNumber,
-            factor: number,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as EtherDividendCheckpointContract;
@@ -2437,8 +2450,9 @@ export class EtherDividendCheckpointContract extends BaseContract {
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factorGas = Math.round(factor * gas);
-            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _dividendIndex: BigNumber,
@@ -2490,7 +2504,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
         async sendTransactionAsync(
             _dividendIndex: BigNumber,
             txData: Partial<TxData> = {},
-            factor: number = 1.2,
+            estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as EtherDividendCheckpointContract;
             const inputAbi = self._lookupAbi('withdrawWithholding(uint256)').inputs;
@@ -2512,7 +2526,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
                     self,
                     _dividendIndex
     ,
-                    factor,
+                    estimateGasFactor,
                 ),
             );
             const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -2522,7 +2536,7 @@ export class EtherDividendCheckpointContract extends BaseContract {
         },
         async estimateGasAsync(
             _dividendIndex: BigNumber,
-            factor: number,
+            factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as EtherDividendCheckpointContract;
@@ -2542,8 +2556,9 @@ export class EtherDividendCheckpointContract extends BaseContract {
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factorGas = Math.round(factor * gas);
-            return (_factorGas > networkGasLimit) ? networkGasLimit : _factorGas;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
             _dividendIndex: BigNumber,
@@ -2591,9 +2606,10 @@ export class EtherDividendCheckpointContract extends BaseContract {
             return resultArray;
         },
     };
-    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>) {
+    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number) {
         super('EtherDividendCheckpoint', abi, address, provider, txDefaults);
-        classUtils.bindAll(this, ['_ethersInterfacesByFunctionSignature', 'address', 'abi', '_web3Wrapper']);
+        this._defaultEstimateGasFactor = _.isUndefined(defaultEstimateGasFactor) ? 1 : defaultEstimateGasFactor;
+        classUtils.bindAll(this, ['_ethersInterfacesByFunctionSignature', 'address', 'abi', '_web3Wrapper', '_defaultEstimateGasFactor']);
     }
 } // tslint:disable:max-file-line-count
 // tslint:enable:no-unbound-method

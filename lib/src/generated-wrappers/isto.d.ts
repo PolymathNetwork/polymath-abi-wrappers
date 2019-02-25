@@ -18,6 +18,7 @@ export interface ISTOUnpauseEventArgs extends DecodedLogArgs {
     _timestamp: BigNumber;
 }
 export declare class ISTOContract extends BaseContract {
+    private _defaultEstimateGasFactor;
     getInitFunction: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
@@ -31,8 +32,8 @@ export declare class ISTOContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
     takeFee: {
-        sendTransactionAsync(_amount: BigNumber, txData?: Partial<TxData>, factor?: number): Promise<PolyResponse>;
-        estimateGasAsync(_amount: BigNumber, factor: number, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_amount: BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_amount: BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_amount: BigNumber): string;
         callAsync(_amount: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
@@ -70,8 +71,8 @@ export declare class ISTOContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
     };
     reclaimERC20: {
-        sendTransactionAsync(_tokenContract: string, txData?: Partial<TxData>, factor?: number): Promise<PolyResponse>;
-        estimateGasAsync(_tokenContract: string, factor: number, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_tokenContract: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_tokenContract: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_tokenContract: string): string;
         callAsync(_tokenContract: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
@@ -82,17 +83,17 @@ export declare class ISTOContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
     };
     pause: {
-        sendTransactionAsync(txData?: Partial<TxData>, factor?: number): Promise<PolyResponse>;
-        estimateGasAsync(factor: number, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(): string;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     unpause: {
-        sendTransactionAsync(txData?: Partial<TxData>, factor?: number): Promise<PolyResponse>;
-        estimateGasAsync(factor: number, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(): string;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
-    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>);
+    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=isto.d.ts.map
