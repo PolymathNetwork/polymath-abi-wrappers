@@ -108,13 +108,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('setWithholdingFixed(address[],uint256)').functions.setWithholdingFixed.encode([_investors,
     _withholding
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.setWithholdingFixed.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _investors,
@@ -144,13 +151,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('setWithholdingFixed(address[],uint256)').functions.setWithholdingFixed.encode([_investors,
     _withholding
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -323,13 +337,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('pullDividendPayment(uint256)').functions.pullDividendPayment.encode([_dividendIndex
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.pullDividendPayment.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _dividendIndex
@@ -354,13 +375,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('pullDividendPayment(uint256)').functions.pullDividendPayment.encode([_dividendIndex
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -464,13 +492,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('pushDividendPaymentToAddresses(uint256,address[])').functions.pushDividendPaymentToAddresses.encode([_dividendIndex,
     _payees
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.pushDividendPaymentToAddresses.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _dividendIndex,
@@ -500,13 +535,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('pushDividendPaymentToAddresses(uint256,address[])').functions.pushDividendPaymentToAddresses.encode([_dividendIndex,
     _payees
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -729,13 +771,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('takeFee(uint256)').functions.takeFee.encode([_amount
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.takeFee.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _amount
@@ -760,13 +809,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('takeFee(uint256)').functions.takeFee.encode([_amount
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1045,13 +1101,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('setWithholding(address[],uint256[])').functions.setWithholding.encode([_investors,
     _withholding
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.setWithholding.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _investors,
@@ -1081,13 +1144,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('setWithholding(address[],uint256[])').functions.setWithholding.encode([_investors,
     _withholding
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1355,13 +1425,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('setDefaultExcluded(address[])').functions.setDefaultExcluded.encode([_excluded
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.setDefaultExcluded.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _excluded
@@ -1386,13 +1463,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('setDefaultExcluded(address[])').functions.setDefaultExcluded.encode([_excluded
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1501,13 +1585,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     _start,
     _iterations
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.pushDividendPayment.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _dividendIndex,
@@ -1542,13 +1633,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     _start,
     _iterations
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1695,13 +1793,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, []);
             const encodedData = self._lookupEthersInterface('createCheckpoint()').functions.createCheckpoint.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.createCheckpoint.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     
@@ -1721,13 +1826,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             const inputAbi = self._lookupAbi('createCheckpoint()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('createCheckpoint()').functions.createCheckpoint.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1807,13 +1919,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     _amount,
     _name
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.createDividend.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _maturity,
@@ -1858,13 +1977,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     _amount,
     _name
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1994,13 +2120,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     _checkpointId,
     _name
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.createDividendWithCheckpoint.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _maturity,
@@ -2050,13 +2183,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     _checkpointId,
     _name
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -2195,13 +2335,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     _excluded,
     _name
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.createDividendWithExclusions.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _maturity,
@@ -2251,13 +2398,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     _excluded,
     _name
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -2401,13 +2555,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     _excluded,
     _name
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.createDividendWithCheckpointAndExclusions.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _maturity,
@@ -2462,13 +2623,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     _excluded,
     _name
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -2591,13 +2759,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('reclaimDividend(uint256)').functions.reclaimDividend.encode([_dividendIndex
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.reclaimDividend.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _dividendIndex
@@ -2622,13 +2797,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('reclaimDividend(uint256)').functions.reclaimDividend.encode([_dividendIndex
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -2697,13 +2879,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('withdrawWithholding(uint256)').functions.withdrawWithholding.encode([_dividendIndex
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.withdrawWithholding.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
                     self,
                     _dividendIndex
@@ -2728,13 +2917,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('withdrawWithholding(uint256)').functions.withdrawWithholding.encode([_dividendIndex
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;

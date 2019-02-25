@@ -404,13 +404,20 @@ export class ModuleRegistryContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('initialize(address,address)').functions.initialize.encode([_polymathRegistry,
     _owner
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.initialize.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                     _polymathRegistry,
@@ -440,13 +447,20 @@ export class ModuleRegistryContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('initialize(address,address)').functions.initialize.encode([_polymathRegistry,
     _owner
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -524,13 +538,20 @@ export class ModuleRegistryContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('useModule(address)').functions.useModule.encode([_moduleFactory
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.useModule.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                     _moduleFactory
@@ -555,13 +576,20 @@ export class ModuleRegistryContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('useModule(address)').functions.useModule.encode([_moduleFactory
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -630,13 +658,20 @@ export class ModuleRegistryContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('registerModule(address)').functions.registerModule.encode([_moduleFactory
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.registerModule.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                     _moduleFactory
@@ -661,13 +696,20 @@ export class ModuleRegistryContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('registerModule(address)').functions.registerModule.encode([_moduleFactory
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -736,13 +778,20 @@ export class ModuleRegistryContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('removeModule(address)').functions.removeModule.encode([_moduleFactory
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.removeModule.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                     _moduleFactory
@@ -767,13 +816,20 @@ export class ModuleRegistryContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('removeModule(address)').functions.removeModule.encode([_moduleFactory
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -847,13 +903,20 @@ export class ModuleRegistryContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('verifyModule(address,bool)').functions.verifyModule.encode([_moduleFactory,
     _verified
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.verifyModule.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                     _moduleFactory,
@@ -883,13 +946,20 @@ export class ModuleRegistryContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('verifyModule(address,bool)').functions.verifyModule.encode([_moduleFactory,
     _verified
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1152,13 +1222,20 @@ export class ModuleRegistryContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('reclaimERC20(address)').functions.reclaimERC20.encode([_tokenContract
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.reclaimERC20.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                     _tokenContract
@@ -1183,13 +1260,20 @@ export class ModuleRegistryContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('reclaimERC20(address)').functions.reclaimERC20.encode([_tokenContract
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1253,13 +1337,20 @@ export class ModuleRegistryContract extends BaseContract {
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, []);
             const encodedData = self._lookupEthersInterface('pause()').functions.pause.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.pause.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                     
@@ -1279,13 +1370,20 @@ export class ModuleRegistryContract extends BaseContract {
             const inputAbi = self._lookupAbi('pause()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('pause()').functions.pause.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1340,13 +1438,20 @@ export class ModuleRegistryContract extends BaseContract {
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, []);
             const encodedData = self._lookupEthersInterface('unpause()').functions.unpause.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.unpause.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                     
@@ -1366,13 +1471,20 @@ export class ModuleRegistryContract extends BaseContract {
             const inputAbi = self._lookupAbi('unpause()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('unpause()').functions.unpause.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1427,13 +1539,20 @@ export class ModuleRegistryContract extends BaseContract {
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, []);
             const encodedData = self._lookupEthersInterface('updateFromRegistry()').functions.updateFromRegistry.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.updateFromRegistry.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                     
@@ -1453,13 +1572,20 @@ export class ModuleRegistryContract extends BaseContract {
             const inputAbi = self._lookupAbi('updateFromRegistry()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('updateFromRegistry()').functions.updateFromRegistry.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1519,13 +1645,20 @@ export class ModuleRegistryContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('transferOwnership(address)').functions.transferOwnership.encode([_newOwner
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.transferOwnership.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
                     _newOwner
@@ -1550,13 +1683,20 @@ export class ModuleRegistryContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('transferOwnership(address)').functions.transferOwnership.encode([_newOwner
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;

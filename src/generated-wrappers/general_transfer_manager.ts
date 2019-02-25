@@ -189,13 +189,20 @@ export class GeneralTransferManagerContract extends BaseContract {
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, []);
             const encodedData = self._lookupEthersInterface('unpause()').functions.unpause.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.unpause.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     
@@ -215,13 +222,20 @@ export class GeneralTransferManagerContract extends BaseContract {
             const inputAbi = self._lookupAbi('unpause()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('unpause()').functions.unpause.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -346,13 +360,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('takeFee(uint256)').functions.takeFee.encode([_amount
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.takeFee.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _amount
@@ -377,13 +398,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('takeFee(uint256)').functions.takeFee.encode([_amount
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -477,13 +505,20 @@ export class GeneralTransferManagerContract extends BaseContract {
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, []);
             const encodedData = self._lookupEthersInterface('pause()').functions.pause.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.pause.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     
@@ -503,13 +538,20 @@ export class GeneralTransferManagerContract extends BaseContract {
             const inputAbi = self._lookupAbi('pause()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('pause()').functions.pause.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -949,13 +991,20 @@ export class GeneralTransferManagerContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('changeDefaults(uint64,uint64)').functions.changeDefaults.encode([_defaultFromTime,
     _defaultToTime
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.changeDefaults.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _defaultFromTime,
@@ -985,13 +1034,20 @@ export class GeneralTransferManagerContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('changeDefaults(uint64,uint64)').functions.changeDefaults.encode([_defaultFromTime,
     _defaultToTime
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1069,13 +1125,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('changeIssuanceAddress(address)').functions.changeIssuanceAddress.encode([_issuanceAddress
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.changeIssuanceAddress.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _issuanceAddress
@@ -1100,13 +1163,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('changeIssuanceAddress(address)').functions.changeIssuanceAddress.encode([_issuanceAddress
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1175,13 +1245,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('changeSigningAddress(address)').functions.changeSigningAddress.encode([_signingAddress
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.changeSigningAddress.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _signingAddress
@@ -1206,13 +1283,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('changeSigningAddress(address)').functions.changeSigningAddress.encode([_signingAddress
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1281,13 +1365,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('changeAllowAllTransfers(bool)').functions.changeAllowAllTransfers.encode([_allowAllTransfers
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.changeAllowAllTransfers.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _allowAllTransfers
@@ -1312,13 +1403,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('changeAllowAllTransfers(bool)').functions.changeAllowAllTransfers.encode([_allowAllTransfers
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1387,13 +1485,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('changeAllowAllWhitelistTransfers(bool)').functions.changeAllowAllWhitelistTransfers.encode([_allowAllWhitelistTransfers
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.changeAllowAllWhitelistTransfers.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _allowAllWhitelistTransfers
@@ -1418,13 +1523,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('changeAllowAllWhitelistTransfers(bool)').functions.changeAllowAllWhitelistTransfers.encode([_allowAllWhitelistTransfers
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1493,13 +1605,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('changeAllowAllWhitelistIssuances(bool)').functions.changeAllowAllWhitelistIssuances.encode([_allowAllWhitelistIssuances
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.changeAllowAllWhitelistIssuances.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _allowAllWhitelistIssuances
@@ -1524,13 +1643,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('changeAllowAllWhitelistIssuances(bool)').functions.changeAllowAllWhitelistIssuances.encode([_allowAllWhitelistIssuances
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1599,13 +1725,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('changeAllowAllBurnTransfers(bool)').functions.changeAllowAllBurnTransfers.encode([_allowAllBurnTransfers
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.changeAllowAllBurnTransfers.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _allowAllBurnTransfers
@@ -1630,13 +1763,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('changeAllowAllBurnTransfers(bool)').functions.changeAllowAllBurnTransfers.encode([_allowAllBurnTransfers
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1725,13 +1865,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     index_3,
     index_4
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.verifyTransfer.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _from,
@@ -1776,13 +1923,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     index_3,
     index_4
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1907,13 +2061,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     _expiryTime,
     _canBuyFromSTO
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.modifyWhitelist.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _investor,
@@ -1958,13 +2119,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     _expiryTime,
     _canBuyFromSTO
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -2089,13 +2257,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     _expiryTimes,
     _canBuyFromSTO
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.modifyWhitelistMulti.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _investors,
@@ -2140,13 +2315,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     _expiryTimes,
     _canBuyFromSTO
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -2301,13 +2483,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     _r,
     _s
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.modifyWhitelistSigned.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _investor,
@@ -2382,13 +2571,20 @@ export class GeneralTransferManagerContract extends BaseContract {
     _r,
     _s
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;

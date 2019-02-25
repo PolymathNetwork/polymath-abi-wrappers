@@ -185,13 +185,20 @@ export class CappedSTOContract extends BaseContract {
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, []);
             const encodedData = self._lookupEthersInterface('unpause()').functions.unpause.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.unpause.estimateGasAsync.bind<CappedSTOContract, any, Promise<number>>(
                     self,
                     
@@ -211,13 +218,20 @@ export class CappedSTOContract extends BaseContract {
             const inputAbi = self._lookupAbi('unpause()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('unpause()').functions.unpause.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -337,13 +351,20 @@ export class CappedSTOContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('takeFee(uint256)').functions.takeFee.encode([_amount
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.takeFee.estimateGasAsync.bind<CappedSTOContract, any, Promise<number>>(
                     self,
                     _amount
@@ -368,13 +389,20 @@ export class CappedSTOContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('takeFee(uint256)').functions.takeFee.encode([_amount
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -563,13 +591,20 @@ export class CappedSTOContract extends BaseContract {
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, []);
             const encodedData = self._lookupEthersInterface('pause()').functions.pause.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.pause.estimateGasAsync.bind<CappedSTOContract, any, Promise<number>>(
                     self,
                     
@@ -589,13 +624,20 @@ export class CappedSTOContract extends BaseContract {
             const inputAbi = self._lookupAbi('pause()').inputs;
             [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('pause()').functions.pause.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -655,13 +697,20 @@ export class CappedSTOContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('reclaimERC20(address)').functions.reclaimERC20.encode([_tokenContract
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.reclaimERC20.estimateGasAsync.bind<CappedSTOContract, any, Promise<number>>(
                     self,
                     _tokenContract
@@ -686,13 +735,20 @@ export class CappedSTOContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('reclaimERC20(address)').functions.reclaimERC20.encode([_tokenContract
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1041,13 +1097,20 @@ export class CappedSTOContract extends BaseContract {
     _fundRaiseTypes,
     _fundsReceiver
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.configure.estimateGasAsync.bind<CappedSTOContract, any, Promise<number>>(
                     self,
                     _startTime,
@@ -1097,13 +1160,20 @@ export class CappedSTOContract extends BaseContract {
     _fundRaiseTypes,
     _fundsReceiver
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1247,13 +1317,20 @@ export class CappedSTOContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('changeAllowBeneficialInvestments(bool)').functions.changeAllowBeneficialInvestments.encode([_allowBeneficialInvestments
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.changeAllowBeneficialInvestments.estimateGasAsync.bind<CappedSTOContract, any, Promise<number>>(
                     self,
                     _allowBeneficialInvestments
@@ -1278,13 +1355,20 @@ export class CappedSTOContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('changeAllowBeneficialInvestments(bool)').functions.changeAllowBeneficialInvestments.encode([_allowBeneficialInvestments
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1353,13 +1437,20 @@ export class CappedSTOContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('buyTokens(address)').functions.buyTokens.encode([_beneficiary
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.buyTokens.estimateGasAsync.bind<CappedSTOContract, any, Promise<number>>(
                     self,
                     _beneficiary
@@ -1384,13 +1475,20 @@ export class CappedSTOContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('buyTokens(address)').functions.buyTokens.encode([_beneficiary
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -1459,13 +1557,20 @@ export class CappedSTOContract extends BaseContract {
     ]);
             const encodedData = self._lookupEthersInterface('buyTokensWithPoly(uint256)').functions.buyTokensWithPoly.encode([_investedPOLY
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.buyTokensWithPoly.estimateGasAsync.bind<CappedSTOContract, any, Promise<number>>(
                     self,
                     _investedPOLY
@@ -1490,13 +1595,20 @@ export class CappedSTOContract extends BaseContract {
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('buyTokensWithPoly(uint256)').functions.buyTokensWithPoly.encode([_investedPOLY
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;

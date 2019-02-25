@@ -148,13 +148,20 @@ export class PolyTokenFaucetContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('getTokens(uint256,address)').functions.getTokens.encode([_amount,
     _recipient
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.getTokens.estimateGasAsync.bind<PolyTokenFaucetContract, any, Promise<number>>(
                     self,
                     _amount,
@@ -184,13 +191,20 @@ export class PolyTokenFaucetContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('getTokens(uint256,address)').functions.getTokens.encode([_amount,
     _recipient
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -273,13 +287,20 @@ export class PolyTokenFaucetContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('transfer(address,uint256)').functions.transfer.encode([_to,
     _value
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.transfer.estimateGasAsync.bind<PolyTokenFaucetContract, any, Promise<number>>(
                     self,
                     _to,
@@ -309,13 +330,20 @@ export class PolyTokenFaucetContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('transfer(address,uint256)').functions.transfer.encode([_to,
     _value
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -403,13 +431,20 @@ export class PolyTokenFaucetContract extends BaseContract {
     _to,
     _value
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.transferFrom.estimateGasAsync.bind<PolyTokenFaucetContract, any, Promise<number>>(
                     self,
                     _from,
@@ -444,13 +479,20 @@ export class PolyTokenFaucetContract extends BaseContract {
     _to,
     _value
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -577,13 +619,20 @@ export class PolyTokenFaucetContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('approve(address,uint256)').functions.approve.encode([_spender,
     _value
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.approve.estimateGasAsync.bind<PolyTokenFaucetContract, any, Promise<number>>(
                     self,
                     _spender,
@@ -613,13 +662,20 @@ export class PolyTokenFaucetContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('approve(address,uint256)').functions.approve.encode([_spender,
     _value
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -772,13 +828,20 @@ export class PolyTokenFaucetContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('increaseApproval(address,uint256)').functions.increaseApproval.encode([_spender,
     _addedValue
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.increaseApproval.estimateGasAsync.bind<PolyTokenFaucetContract, any, Promise<number>>(
                     self,
                     _spender,
@@ -808,13 +871,20 @@ export class PolyTokenFaucetContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('increaseApproval(address,uint256)').functions.increaseApproval.encode([_spender,
     _addedValue
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
@@ -897,13 +967,20 @@ export class PolyTokenFaucetContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('decreaseApproval(address,uint256)').functions.decreaseApproval.encode([_spender,
     _subtractedValue
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults,
                 self.decreaseApproval.estimateGasAsync.bind<PolyTokenFaucetContract, any, Promise<number>>(
                     self,
                     _spender,
@@ -933,13 +1010,20 @@ export class PolyTokenFaucetContract extends BaseContract {
             const encodedData = self._lookupEthersInterface('decreaseApproval(address,uint256)').functions.decreaseApproval.encode([_spender,
     _subtractedValue
     ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                self._web3Wrapper.getContractDefaults(),
+                contractDefaults
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
