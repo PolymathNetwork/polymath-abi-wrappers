@@ -1912,6 +1912,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
     constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number) {
         super('USDTieredSTOFactory', abi, address, provider, txDefaults);
         this._defaultEstimateGasFactor = _.isUndefined(defaultEstimateGasFactor) ? 1 : defaultEstimateGasFactor;
+        this._web3Wrapper.abiDecoder.addABI(abi);
         classUtils.bindAll(this, ['_ethersInterfacesByFunctionSignature', 'address', 'abi', '_web3Wrapper', '_defaultEstimateGasFactor']);
     }
 } // tslint:disable:max-file-line-count
