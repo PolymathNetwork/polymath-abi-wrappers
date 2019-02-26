@@ -49,6 +49,7 @@ export interface CappedSTOFactoryChangeSTVersionBoundEventArgs extends DecodedLo
     _patch: BigNumber;
 }
 export declare class CappedSTOFactoryContract extends BaseContract {
+    private _defaultEstimateGasFactor;
     monthlySubscriptionCost: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
     };
@@ -59,14 +60,14 @@ export declare class CappedSTOFactoryContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     changeTitle: {
-        sendTransactionAsync(_newTitle: string, txData?: Partial<TxData>): Promise<PolyResponse>;
-        estimateGasAsync(_newTitle: string, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_newTitle: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_newTitle: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_newTitle: string): string;
         callAsync(_newTitle: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     changeFactorySubscriptionFee: {
-        sendTransactionAsync(_newSubscriptionCost: BigNumber, txData?: Partial<TxData>): Promise<PolyResponse>;
-        estimateGasAsync(_newSubscriptionCost: BigNumber, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_newSubscriptionCost: BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_newSubscriptionCost: BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_newSubscriptionCost: BigNumber): string;
         callAsync(_newSubscriptionCost: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
@@ -77,14 +78,14 @@ export declare class CappedSTOFactoryContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     changeFactorySetupFee: {
-        sendTransactionAsync(_newSetupCost: BigNumber, txData?: Partial<TxData>): Promise<PolyResponse>;
-        estimateGasAsync(_newSetupCost: BigNumber, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_newSetupCost: BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_newSetupCost: BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_newSetupCost: BigNumber): string;
         callAsync(_newSetupCost: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     changeVersion: {
-        sendTransactionAsync(_newVersion: string, txData?: Partial<TxData>): Promise<PolyResponse>;
-        estimateGasAsync(_newVersion: string, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_newVersion: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_newVersion: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_newVersion: string): string;
         callAsync(_newVersion: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
@@ -92,8 +93,8 @@ export declare class CappedSTOFactoryContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     renounceOwnership: {
-        sendTransactionAsync(txData?: Partial<TxData>): Promise<PolyResponse>;
-        estimateGasAsync(txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(): string;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
@@ -107,8 +108,8 @@ export declare class CappedSTOFactoryContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber[]>;
     };
     changeName: {
-        sendTransactionAsync(_newName: string, txData?: Partial<TxData>): Promise<PolyResponse>;
-        estimateGasAsync(_newName: string, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_newName: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_newName: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_newName: string): string;
         callAsync(_newName: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
@@ -119,8 +120,8 @@ export declare class CappedSTOFactoryContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
     };
     changeFactoryUsageFee: {
-        sendTransactionAsync(_newUsageCost: BigNumber, txData?: Partial<TxData>): Promise<PolyResponse>;
-        estimateGasAsync(_newUsageCost: BigNumber, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_newUsageCost: BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_newUsageCost: BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_newUsageCost: BigNumber): string;
         callAsync(_newUsageCost: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
@@ -128,14 +129,14 @@ export declare class CappedSTOFactoryContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
     };
     changeDescription: {
-        sendTransactionAsync(_newDesc: string, txData?: Partial<TxData>): Promise<PolyResponse>;
-        estimateGasAsync(_newDesc: string, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_newDesc: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_newDesc: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_newDesc: string): string;
         callAsync(_newDesc: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     transferOwnership: {
-        sendTransactionAsync(_newOwner: string, txData?: Partial<TxData>): Promise<PolyResponse>;
-        estimateGasAsync(_newOwner: string, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_newOwner: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_newOwner: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_newOwner: string): string;
         callAsync(_newOwner: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
@@ -143,14 +144,14 @@ export declare class CappedSTOFactoryContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber[]>;
     };
     changeSTVersionBounds: {
-        sendTransactionAsync(_boundType: string, _newVersion: (number | BigNumber)[], txData?: Partial<TxData>): Promise<PolyResponse>;
-        estimateGasAsync(_boundType: string, _newVersion: (number | BigNumber)[], txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_boundType: string, _newVersion: (number | BigNumber)[], txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_boundType: string, _newVersion: (number | BigNumber)[], factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_boundType: string, _newVersion: (number | BigNumber)[]): string;
         callAsync(_boundType: string, _newVersion: (number | BigNumber)[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     deploy: {
-        sendTransactionAsync(_data: string, txData?: Partial<TxData>): Promise<PolyResponse>;
-        estimateGasAsync(_data: string, txData?: Partial<TxData>): Promise<number>;
+        sendTransactionAsync(_data: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_data: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_data: string): string;
         callAsync(_data: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
@@ -163,6 +164,6 @@ export declare class CappedSTOFactoryContract extends BaseContract {
     getTags: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
     };
-    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>);
+    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=capped_s_t_o_factory.d.ts.map

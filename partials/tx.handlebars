@@ -7,22 +7,31 @@ public {{this.tsName}} = {
     {{^this.payable}}
         txData: Partial<TxData> = {},
     {{/this.payable}}
+        estimateGasFactor?: number,
     ): Promise<PolyResponse> {
         const self = this as any as {{contractName}}Contract;
         const inputAbi = self._lookupAbi('{{this.functionSignature}}').inputs;
         [{{> params inputs=inputs}}] = BaseContract._formatABIDataItemList(inputAbi, [{{> params inputs=inputs}}], BaseContract._bigNumberToString.bind(self));
         BaseContract.strictArgumentEncodingCheck(inputAbi, [{{> params inputs=inputs}}]);
         const encodedData = self._lookupEthersInterface('{{this.functionSignature}}').functions.{{this.name}}.encode([{{> params inputs=inputs}}]);
+        const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+        const contractDefaults = _.defaults(
+                self._web3Wrapper.getContractDefaults(),
+                {
+                    from: defaultFromAddress 
+                }
+            );
         const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
                 to: self.address,
                 ...txData,
                 data: encodedData,
             },
-            self._web3Wrapper.getContractDefaults(),
+            contractDefaults,
             self.{{this.tsName}}.estimateGasAsync.bind<{{contractName}}Contract, any, Promise<number>>(
                 self,
-                {{> params inputs=inputs}}
+                {{> params inputs=inputs}}{{#if inputs.length}},{{/if}}
+                estimateGasFactor,
             ),
         );
         const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
@@ -32,22 +41,33 @@ public {{this.tsName}} = {
     },
     async estimateGasAsync(
     {{> typed_params inputs=inputs}}
+        factor?: number,
         txData: Partial<TxData> = {},
     ): Promise<number> {
         const self = this as any as {{contractName}}Contract;
         const inputAbi = self._lookupAbi('{{this.functionSignature}}').inputs;
         [{{> params inputs=inputs}}] = BaseContract._formatABIDataItemList(inputAbi, [{{> params inputs=inputs}}], BaseContract._bigNumberToString);
         const encodedData = self._lookupEthersInterface('{{this.functionSignature}}').functions.{{this.name}}.encode([{{> params inputs=inputs}}]);
+        const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+        const contractDefaults = _.defaults(
+                self._web3Wrapper.getContractDefaults(),
+                {
+                    from: defaultFromAddress 
+                }
+            );
         const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
                 to: self.address,
                 ...txData,
                 data: encodedData,
             },
-            self._web3Wrapper.getContractDefaults(),
+            contractDefaults
         );
         const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-        return gas;
+        const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+        const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+        const _safetyGasEstimation = Math.round(_factor * gas);
+        return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
     },
     getABIEncodedTransactionData(
     {{> typed_params inputs=inputs}}
