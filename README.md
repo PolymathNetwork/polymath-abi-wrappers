@@ -17,7 +17,7 @@ import * as wrappers from '@polymathnetwork/abi-wrappers';
 or
 
 ```javascript
-var wrappers = require('@polymathnetwork/abi-wrappers);
+var wrappers = require('@polymathnetwork/abi-wrappers');
 ```
 
 ## Contributing

@@ -3,6 +3,7 @@ export * from './generated-wrappers/capped_s_t_o';
 export * from './generated-wrappers/capped_s_t_o_factory';
 export * from './generated-wrappers/erc20_dividend_checkpoint';
 export * from './generated-wrappers/ether_dividend_checkpoint';
+export * from './generated-wrappers/detailed_erc20';
 export * from './generated-wrappers/feature_registry';
 export * from './generated-wrappers/general_permission_manager';
 export * from './generated-wrappers/general_transfer_manager';
