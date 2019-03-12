@@ -1,6 +1,6 @@
 {
   "name": "@polymathnetwork/abi-wrappers",
-  "version": "2.1.0-beta.2",
+  "version": "2.1.0-beta.3",
   "engines": {
     "node": ">=6.12"
   },
@@ -32,7 +32,7 @@
     "@0x/types": "1.4.1",
     "@types/lodash": "^4.14.119",
     "@types/node": "^10.12.18",
-    "@polymathnetwork/contract-artifacts": "2.1.0-beta.1",
+    "@polymathnetwork/contract-artifacts": "2.1.0-beta.2",
     "shx": "^0.2.2",
     "tslint": "5.11.0"
   },
