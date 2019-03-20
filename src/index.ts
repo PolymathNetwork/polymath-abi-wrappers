@@ -21,3 +21,4 @@ export * from './generated-wrappers/security_token';
 export * from './generated-wrappers/security_token_registry';
 export * from './generated-wrappers/u_s_d_tiered_s_t_o';
 export * from './generated-wrappers/u_s_d_tiered_s_t_o_factory';
+export * from './generated-wrappers/module';
