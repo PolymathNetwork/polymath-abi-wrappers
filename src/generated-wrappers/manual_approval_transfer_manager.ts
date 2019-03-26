@@ -551,66 +551,6 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             return resultArray[0];
         },
     };
-    public signingAddress = {
-        async callAsync(
-            callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as ManualApprovalTransferManagerContract;
-            const functionSignature = 'signingAddress()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.signingAddress;
-            const encodedData = ethersFunction.encode([]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'signingAddress'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
-    public issuanceAddress = {
-        async callAsync(
-            callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as ManualApprovalTransferManagerContract;
-            const functionSignature = 'issuanceAddress()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.issuanceAddress;
-            const encodedData = ethersFunction.encode([]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'issuanceAddress'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
     public securityToken = {
         async callAsync(
             callData: Partial<CallData> = {},
@@ -1324,40 +1264,40 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _from: string,
             _to: string,
             _expiryTime: BigNumber,
-            _changedAllowance: BigNumber,
+            _changeInAllowance: BigNumber,
             _description: string,
-            _change: number|BigNumber,
+            _increase: boolean,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ManualApprovalTransferManagerContract;
-            const inputAbi = self._lookupAbi('modifyManualApproval(address,address,uint256,uint256,bytes32,uint8)').inputs;
+            const inputAbi = self._lookupAbi('modifyManualApproval(address,address,uint256,uint256,bytes32,bool)').inputs;
             [_from,
     _to,
     _expiryTime,
-    _changedAllowance,
+    _changeInAllowance,
     _description,
-    _change
+    _increase
     ] = BaseContract._formatABIDataItemList(inputAbi, [_from,
     _to,
     _expiryTime,
-    _changedAllowance,
+    _changeInAllowance,
     _description,
-    _change
+    _increase
     ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_from,
     _to,
     _expiryTime,
-    _changedAllowance,
+    _changeInAllowance,
     _description,
-    _change
+    _increase
     ]);
-            const encodedData = self._lookupEthersInterface('modifyManualApproval(address,address,uint256,uint256,bytes32,uint8)').functions.modifyManualApproval.encode([_from,
+            const encodedData = self._lookupEthersInterface('modifyManualApproval(address,address,uint256,uint256,bytes32,bool)').functions.modifyManualApproval.encode([_from,
     _to,
     _expiryTime,
-    _changedAllowance,
+    _changeInAllowance,
     _description,
-    _change
+    _increase
     ]);
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
             const contractDefaults = _.defaults(
@@ -1378,9 +1318,9 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
                     _from,
     _to,
     _expiryTime,
-    _changedAllowance,
+    _changeInAllowance,
     _description,
-    _change
+    _increase
     ,
                     estimateGasFactor,
                 ),
@@ -1394,33 +1334,33 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _from: string,
             _to: string,
             _expiryTime: BigNumber,
-            _changedAllowance: BigNumber,
+            _changeInAllowance: BigNumber,
             _description: string,
-            _change: number|BigNumber,
+            _increase: boolean,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ManualApprovalTransferManagerContract;
-            const inputAbi = self._lookupAbi('modifyManualApproval(address,address,uint256,uint256,bytes32,uint8)').inputs;
+            const inputAbi = self._lookupAbi('modifyManualApproval(address,address,uint256,uint256,bytes32,bool)').inputs;
             [_from,
     _to,
     _expiryTime,
-    _changedAllowance,
+    _changeInAllowance,
     _description,
-    _change
+    _increase
     ] = BaseContract._formatABIDataItemList(inputAbi, [_from,
     _to,
     _expiryTime,
-    _changedAllowance,
+    _changeInAllowance,
     _description,
-    _change
+    _increase
     ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('modifyManualApproval(address,address,uint256,uint256,bytes32,uint8)').functions.modifyManualApproval.encode([_from,
+            const encodedData = self._lookupEthersInterface('modifyManualApproval(address,address,uint256,uint256,bytes32,bool)').functions.modifyManualApproval.encode([_from,
     _to,
     _expiryTime,
-    _changedAllowance,
+    _changeInAllowance,
     _description,
-    _change
+    _increase
     ]);
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
             const contractDefaults = _.defaults(
@@ -1447,31 +1387,31 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _from: string,
             _to: string,
             _expiryTime: BigNumber,
-            _changedAllowance: BigNumber,
+            _changeInAllowance: BigNumber,
             _description: string,
-            _change: number|BigNumber,
+            _increase: boolean,
         ): string {
             const self = this as any as ManualApprovalTransferManagerContract;
-            const inputAbi = self._lookupAbi('modifyManualApproval(address,address,uint256,uint256,bytes32,uint8)').inputs;
+            const inputAbi = self._lookupAbi('modifyManualApproval(address,address,uint256,uint256,bytes32,bool)').inputs;
             [_from,
     _to,
     _expiryTime,
-    _changedAllowance,
+    _changeInAllowance,
     _description,
-    _change
+    _increase
     ] = BaseContract._formatABIDataItemList(inputAbi, [_from,
     _to,
     _expiryTime,
-    _changedAllowance,
+    _changeInAllowance,
     _description,
-    _change
+    _increase
     ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('modifyManualApproval(address,address,uint256,uint256,bytes32,uint8)').functions.modifyManualApproval.encode([_from,
+            const abiEncodedTransactionData = self._lookupEthersInterface('modifyManualApproval(address,address,uint256,uint256,bytes32,bool)').functions.modifyManualApproval.encode([_from,
     _to,
     _expiryTime,
-    _changedAllowance,
+    _changeInAllowance,
     _description,
-    _change
+    _increase
     ]);
             return abiEncodedTransactionData;
         },
@@ -1479,43 +1419,43 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _from: string,
             _to: string,
             _expiryTime: BigNumber,
-            _changedAllowance: BigNumber,
+            _changeInAllowance: BigNumber,
             _description: string,
-            _change: number|BigNumber,
+            _increase: boolean,
             callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as ManualApprovalTransferManagerContract;
-            const functionSignature = 'modifyManualApproval(address,address,uint256,uint256,bytes32,uint8)';
+            const functionSignature = 'modifyManualApproval(address,address,uint256,uint256,bytes32,bool)';
             const inputAbi = self._lookupAbi(functionSignature).inputs;
             [_from,
         _to,
         _expiryTime,
-        _changedAllowance,
+        _changeInAllowance,
         _description,
-        _change
+        _increase
         ] = BaseContract._formatABIDataItemList(inputAbi, [_from,
         _to,
         _expiryTime,
-        _changedAllowance,
+        _changeInAllowance,
         _description,
-        _change
+        _increase
         ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_from,
         _to,
         _expiryTime,
-        _changedAllowance,
+        _changeInAllowance,
         _description,
-        _change
+        _increase
         ]);
             const ethersFunction = self._lookupEthersInterface(functionSignature).functions.modifyManualApproval;
             const encodedData = ethersFunction.encode([_from,
         _to,
         _expiryTime,
-        _changedAllowance,
+        _changeInAllowance,
         _description,
-        _change
+        _increase
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
@@ -1541,38 +1481,38 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _expiryTimes: BigNumber[],
             _changedAllowances: BigNumber[],
             _descriptions: string[],
-            _changes: Array<number|BigNumber>,
+            _increase: boolean[],
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ManualApprovalTransferManagerContract;
-            const inputAbi = self._lookupAbi('modifyManualApprovalMulti(address[],address[],uint256[],uint256[],bytes32[],uint8[])').inputs;
+            const inputAbi = self._lookupAbi('modifyManualApprovalMulti(address[],address[],uint256[],uint256[],bytes32[],bool[])').inputs;
             [_from,
     _to,
     _expiryTimes,
     _changedAllowances,
     _descriptions,
-    _changes
+    _increase
     ] = BaseContract._formatABIDataItemList(inputAbi, [_from,
     _to,
     _expiryTimes,
     _changedAllowances,
     _descriptions,
-    _changes
+    _increase
     ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_from,
     _to,
     _expiryTimes,
     _changedAllowances,
     _descriptions,
-    _changes
+    _increase
     ]);
-            const encodedData = self._lookupEthersInterface('modifyManualApprovalMulti(address[],address[],uint256[],uint256[],bytes32[],uint8[])').functions.modifyManualApprovalMulti.encode([_from,
+            const encodedData = self._lookupEthersInterface('modifyManualApprovalMulti(address[],address[],uint256[],uint256[],bytes32[],bool[])').functions.modifyManualApprovalMulti.encode([_from,
     _to,
     _expiryTimes,
     _changedAllowances,
     _descriptions,
-    _changes
+    _increase
     ]);
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
             const contractDefaults = _.defaults(
@@ -1595,7 +1535,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
     _expiryTimes,
     _changedAllowances,
     _descriptions,
-    _changes
+    _increase
     ,
                     estimateGasFactor,
                 ),
@@ -1611,31 +1551,31 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _expiryTimes: BigNumber[],
             _changedAllowances: BigNumber[],
             _descriptions: string[],
-            _changes: Array<number|BigNumber>,
+            _increase: boolean[],
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ManualApprovalTransferManagerContract;
-            const inputAbi = self._lookupAbi('modifyManualApprovalMulti(address[],address[],uint256[],uint256[],bytes32[],uint8[])').inputs;
+            const inputAbi = self._lookupAbi('modifyManualApprovalMulti(address[],address[],uint256[],uint256[],bytes32[],bool[])').inputs;
             [_from,
     _to,
     _expiryTimes,
     _changedAllowances,
     _descriptions,
-    _changes
+    _increase
     ] = BaseContract._formatABIDataItemList(inputAbi, [_from,
     _to,
     _expiryTimes,
     _changedAllowances,
     _descriptions,
-    _changes
+    _increase
     ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('modifyManualApprovalMulti(address[],address[],uint256[],uint256[],bytes32[],uint8[])').functions.modifyManualApprovalMulti.encode([_from,
+            const encodedData = self._lookupEthersInterface('modifyManualApprovalMulti(address[],address[],uint256[],uint256[],bytes32[],bool[])').functions.modifyManualApprovalMulti.encode([_from,
     _to,
     _expiryTimes,
     _changedAllowances,
     _descriptions,
-    _changes
+    _increase
     ]);
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
             const contractDefaults = _.defaults(
@@ -1664,29 +1604,29 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _expiryTimes: BigNumber[],
             _changedAllowances: BigNumber[],
             _descriptions: string[],
-            _changes: Array<number|BigNumber>,
+            _increase: boolean[],
         ): string {
             const self = this as any as ManualApprovalTransferManagerContract;
-            const inputAbi = self._lookupAbi('modifyManualApprovalMulti(address[],address[],uint256[],uint256[],bytes32[],uint8[])').inputs;
+            const inputAbi = self._lookupAbi('modifyManualApprovalMulti(address[],address[],uint256[],uint256[],bytes32[],bool[])').inputs;
             [_from,
     _to,
     _expiryTimes,
     _changedAllowances,
     _descriptions,
-    _changes
+    _increase
     ] = BaseContract._formatABIDataItemList(inputAbi, [_from,
     _to,
     _expiryTimes,
     _changedAllowances,
     _descriptions,
-    _changes
+    _increase
     ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('modifyManualApprovalMulti(address[],address[],uint256[],uint256[],bytes32[],uint8[])').functions.modifyManualApprovalMulti.encode([_from,
+            const abiEncodedTransactionData = self._lookupEthersInterface('modifyManualApprovalMulti(address[],address[],uint256[],uint256[],bytes32[],bool[])').functions.modifyManualApprovalMulti.encode([_from,
     _to,
     _expiryTimes,
     _changedAllowances,
     _descriptions,
-    _changes
+    _increase
     ]);
             return abiEncodedTransactionData;
         },
@@ -1696,33 +1636,33 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
             _expiryTimes: BigNumber[],
             _changedAllowances: BigNumber[],
             _descriptions: string[],
-            _changes: Array<number|BigNumber>,
+            _increase: boolean[],
             callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as ManualApprovalTransferManagerContract;
-            const functionSignature = 'modifyManualApprovalMulti(address[],address[],uint256[],uint256[],bytes32[],uint8[])';
+            const functionSignature = 'modifyManualApprovalMulti(address[],address[],uint256[],uint256[],bytes32[],bool[])';
             const inputAbi = self._lookupAbi(functionSignature).inputs;
             [_from,
         _to,
         _expiryTimes,
         _changedAllowances,
         _descriptions,
-        _changes
+        _increase
         ] = BaseContract._formatABIDataItemList(inputAbi, [_from,
         _to,
         _expiryTimes,
         _changedAllowances,
         _descriptions,
-        _changes
+        _increase
         ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_from,
         _to,
         _expiryTimes,
         _changedAllowances,
         _descriptions,
-        _changes
+        _increase
         ]);
             const ethersFunction = self._lookupEthersInterface(functionSignature).functions.modifyManualApprovalMulti;
             const encodedData = ethersFunction.encode([_from,
@@ -1730,7 +1670,7 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
         _expiryTimes,
         _changedAllowances,
         _descriptions,
-        _changes
+        _increase
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {

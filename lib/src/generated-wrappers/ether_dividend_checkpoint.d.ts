@@ -2,7 +2,7 @@ import { BaseContract } from '@0x/base-contract';
 import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, Provider, TxData, TxDataPayable } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../polyResponse';
-export declare type EtherDividendCheckpointEventArgs = EtherDividendCheckpointEtherDividendDepositedEventArgs | EtherDividendCheckpointEtherDividendClaimedEventArgs | EtherDividendCheckpointEtherDividendReclaimedEventArgs | EtherDividendCheckpointEtherDividendClaimFailedEventArgs | EtherDividendCheckpointEtherDividendWithholdingWithdrawnEventArgs | EtherDividendCheckpointSetDefaultExcludedAddressesEventArgs | EtherDividendCheckpointSetWithholdingEventArgs | EtherDividendCheckpointSetWithholdingFixedEventArgs;
+export declare type EtherDividendCheckpointEventArgs = EtherDividendCheckpointEtherDividendDepositedEventArgs | EtherDividendCheckpointEtherDividendClaimedEventArgs | EtherDividendCheckpointEtherDividendReclaimedEventArgs | EtherDividendCheckpointEtherDividendClaimFailedEventArgs | EtherDividendCheckpointEtherDividendWithholdingWithdrawnEventArgs | EtherDividendCheckpointSetDefaultExcludedAddressesEventArgs | EtherDividendCheckpointSetWithholdingEventArgs | EtherDividendCheckpointSetWithholdingFixedEventArgs | EtherDividendCheckpointSetWalletEventArgs | EtherDividendCheckpointUpdateDividendDatesEventArgs | EtherDividendCheckpointPauseEventArgs | EtherDividendCheckpointUnpauseEventArgs;
 export declare enum EtherDividendCheckpointEvents {
     EtherDividendDeposited = "EtherDividendDeposited",
     EtherDividendClaimed = "EtherDividendClaimed",
@@ -11,7 +11,11 @@ export declare enum EtherDividendCheckpointEvents {
     EtherDividendWithholdingWithdrawn = "EtherDividendWithholdingWithdrawn",
     SetDefaultExcludedAddresses = "SetDefaultExcludedAddresses",
     SetWithholding = "SetWithholding",
-    SetWithholdingFixed = "SetWithholdingFixed"
+    SetWithholdingFixed = "SetWithholdingFixed",
+    SetWallet = "SetWallet",
+    UpdateDividendDates = "UpdateDividendDates",
+    Pause = "Pause",
+    Unpause = "Unpause"
 }
 export interface EtherDividendCheckpointEtherDividendDepositedEventArgs extends DecodedLogArgs {
     _depositor: string;
@@ -60,6 +64,22 @@ export interface EtherDividendCheckpointSetWithholdingFixedEventArgs extends Dec
     _withholding: BigNumber;
     _timestamp: BigNumber;
 }
+export interface EtherDividendCheckpointSetWalletEventArgs extends DecodedLogArgs {
+    _oldWallet: string;
+    _newWallet: string;
+    _timestamp: BigNumber;
+}
+export interface EtherDividendCheckpointUpdateDividendDatesEventArgs extends DecodedLogArgs {
+    _dividendIndex: BigNumber;
+    _maturity: BigNumber;
+    _expiry: BigNumber;
+}
+export interface EtherDividendCheckpointPauseEventArgs extends DecodedLogArgs {
+    _timestammp: BigNumber;
+}
+export interface EtherDividendCheckpointUnpauseEventArgs extends DecodedLogArgs {
+    _timestamp: BigNumber;
+}
 export declare class EtherDividendCheckpointContract extends BaseContract {
     private _defaultEstimateGasFactor;
     setWithholdingFixed: {
@@ -70,6 +90,12 @@ export declare class EtherDividendCheckpointContract extends BaseContract {
     };
     EXCLUDED_ADDRESS_LIMIT: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
+    };
+    reclaimETH: {
+        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(): string;
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     getInitFunction: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
@@ -86,11 +112,20 @@ export declare class EtherDividendCheckpointContract extends BaseContract {
     CHECKPOINT: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
+    unpause: {
+        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(): string;
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
     pushDividendPaymentToAddresses: {
         sendTransactionAsync(_dividendIndex: BigNumber, _payees: string[], txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
         estimateGasAsync(_dividendIndex: BigNumber, _payees: string[], factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_dividendIndex: BigNumber, _payees: string[]): string;
         callAsync(_dividendIndex: BigNumber, _payees: string[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
+    wallet: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     isClaimed: {
         callAsync(_investor: string, _dividendIndex: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
@@ -100,6 +135,9 @@ export declare class EtherDividendCheckpointContract extends BaseContract {
     };
     MANAGE: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+    };
+    paused: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
     getDividendIndex: {
         callAsync(_checkpointId: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber[]>;
@@ -112,6 +150,18 @@ export declare class EtherDividendCheckpointContract extends BaseContract {
     };
     polyToken: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+    };
+    updateDividendDates: {
+        sendTransactionAsync(_dividendIndex: BigNumber, _maturity: BigNumber, _expiry: BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_dividendIndex: BigNumber, _maturity: BigNumber, _expiry: BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_dividendIndex: BigNumber, _maturity: BigNumber, _expiry: BigNumber): string;
+        callAsync(_dividendIndex: BigNumber, _maturity: BigNumber, _expiry: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
+    configure: {
+        sendTransactionAsync(_wallet: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_wallet: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_wallet: string): string;
+        callAsync(_wallet: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     withholdingTax: {
         callAsync(index_0: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
@@ -128,11 +178,29 @@ export declare class EtherDividendCheckpointContract extends BaseContract {
     isExcluded: {
         callAsync(_investor: string, _dividendIndex: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
+    pause: {
+        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(): string;
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
     setWithholding: {
         sendTransactionAsync(_investors: string[], _withholding: BigNumber[], txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
         estimateGasAsync(_investors: string[], _withholding: BigNumber[], factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_investors: string[], _withholding: BigNumber[]): string;
         callAsync(_investors: string[], _withholding: BigNumber[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
+    reclaimERC20: {
+        sendTransactionAsync(_tokenContract: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_tokenContract: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_tokenContract: string): string;
+        callAsync(_tokenContract: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
+    changeWallet: {
+        sendTransactionAsync(_wallet: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_wallet: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_wallet: string): string;
+        callAsync(_wallet: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     getDividendsData: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber[], BigNumber[], BigNumber[], BigNumber[], BigNumber[], string[]]>;

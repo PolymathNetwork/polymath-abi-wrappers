@@ -30,6 +30,12 @@ export interface CappedSTOUnpauseEventArgs extends DecodedLogArgs {
 }
 export declare class CappedSTOContract extends BaseContract {
     private _defaultEstimateGasFactor;
+    reclaimETH: {
+        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(): string;
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
     rate: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
     };

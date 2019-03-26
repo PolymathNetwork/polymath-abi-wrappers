@@ -61,16 +61,16 @@ export interface GeneralTransferManagerChangeSigningAddressEventArgs extends Dec
 }
 
 export interface GeneralTransferManagerChangeDefaultsEventArgs extends DecodedLogArgs {
-    _defaultFromTime: BigNumber;
-    _defaultToTime: BigNumber;
+    _defaultCanSendAfter: BigNumber;
+    _defaultCanReceiveAfter: BigNumber;
 }
 
 export interface GeneralTransferManagerModifyWhitelistEventArgs extends DecodedLogArgs {
     _investor: string;
     _dateAdded: BigNumber;
     _addedBy: string;
-    _fromTime: BigNumber;
-    _toTime: BigNumber;
+    _canSendAfter: BigNumber;
+    _canReceiveAfter: BigNumber;
     _expiryTime: BigNumber;
     _canBuyFromSTO: boolean;
 }
@@ -973,23 +973,23 @@ export class GeneralTransferManagerContract extends BaseContract {
     };
     public changeDefaults = {
         async sendTransactionAsync(
-            _defaultFromTime: BigNumber,
-            _defaultToTime: BigNumber,
+            _defaultCanSendAfter: BigNumber,
+            _defaultCanReceiveAfter: BigNumber,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as GeneralTransferManagerContract;
             const inputAbi = self._lookupAbi('changeDefaults(uint64,uint64)').inputs;
-            [_defaultFromTime,
-    _defaultToTime
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_defaultFromTime,
-    _defaultToTime
+            [_defaultCanSendAfter,
+    _defaultCanReceiveAfter
+    ] = BaseContract._formatABIDataItemList(inputAbi, [_defaultCanSendAfter,
+    _defaultCanReceiveAfter
     ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_defaultFromTime,
-    _defaultToTime
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_defaultCanSendAfter,
+    _defaultCanReceiveAfter
     ]);
-            const encodedData = self._lookupEthersInterface('changeDefaults(uint64,uint64)').functions.changeDefaults.encode([_defaultFromTime,
-    _defaultToTime
+            const encodedData = self._lookupEthersInterface('changeDefaults(uint64,uint64)').functions.changeDefaults.encode([_defaultCanSendAfter,
+    _defaultCanReceiveAfter
     ]);
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
             const contractDefaults = _.defaults(
@@ -1007,8 +1007,8 @@ export class GeneralTransferManagerContract extends BaseContract {
                 contractDefaults,
                 self.changeDefaults.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
-                    _defaultFromTime,
-    _defaultToTime
+                    _defaultCanSendAfter,
+    _defaultCanReceiveAfter
     ,
                     estimateGasFactor,
                 ),
@@ -1019,20 +1019,20 @@ export class GeneralTransferManagerContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
-            _defaultFromTime: BigNumber,
-            _defaultToTime: BigNumber,
+            _defaultCanSendAfter: BigNumber,
+            _defaultCanReceiveAfter: BigNumber,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as GeneralTransferManagerContract;
             const inputAbi = self._lookupAbi('changeDefaults(uint64,uint64)').inputs;
-            [_defaultFromTime,
-    _defaultToTime
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_defaultFromTime,
-    _defaultToTime
+            [_defaultCanSendAfter,
+    _defaultCanReceiveAfter
+    ] = BaseContract._formatABIDataItemList(inputAbi, [_defaultCanSendAfter,
+    _defaultCanReceiveAfter
     ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('changeDefaults(uint64,uint64)').functions.changeDefaults.encode([_defaultFromTime,
-    _defaultToTime
+            const encodedData = self._lookupEthersInterface('changeDefaults(uint64,uint64)').functions.changeDefaults.encode([_defaultCanSendAfter,
+    _defaultCanReceiveAfter
     ]);
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
             const contractDefaults = _.defaults(
@@ -1056,24 +1056,24 @@ export class GeneralTransferManagerContract extends BaseContract {
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
-            _defaultFromTime: BigNumber,
-            _defaultToTime: BigNumber,
+            _defaultCanSendAfter: BigNumber,
+            _defaultCanReceiveAfter: BigNumber,
         ): string {
             const self = this as any as GeneralTransferManagerContract;
             const inputAbi = self._lookupAbi('changeDefaults(uint64,uint64)').inputs;
-            [_defaultFromTime,
-    _defaultToTime
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_defaultFromTime,
-    _defaultToTime
+            [_defaultCanSendAfter,
+    _defaultCanReceiveAfter
+    ] = BaseContract._formatABIDataItemList(inputAbi, [_defaultCanSendAfter,
+    _defaultCanReceiveAfter
     ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('changeDefaults(uint64,uint64)').functions.changeDefaults.encode([_defaultFromTime,
-    _defaultToTime
+            const abiEncodedTransactionData = self._lookupEthersInterface('changeDefaults(uint64,uint64)').functions.changeDefaults.encode([_defaultCanSendAfter,
+    _defaultCanReceiveAfter
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
-            _defaultFromTime: BigNumber,
-            _defaultToTime: BigNumber,
+            _defaultCanSendAfter: BigNumber,
+            _defaultCanReceiveAfter: BigNumber,
             callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
@@ -1081,17 +1081,17 @@ export class GeneralTransferManagerContract extends BaseContract {
             const self = this as any as GeneralTransferManagerContract;
             const functionSignature = 'changeDefaults(uint64,uint64)';
             const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_defaultFromTime,
-        _defaultToTime
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_defaultFromTime,
-        _defaultToTime
+            [_defaultCanSendAfter,
+        _defaultCanReceiveAfter
+        ] = BaseContract._formatABIDataItemList(inputAbi, [_defaultCanSendAfter,
+        _defaultCanReceiveAfter
         ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_defaultFromTime,
-        _defaultToTime
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_defaultCanSendAfter,
+        _defaultCanReceiveAfter
         ]);
             const ethersFunction = self._lookupEthersInterface(functionSignature).functions.changeDefaults;
-            const encodedData = ethersFunction.encode([_defaultFromTime,
-        _defaultToTime
+            const encodedData = ethersFunction.encode([_defaultCanSendAfter,
+        _defaultCanReceiveAfter
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
@@ -2029,8 +2029,8 @@ export class GeneralTransferManagerContract extends BaseContract {
     public modifyWhitelist = {
         async sendTransactionAsync(
             _investor: string,
-            _fromTime: BigNumber,
-            _toTime: BigNumber,
+            _canSendAfter: BigNumber,
+            _canReceiveAfter: BigNumber,
             _expiryTime: BigNumber,
             _canBuyFromSTO: boolean,
             txData: Partial<TxData> = {},
@@ -2039,25 +2039,25 @@ export class GeneralTransferManagerContract extends BaseContract {
             const self = this as any as GeneralTransferManagerContract;
             const inputAbi = self._lookupAbi('modifyWhitelist(address,uint256,uint256,uint256,bool)').inputs;
             [_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO
     ] = BaseContract._formatABIDataItemList(inputAbi, [_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO
     ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO
     ]);
             const encodedData = self._lookupEthersInterface('modifyWhitelist(address,uint256,uint256,uint256,bool)').functions.modifyWhitelist.encode([_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO
     ]);
@@ -2078,8 +2078,8 @@ export class GeneralTransferManagerContract extends BaseContract {
                 self.modifyWhitelist.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO
     ,
@@ -2093,8 +2093,8 @@ export class GeneralTransferManagerContract extends BaseContract {
         },
         async estimateGasAsync(
             _investor: string,
-            _fromTime: BigNumber,
-            _toTime: BigNumber,
+            _canSendAfter: BigNumber,
+            _canReceiveAfter: BigNumber,
             _expiryTime: BigNumber,
             _canBuyFromSTO: boolean,
             factor?: number,
@@ -2103,19 +2103,19 @@ export class GeneralTransferManagerContract extends BaseContract {
             const self = this as any as GeneralTransferManagerContract;
             const inputAbi = self._lookupAbi('modifyWhitelist(address,uint256,uint256,uint256,bool)').inputs;
             [_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO
     ] = BaseContract._formatABIDataItemList(inputAbi, [_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('modifyWhitelist(address,uint256,uint256,uint256,bool)').functions.modifyWhitelist.encode([_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO
     ]);
@@ -2142,27 +2142,27 @@ export class GeneralTransferManagerContract extends BaseContract {
         },
         getABIEncodedTransactionData(
             _investor: string,
-            _fromTime: BigNumber,
-            _toTime: BigNumber,
+            _canSendAfter: BigNumber,
+            _canReceiveAfter: BigNumber,
             _expiryTime: BigNumber,
             _canBuyFromSTO: boolean,
         ): string {
             const self = this as any as GeneralTransferManagerContract;
             const inputAbi = self._lookupAbi('modifyWhitelist(address,uint256,uint256,uint256,bool)').inputs;
             [_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO
     ] = BaseContract._formatABIDataItemList(inputAbi, [_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO
     ], BaseContract._bigNumberToString);
             const abiEncodedTransactionData = self._lookupEthersInterface('modifyWhitelist(address,uint256,uint256,uint256,bool)').functions.modifyWhitelist.encode([_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO
     ]);
@@ -2170,8 +2170,8 @@ export class GeneralTransferManagerContract extends BaseContract {
         },
         async callAsync(
             _investor: string,
-            _fromTime: BigNumber,
-            _toTime: BigNumber,
+            _canSendAfter: BigNumber,
+            _canReceiveAfter: BigNumber,
             _expiryTime: BigNumber,
             _canBuyFromSTO: boolean,
             callData: Partial<CallData> = {},
@@ -2182,26 +2182,26 @@ export class GeneralTransferManagerContract extends BaseContract {
             const functionSignature = 'modifyWhitelist(address,uint256,uint256,uint256,bool)';
             const inputAbi = self._lookupAbi(functionSignature).inputs;
             [_investor,
-        _fromTime,
-        _toTime,
+        _canSendAfter,
+        _canReceiveAfter,
         _expiryTime,
         _canBuyFromSTO
         ] = BaseContract._formatABIDataItemList(inputAbi, [_investor,
-        _fromTime,
-        _toTime,
+        _canSendAfter,
+        _canReceiveAfter,
         _expiryTime,
         _canBuyFromSTO
         ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_investor,
-        _fromTime,
-        _toTime,
+        _canSendAfter,
+        _canReceiveAfter,
         _expiryTime,
         _canBuyFromSTO
         ]);
             const ethersFunction = self._lookupEthersInterface(functionSignature).functions.modifyWhitelist;
             const encodedData = ethersFunction.encode([_investor,
-        _fromTime,
-        _toTime,
+        _canSendAfter,
+        _canReceiveAfter,
         _expiryTime,
         _canBuyFromSTO
         ]);
@@ -2225,8 +2225,8 @@ export class GeneralTransferManagerContract extends BaseContract {
     public modifyWhitelistMulti = {
         async sendTransactionAsync(
             _investors: string[],
-            _fromTimes: BigNumber[],
-            _toTimes: BigNumber[],
+            _canSendAfters: BigNumber[],
+            _canReceiveAfters: BigNumber[],
             _expiryTimes: BigNumber[],
             _canBuyFromSTO: boolean[],
             txData: Partial<TxData> = {},
@@ -2235,25 +2235,25 @@ export class GeneralTransferManagerContract extends BaseContract {
             const self = this as any as GeneralTransferManagerContract;
             const inputAbi = self._lookupAbi('modifyWhitelistMulti(address[],uint256[],uint256[],uint256[],bool[])').inputs;
             [_investors,
-    _fromTimes,
-    _toTimes,
+    _canSendAfters,
+    _canReceiveAfters,
     _expiryTimes,
     _canBuyFromSTO
     ] = BaseContract._formatABIDataItemList(inputAbi, [_investors,
-    _fromTimes,
-    _toTimes,
+    _canSendAfters,
+    _canReceiveAfters,
     _expiryTimes,
     _canBuyFromSTO
     ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_investors,
-    _fromTimes,
-    _toTimes,
+    _canSendAfters,
+    _canReceiveAfters,
     _expiryTimes,
     _canBuyFromSTO
     ]);
             const encodedData = self._lookupEthersInterface('modifyWhitelistMulti(address[],uint256[],uint256[],uint256[],bool[])').functions.modifyWhitelistMulti.encode([_investors,
-    _fromTimes,
-    _toTimes,
+    _canSendAfters,
+    _canReceiveAfters,
     _expiryTimes,
     _canBuyFromSTO
     ]);
@@ -2274,8 +2274,8 @@ export class GeneralTransferManagerContract extends BaseContract {
                 self.modifyWhitelistMulti.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _investors,
-    _fromTimes,
-    _toTimes,
+    _canSendAfters,
+    _canReceiveAfters,
     _expiryTimes,
     _canBuyFromSTO
     ,
@@ -2289,8 +2289,8 @@ export class GeneralTransferManagerContract extends BaseContract {
         },
         async estimateGasAsync(
             _investors: string[],
-            _fromTimes: BigNumber[],
-            _toTimes: BigNumber[],
+            _canSendAfters: BigNumber[],
+            _canReceiveAfters: BigNumber[],
             _expiryTimes: BigNumber[],
             _canBuyFromSTO: boolean[],
             factor?: number,
@@ -2299,19 +2299,19 @@ export class GeneralTransferManagerContract extends BaseContract {
             const self = this as any as GeneralTransferManagerContract;
             const inputAbi = self._lookupAbi('modifyWhitelistMulti(address[],uint256[],uint256[],uint256[],bool[])').inputs;
             [_investors,
-    _fromTimes,
-    _toTimes,
+    _canSendAfters,
+    _canReceiveAfters,
     _expiryTimes,
     _canBuyFromSTO
     ] = BaseContract._formatABIDataItemList(inputAbi, [_investors,
-    _fromTimes,
-    _toTimes,
+    _canSendAfters,
+    _canReceiveAfters,
     _expiryTimes,
     _canBuyFromSTO
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('modifyWhitelistMulti(address[],uint256[],uint256[],uint256[],bool[])').functions.modifyWhitelistMulti.encode([_investors,
-    _fromTimes,
-    _toTimes,
+    _canSendAfters,
+    _canReceiveAfters,
     _expiryTimes,
     _canBuyFromSTO
     ]);
@@ -2338,27 +2338,27 @@ export class GeneralTransferManagerContract extends BaseContract {
         },
         getABIEncodedTransactionData(
             _investors: string[],
-            _fromTimes: BigNumber[],
-            _toTimes: BigNumber[],
+            _canSendAfters: BigNumber[],
+            _canReceiveAfters: BigNumber[],
             _expiryTimes: BigNumber[],
             _canBuyFromSTO: boolean[],
         ): string {
             const self = this as any as GeneralTransferManagerContract;
             const inputAbi = self._lookupAbi('modifyWhitelistMulti(address[],uint256[],uint256[],uint256[],bool[])').inputs;
             [_investors,
-    _fromTimes,
-    _toTimes,
+    _canSendAfters,
+    _canReceiveAfters,
     _expiryTimes,
     _canBuyFromSTO
     ] = BaseContract._formatABIDataItemList(inputAbi, [_investors,
-    _fromTimes,
-    _toTimes,
+    _canSendAfters,
+    _canReceiveAfters,
     _expiryTimes,
     _canBuyFromSTO
     ], BaseContract._bigNumberToString);
             const abiEncodedTransactionData = self._lookupEthersInterface('modifyWhitelistMulti(address[],uint256[],uint256[],uint256[],bool[])').functions.modifyWhitelistMulti.encode([_investors,
-    _fromTimes,
-    _toTimes,
+    _canSendAfters,
+    _canReceiveAfters,
     _expiryTimes,
     _canBuyFromSTO
     ]);
@@ -2366,8 +2366,8 @@ export class GeneralTransferManagerContract extends BaseContract {
         },
         async callAsync(
             _investors: string[],
-            _fromTimes: BigNumber[],
-            _toTimes: BigNumber[],
+            _canSendAfters: BigNumber[],
+            _canReceiveAfters: BigNumber[],
             _expiryTimes: BigNumber[],
             _canBuyFromSTO: boolean[],
             callData: Partial<CallData> = {},
@@ -2378,26 +2378,26 @@ export class GeneralTransferManagerContract extends BaseContract {
             const functionSignature = 'modifyWhitelistMulti(address[],uint256[],uint256[],uint256[],bool[])';
             const inputAbi = self._lookupAbi(functionSignature).inputs;
             [_investors,
-        _fromTimes,
-        _toTimes,
+        _canSendAfters,
+        _canReceiveAfters,
         _expiryTimes,
         _canBuyFromSTO
         ] = BaseContract._formatABIDataItemList(inputAbi, [_investors,
-        _fromTimes,
-        _toTimes,
+        _canSendAfters,
+        _canReceiveAfters,
         _expiryTimes,
         _canBuyFromSTO
         ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_investors,
-        _fromTimes,
-        _toTimes,
+        _canSendAfters,
+        _canReceiveAfters,
         _expiryTimes,
         _canBuyFromSTO
         ]);
             const ethersFunction = self._lookupEthersInterface(functionSignature).functions.modifyWhitelistMulti;
             const encodedData = ethersFunction.encode([_investors,
-        _fromTimes,
-        _toTimes,
+        _canSendAfters,
+        _canReceiveAfters,
         _expiryTimes,
         _canBuyFromSTO
         ]);
@@ -2421,8 +2421,8 @@ export class GeneralTransferManagerContract extends BaseContract {
     public modifyWhitelistSigned = {
         async sendTransactionAsync(
             _investor: string,
-            _fromTime: BigNumber,
-            _toTime: BigNumber,
+            _canSendAfter: BigNumber,
+            _canReceiveAfter: BigNumber,
             _expiryTime: BigNumber,
             _canBuyFromSTO: boolean,
             _validFrom: BigNumber,
@@ -2437,8 +2437,8 @@ export class GeneralTransferManagerContract extends BaseContract {
             const self = this as any as GeneralTransferManagerContract;
             const inputAbi = self._lookupAbi('modifyWhitelistSigned(address,uint256,uint256,uint256,bool,uint256,uint256,uint256,uint8,bytes32,bytes32)').inputs;
             [_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO,
     _validFrom,
@@ -2448,8 +2448,8 @@ export class GeneralTransferManagerContract extends BaseContract {
     _r,
     _s
     ] = BaseContract._formatABIDataItemList(inputAbi, [_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO,
     _validFrom,
@@ -2460,8 +2460,8 @@ export class GeneralTransferManagerContract extends BaseContract {
     _s
     ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO,
     _validFrom,
@@ -2472,8 +2472,8 @@ export class GeneralTransferManagerContract extends BaseContract {
     _s
     ]);
             const encodedData = self._lookupEthersInterface('modifyWhitelistSigned(address,uint256,uint256,uint256,bool,uint256,uint256,uint256,uint8,bytes32,bytes32)').functions.modifyWhitelistSigned.encode([_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO,
     _validFrom,
@@ -2500,8 +2500,8 @@ export class GeneralTransferManagerContract extends BaseContract {
                 self.modifyWhitelistSigned.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO,
     _validFrom,
@@ -2521,8 +2521,8 @@ export class GeneralTransferManagerContract extends BaseContract {
         },
         async estimateGasAsync(
             _investor: string,
-            _fromTime: BigNumber,
-            _toTime: BigNumber,
+            _canSendAfter: BigNumber,
+            _canReceiveAfter: BigNumber,
             _expiryTime: BigNumber,
             _canBuyFromSTO: boolean,
             _validFrom: BigNumber,
@@ -2537,8 +2537,8 @@ export class GeneralTransferManagerContract extends BaseContract {
             const self = this as any as GeneralTransferManagerContract;
             const inputAbi = self._lookupAbi('modifyWhitelistSigned(address,uint256,uint256,uint256,bool,uint256,uint256,uint256,uint8,bytes32,bytes32)').inputs;
             [_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO,
     _validFrom,
@@ -2548,8 +2548,8 @@ export class GeneralTransferManagerContract extends BaseContract {
     _r,
     _s
     ] = BaseContract._formatABIDataItemList(inputAbi, [_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO,
     _validFrom,
@@ -2560,8 +2560,8 @@ export class GeneralTransferManagerContract extends BaseContract {
     _s
     ], BaseContract._bigNumberToString);
             const encodedData = self._lookupEthersInterface('modifyWhitelistSigned(address,uint256,uint256,uint256,bool,uint256,uint256,uint256,uint8,bytes32,bytes32)').functions.modifyWhitelistSigned.encode([_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO,
     _validFrom,
@@ -2594,8 +2594,8 @@ export class GeneralTransferManagerContract extends BaseContract {
         },
         getABIEncodedTransactionData(
             _investor: string,
-            _fromTime: BigNumber,
-            _toTime: BigNumber,
+            _canSendAfter: BigNumber,
+            _canReceiveAfter: BigNumber,
             _expiryTime: BigNumber,
             _canBuyFromSTO: boolean,
             _validFrom: BigNumber,
@@ -2608,8 +2608,8 @@ export class GeneralTransferManagerContract extends BaseContract {
             const self = this as any as GeneralTransferManagerContract;
             const inputAbi = self._lookupAbi('modifyWhitelistSigned(address,uint256,uint256,uint256,bool,uint256,uint256,uint256,uint8,bytes32,bytes32)').inputs;
             [_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO,
     _validFrom,
@@ -2619,8 +2619,8 @@ export class GeneralTransferManagerContract extends BaseContract {
     _r,
     _s
     ] = BaseContract._formatABIDataItemList(inputAbi, [_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO,
     _validFrom,
@@ -2631,8 +2631,8 @@ export class GeneralTransferManagerContract extends BaseContract {
     _s
     ], BaseContract._bigNumberToString);
             const abiEncodedTransactionData = self._lookupEthersInterface('modifyWhitelistSigned(address,uint256,uint256,uint256,bool,uint256,uint256,uint256,uint8,bytes32,bytes32)').functions.modifyWhitelistSigned.encode([_investor,
-    _fromTime,
-    _toTime,
+    _canSendAfter,
+    _canReceiveAfter,
     _expiryTime,
     _canBuyFromSTO,
     _validFrom,
@@ -2646,8 +2646,8 @@ export class GeneralTransferManagerContract extends BaseContract {
         },
         async callAsync(
             _investor: string,
-            _fromTime: BigNumber,
-            _toTime: BigNumber,
+            _canSendAfter: BigNumber,
+            _canReceiveAfter: BigNumber,
             _expiryTime: BigNumber,
             _canBuyFromSTO: boolean,
             _validFrom: BigNumber,
@@ -2664,8 +2664,8 @@ export class GeneralTransferManagerContract extends BaseContract {
             const functionSignature = 'modifyWhitelistSigned(address,uint256,uint256,uint256,bool,uint256,uint256,uint256,uint8,bytes32,bytes32)';
             const inputAbi = self._lookupAbi(functionSignature).inputs;
             [_investor,
-        _fromTime,
-        _toTime,
+        _canSendAfter,
+        _canReceiveAfter,
         _expiryTime,
         _canBuyFromSTO,
         _validFrom,
@@ -2675,8 +2675,8 @@ export class GeneralTransferManagerContract extends BaseContract {
         _r,
         _s
         ] = BaseContract._formatABIDataItemList(inputAbi, [_investor,
-        _fromTime,
-        _toTime,
+        _canSendAfter,
+        _canReceiveAfter,
         _expiryTime,
         _canBuyFromSTO,
         _validFrom,
@@ -2687,8 +2687,8 @@ export class GeneralTransferManagerContract extends BaseContract {
         _s
         ], BaseContract._bigNumberToString.bind(self));
             BaseContract.strictArgumentEncodingCheck(inputAbi, [_investor,
-        _fromTime,
-        _toTime,
+        _canSendAfter,
+        _canReceiveAfter,
         _expiryTime,
         _canBuyFromSTO,
         _validFrom,
@@ -2700,8 +2700,8 @@ export class GeneralTransferManagerContract extends BaseContract {
         ]);
             const ethersFunction = self._lookupEthersInterface(functionSignature).functions.modifyWhitelistSigned;
             const encodedData = ethersFunction.encode([_investor,
-        _fromTime,
-        _toTime,
+        _canSendAfter,
+        _canReceiveAfter,
         _expiryTime,
         _canBuyFromSTO,
         _validFrom,
