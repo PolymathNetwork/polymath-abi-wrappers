@@ -19,7 +19,11 @@ export type EtherDividendCheckpointEventArgs =
     | EtherDividendCheckpointEtherDividendWithholdingWithdrawnEventArgs
     | EtherDividendCheckpointSetDefaultExcludedAddressesEventArgs
     | EtherDividendCheckpointSetWithholdingEventArgs
-    | EtherDividendCheckpointSetWithholdingFixedEventArgs;
+    | EtherDividendCheckpointSetWithholdingFixedEventArgs
+    | EtherDividendCheckpointSetWalletEventArgs
+    | EtherDividendCheckpointUpdateDividendDatesEventArgs
+    | EtherDividendCheckpointPauseEventArgs
+    | EtherDividendCheckpointUnpauseEventArgs;
 
 export enum EtherDividendCheckpointEvents {
     EtherDividendDeposited = 'EtherDividendDeposited',
@@ -30,6 +34,10 @@ export enum EtherDividendCheckpointEvents {
     SetDefaultExcludedAddresses = 'SetDefaultExcludedAddresses',
     SetWithholding = 'SetWithholding',
     SetWithholdingFixed = 'SetWithholdingFixed',
+    SetWallet = 'SetWallet',
+    UpdateDividendDates = 'UpdateDividendDates',
+    Pause = 'Pause',
+    Unpause = 'Unpause',
 }
 
 export interface EtherDividendCheckpointEtherDividendDepositedEventArgs extends DecodedLogArgs {
@@ -84,6 +92,26 @@ export interface EtherDividendCheckpointSetWithholdingEventArgs extends DecodedL
 export interface EtherDividendCheckpointSetWithholdingFixedEventArgs extends DecodedLogArgs {
     _investors: string[];
     _withholding: BigNumber;
+    _timestamp: BigNumber;
+}
+
+export interface EtherDividendCheckpointSetWalletEventArgs extends DecodedLogArgs {
+    _oldWallet: string;
+    _newWallet: string;
+    _timestamp: BigNumber;
+}
+
+export interface EtherDividendCheckpointUpdateDividendDatesEventArgs extends DecodedLogArgs {
+    _dividendIndex: BigNumber;
+    _maturity: BigNumber;
+    _expiry: BigNumber;
+}
+
+export interface EtherDividendCheckpointPauseEventArgs extends DecodedLogArgs {
+    _timestammp: BigNumber;
+}
+
+export interface EtherDividendCheckpointUnpauseEventArgs extends DecodedLogArgs {
     _timestamp: BigNumber;
 }
 
@@ -260,6 +288,107 @@ export class EtherDividendCheckpointContract extends BaseContract {
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
             return resultArray[0];
+        },
+    };
+    public reclaimETH = {
+        async sendTransactionAsync(
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('reclaimETH()').inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
+            const encodedData = self._lookupEthersInterface('reclaimETH()').functions.reclaimETH.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                contractDefaults,
+                self.reclaimETH.estimateGasAsync.bind<EtherDividendCheckpointContract, any, Promise<number>>(
+                    self,
+                    
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('reclaimETH()').inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
+            const encodedData = self._lookupEthersInterface('reclaimETH()').functions.reclaimETH.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                contractDefaults
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+        ): string {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('reclaimETH()').inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
+            const abiEncodedTransactionData = self._lookupEthersInterface('reclaimETH()').functions.reclaimETH.encode([]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as EtherDividendCheckpointContract;
+            const functionSignature = 'reclaimETH()';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.reclaimETH;
+            const encodedData = ethersFunction.encode([]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'reclaimETH'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray;
         },
     };
     public getInitFunction = {
@@ -477,6 +606,107 @@ export class EtherDividendCheckpointContract extends BaseContract {
             return resultArray[0];
         },
     };
+    public unpause = {
+        async sendTransactionAsync(
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('unpause()').inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
+            const encodedData = self._lookupEthersInterface('unpause()').functions.unpause.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                contractDefaults,
+                self.unpause.estimateGasAsync.bind<EtherDividendCheckpointContract, any, Promise<number>>(
+                    self,
+                    
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('unpause()').inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
+            const encodedData = self._lookupEthersInterface('unpause()').functions.unpause.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                contractDefaults
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+        ): string {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('unpause()').inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
+            const abiEncodedTransactionData = self._lookupEthersInterface('unpause()').functions.unpause.encode([]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as EtherDividendCheckpointContract;
+            const functionSignature = 'unpause()';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.unpause;
+            const encodedData = ethersFunction.encode([]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'unpause'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray;
+        },
+    };
     public pushDividendPaymentToAddresses = {
         async sendTransactionAsync(
             _dividendIndex: BigNumber,
@@ -616,6 +846,36 @@ export class EtherDividendCheckpointContract extends BaseContract {
             return resultArray;
         },
     };
+    public wallet = {
+        async callAsync(
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as EtherDividendCheckpointContract;
+            const functionSignature = 'wallet()';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.wallet;
+            const encodedData = ethersFunction.encode([]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'wallet'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray[0];
+        },
+    };
     public isClaimed = {
         async callAsync(
             _investor: string,
@@ -721,6 +981,36 @@ export class EtherDividendCheckpointContract extends BaseContract {
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             let resultArray = ethersFunction.decode(rawCallResult);
             const outputAbi = (_.find(self.abi, {name: 'MANAGE'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray[0];
+        },
+    };
+    public paused = {
+        async callAsync(
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<boolean
+        > {
+            const self = this as any as EtherDividendCheckpointContract;
+            const functionSignature = 'paused()';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.paused;
+            const encodedData = ethersFunction.encode([]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'paused'}) as MethodAbi).outputs;
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
             return resultArray[0];
@@ -911,6 +1201,284 @@ export class EtherDividendCheckpointContract extends BaseContract {
             return resultArray[0];
         },
     };
+    public updateDividendDates = {
+        async sendTransactionAsync(
+            _dividendIndex: BigNumber,
+            _maturity: BigNumber,
+            _expiry: BigNumber,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('updateDividendDates(uint256,uint256,uint256)').inputs;
+            [_dividendIndex,
+    _maturity,
+    _expiry
+    ] = BaseContract._formatABIDataItemList(inputAbi, [_dividendIndex,
+    _maturity,
+    _expiry
+    ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_dividendIndex,
+    _maturity,
+    _expiry
+    ]);
+            const encodedData = self._lookupEthersInterface('updateDividendDates(uint256,uint256,uint256)').functions.updateDividendDates.encode([_dividendIndex,
+    _maturity,
+    _expiry
+    ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                contractDefaults,
+                self.updateDividendDates.estimateGasAsync.bind<EtherDividendCheckpointContract, any, Promise<number>>(
+                    self,
+                    _dividendIndex,
+    _maturity,
+    _expiry
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _dividendIndex: BigNumber,
+            _maturity: BigNumber,
+            _expiry: BigNumber,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('updateDividendDates(uint256,uint256,uint256)').inputs;
+            [_dividendIndex,
+    _maturity,
+    _expiry
+    ] = BaseContract._formatABIDataItemList(inputAbi, [_dividendIndex,
+    _maturity,
+    _expiry
+    ], BaseContract._bigNumberToString);
+            const encodedData = self._lookupEthersInterface('updateDividendDates(uint256,uint256,uint256)').functions.updateDividendDates.encode([_dividendIndex,
+    _maturity,
+    _expiry
+    ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                contractDefaults
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _dividendIndex: BigNumber,
+            _maturity: BigNumber,
+            _expiry: BigNumber,
+        ): string {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('updateDividendDates(uint256,uint256,uint256)').inputs;
+            [_dividendIndex,
+    _maturity,
+    _expiry
+    ] = BaseContract._formatABIDataItemList(inputAbi, [_dividendIndex,
+    _maturity,
+    _expiry
+    ], BaseContract._bigNumberToString);
+            const abiEncodedTransactionData = self._lookupEthersInterface('updateDividendDates(uint256,uint256,uint256)').functions.updateDividendDates.encode([_dividendIndex,
+    _maturity,
+    _expiry
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _dividendIndex: BigNumber,
+            _maturity: BigNumber,
+            _expiry: BigNumber,
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as EtherDividendCheckpointContract;
+            const functionSignature = 'updateDividendDates(uint256,uint256,uint256)';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [_dividendIndex,
+        _maturity,
+        _expiry
+        ] = BaseContract._formatABIDataItemList(inputAbi, [_dividendIndex,
+        _maturity,
+        _expiry
+        ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_dividendIndex,
+        _maturity,
+        _expiry
+        ]);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.updateDividendDates;
+            const encodedData = ethersFunction.encode([_dividendIndex,
+        _maturity,
+        _expiry
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'updateDividendDates'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray;
+        },
+    };
+    public configure = {
+        async sendTransactionAsync(
+            _wallet: string,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('configure(address)').inputs;
+            [_wallet
+    ] = BaseContract._formatABIDataItemList(inputAbi, [_wallet
+    ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_wallet
+    ]);
+            const encodedData = self._lookupEthersInterface('configure(address)').functions.configure.encode([_wallet
+    ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                contractDefaults,
+                self.configure.estimateGasAsync.bind<EtherDividendCheckpointContract, any, Promise<number>>(
+                    self,
+                    _wallet
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _wallet: string,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('configure(address)').inputs;
+            [_wallet
+    ] = BaseContract._formatABIDataItemList(inputAbi, [_wallet
+    ], BaseContract._bigNumberToString);
+            const encodedData = self._lookupEthersInterface('configure(address)').functions.configure.encode([_wallet
+    ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                contractDefaults
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _wallet: string,
+        ): string {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('configure(address)').inputs;
+            [_wallet
+    ] = BaseContract._formatABIDataItemList(inputAbi, [_wallet
+    ], BaseContract._bigNumberToString);
+            const abiEncodedTransactionData = self._lookupEthersInterface('configure(address)').functions.configure.encode([_wallet
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _wallet: string,
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as EtherDividendCheckpointContract;
+            const functionSignature = 'configure(address)';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [_wallet
+        ] = BaseContract._formatABIDataItemList(inputAbi, [_wallet
+        ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_wallet
+        ]);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.configure;
+            const encodedData = ethersFunction.encode([_wallet
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'configure'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray;
+        },
+    };
     public withholdingTax = {
         async callAsync(
             index_0: string,
@@ -1086,6 +1654,107 @@ export class EtherDividendCheckpointContract extends BaseContract {
             return resultArray[0];
         },
     };
+    public pause = {
+        async sendTransactionAsync(
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('pause()').inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
+            const encodedData = self._lookupEthersInterface('pause()').functions.pause.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                contractDefaults,
+                self.pause.estimateGasAsync.bind<EtherDividendCheckpointContract, any, Promise<number>>(
+                    self,
+                    
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('pause()').inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
+            const encodedData = self._lookupEthersInterface('pause()').functions.pause.encode([]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                contractDefaults
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+        ): string {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('pause()').inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
+            const abiEncodedTransactionData = self._lookupEthersInterface('pause()').functions.pause.encode([]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as EtherDividendCheckpointContract;
+            const functionSignature = 'pause()';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.pause;
+            const encodedData = ethersFunction.encode([]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'pause'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray;
+        },
+    };
     public setWithholding = {
         async sendTransactionAsync(
             _investors: string[],
@@ -1220,6 +1889,246 @@ export class EtherDividendCheckpointContract extends BaseContract {
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             let resultArray = ethersFunction.decode(rawCallResult);
             const outputAbi = (_.find(self.abi, {name: 'setWithholding'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray;
+        },
+    };
+    public reclaimERC20 = {
+        async sendTransactionAsync(
+            _tokenContract: string,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('reclaimERC20(address)').inputs;
+            [_tokenContract
+    ] = BaseContract._formatABIDataItemList(inputAbi, [_tokenContract
+    ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_tokenContract
+    ]);
+            const encodedData = self._lookupEthersInterface('reclaimERC20(address)').functions.reclaimERC20.encode([_tokenContract
+    ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                contractDefaults,
+                self.reclaimERC20.estimateGasAsync.bind<EtherDividendCheckpointContract, any, Promise<number>>(
+                    self,
+                    _tokenContract
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _tokenContract: string,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('reclaimERC20(address)').inputs;
+            [_tokenContract
+    ] = BaseContract._formatABIDataItemList(inputAbi, [_tokenContract
+    ], BaseContract._bigNumberToString);
+            const encodedData = self._lookupEthersInterface('reclaimERC20(address)').functions.reclaimERC20.encode([_tokenContract
+    ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                contractDefaults
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _tokenContract: string,
+        ): string {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('reclaimERC20(address)').inputs;
+            [_tokenContract
+    ] = BaseContract._formatABIDataItemList(inputAbi, [_tokenContract
+    ], BaseContract._bigNumberToString);
+            const abiEncodedTransactionData = self._lookupEthersInterface('reclaimERC20(address)').functions.reclaimERC20.encode([_tokenContract
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _tokenContract: string,
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as EtherDividendCheckpointContract;
+            const functionSignature = 'reclaimERC20(address)';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [_tokenContract
+        ] = BaseContract._formatABIDataItemList(inputAbi, [_tokenContract
+        ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_tokenContract
+        ]);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.reclaimERC20;
+            const encodedData = ethersFunction.encode([_tokenContract
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'reclaimERC20'}) as MethodAbi).outputs;
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
+            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
+            return resultArray;
+        },
+    };
+    public changeWallet = {
+        async sendTransactionAsync(
+            _wallet: string,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('changeWallet(address)').inputs;
+            [_wallet
+    ] = BaseContract._formatABIDataItemList(inputAbi, [_wallet
+    ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_wallet
+    ]);
+            const encodedData = self._lookupEthersInterface('changeWallet(address)').functions.changeWallet.encode([_wallet
+    ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                contractDefaults,
+                self.changeWallet.estimateGasAsync.bind<EtherDividendCheckpointContract, any, Promise<number>>(
+                    self,
+                    _wallet
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _wallet: string,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('changeWallet(address)').inputs;
+            [_wallet
+    ] = BaseContract._formatABIDataItemList(inputAbi, [_wallet
+    ], BaseContract._bigNumberToString);
+            const encodedData = self._lookupEthersInterface('changeWallet(address)').functions.changeWallet.encode([_wallet
+    ]);
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const contractDefaults = _.defaults(
+                    self._web3Wrapper.getContractDefaults(),
+                    {
+                        from: defaultFromAddress 
+                    }
+                );
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                contractDefaults
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _wallet: string,
+        ): string {
+            const self = this as any as EtherDividendCheckpointContract;
+            const inputAbi = self._lookupAbi('changeWallet(address)').inputs;
+            [_wallet
+    ] = BaseContract._formatABIDataItemList(inputAbi, [_wallet
+    ], BaseContract._bigNumberToString);
+            const abiEncodedTransactionData = self._lookupEthersInterface('changeWallet(address)').functions.changeWallet.encode([_wallet
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _wallet: string,
+            callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as EtherDividendCheckpointContract;
+            const functionSignature = 'changeWallet(address)';
+            const inputAbi = self._lookupAbi(functionSignature).inputs;
+            [_wallet
+        ] = BaseContract._formatABIDataItemList(inputAbi, [_wallet
+        ], BaseContract._bigNumberToString.bind(self));
+            BaseContract.strictArgumentEncodingCheck(inputAbi, [_wallet
+        ]);
+            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.changeWallet;
+            const encodedData = ethersFunction.encode([_wallet
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...callData,
+                    data: encodedData,
+                },
+                self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            let resultArray = ethersFunction.decode(rawCallResult);
+            const outputAbi = (_.find(self.abi, {name: 'changeWallet'}) as MethodAbi).outputs;
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
             resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
             return resultArray;
