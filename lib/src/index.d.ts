@@ -27,4 +27,5 @@ export * from './generated-wrappers/pausable';
 export * from './generated-wrappers/sto';
 export * from './generated-wrappers/count_transfer_manager';
 export * from './generated-wrappers/percentage_transfer_manager';
+export * from './generated-wrappers/volume_restriction_t_m';
 //# sourceMappingURL=index.d.ts.map

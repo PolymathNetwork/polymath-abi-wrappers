@@ -139,10 +139,10 @@
     ethers "~4.0.4"
     lodash "^4.17.5"
 
-"@polymathnetwork/contract-artifacts@2.1.0-beta.6":
-  version "2.1.0-beta.6"
-  resolved "https://registry.yarnpkg.com/@polymathnetwork/contract-artifacts/-/contract-artifacts-2.1.0-beta.6.tgz#d6dec465bbb66b6aafa960e16bda579cca0ffbeb"
-  integrity sha512-mCw/Dt84LffmfnDa1dh3cuAXAStYOie/OkEt1/JD9GVUBkzjWPHxwjxHVq1VL2vCVB0ejMpahyqiXef2OgUHHg==
+"@polymathnetwork/contract-artifacts@2.1.0-beta.7":
+  version "2.1.0-beta.7"
+  resolved "https://registry.yarnpkg.com/@polymathnetwork/contract-artifacts/-/contract-artifacts-2.1.0-beta.7.tgz#8dce6a1297e98385098cee9c760c4279e521605f"
+  integrity sha512-Jccg94mw8PQD0OP7D4Mn6OzYCJpT37huKMWf9rcVxE/MhqBkGMzZvsEVw+uQvff+Bw/X/BYgx+se7xNp8cZNWQ==
 
 "@types/bn.js@^4.11.0":
   version "4.11.3"
