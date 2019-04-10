@@ -1,4 +1,5 @@
 export { PolyResponse } from './polyResponse';
+export { BaseContract } from "@0x/base-contract";
 export * from './generated-wrappers/capped_s_t_o';
 export * from './generated-wrappers/capped_s_t_o_factory';
 export * from './generated-wrappers/erc20_dividend_checkpoint';
