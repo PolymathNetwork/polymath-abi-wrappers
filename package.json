@@ -6,7 +6,9 @@
   },
   "description": "Low-level Polymath smart contract wrappers generated using @0x/abi-gen",
   "main": "lib/src/index.js",
-  "files": ["lib/**/*"],
+  "files": [
+    "lib/**/*"
+  ],
   "scripts": {
     "build": "tsc -b",
     "build:ci": "yarn build",
@@ -32,7 +34,7 @@
     "@0x/types": "1.4.1",
     "@types/lodash": "^4.14.119",
     "@types/node": "^10.12.18",
-    "@polymathnetwork/contract-artifacts": "2.1.0-beta.7",
+    "@polymathnetwork/contract-artifacts": "2.1.0-beta.8",
     "shx": "^0.2.2",
     "tslint": "5.11.0"
   },
