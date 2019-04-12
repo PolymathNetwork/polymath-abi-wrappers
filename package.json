@@ -1,6 +1,6 @@
 {
   "name": "@polymathnetwork/abi-wrappers",
-  "version": "2.1.0-beta.10",
+  "version": "2.1.0-beta.11",
   "engines": {
     "node": ">=6.12"
   },
@@ -10,9 +10,10 @@
     "lib/**/*"
   ],
   "scripts": {
-    "build": "tsc -b",
+    "build": "tsc -b && yarn uglify",
     "build:ci": "yarn build",
     "lint": "tslint --format stylish --project .",
+    "uglify": "node_modules/uglifyjs-folder/cli.js lib/src/generated-wrappers -eo lib/src/generated-wrappers --pattern \"**/*.js,!**/*min.js\" -x .js",
     "pre_build": "yarn clean && yarn generate_contract_wrappers",
     "clean": "shx rm -rf src/generated-wrappers",
     "generate_contract_wrappers": "node_modules/@0x/abi-gen/bin/abi-gen.js --abis ${npm_package_config_abis} --template contract.handlebars --partials 'partials/**/*.handlebars' --output src/generated-wrappers"
@@ -32,11 +33,12 @@
   "devDependencies": {
     "@0x/abi-gen": "1.0.19",
     "@0x/types": "1.4.1",
+    "@polymathnetwork/contract-artifacts": "2.1.0-beta.8",
     "@types/lodash": "^4.14.119",
     "@types/node": "^10.12.18",
-    "@polymathnetwork/contract-artifacts": "2.1.0-beta.8",
     "shx": "^0.2.2",
-    "tslint": "5.11.0"
+    "tslint": "5.11.0",
+    "uglifyjs-folder": "^1.5.1"
   },
   "dependencies": {
     "@0x/base-contract": "^3.0.10",
