@@ -1,5 +1,5 @@
 import { BaseContract } from '@0x/base-contract';
-import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, Provider, TxData, TxDataPayable } from 'ethereum-types';
+import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, TxDataPayable, SupportedProvider } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../polyResponse';
 export declare type SecurityTokenRegistryEventArgs = SecurityTokenRegistryPauseEventArgs | SecurityTokenRegistryUnpauseEventArgs | SecurityTokenRegistryTickerRemovedEventArgs | SecurityTokenRegistryChangeExpiryLimitEventArgs | SecurityTokenRegistryChangeSecurityLaunchFeeEventArgs | SecurityTokenRegistryChangeTickerRegistrationFeeEventArgs | SecurityTokenRegistryOwnershipTransferredEventArgs | SecurityTokenRegistryChangeTickerOwnershipEventArgs | SecurityTokenRegistryNewSecurityTokenEventArgs | SecurityTokenRegistryRegisterTickerEventArgs;
@@ -230,6 +230,7 @@ export declare class SecurityTokenRegistryContract extends BaseContract {
     owner: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
-    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
+    static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>): Promise<SecurityTokenRegistryContract>;
+    constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=security_token_registry.d.ts.map

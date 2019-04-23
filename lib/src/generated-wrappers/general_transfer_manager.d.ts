@@ -1,5 +1,5 @@
 import { BaseContract } from '@0x/base-contract';
-import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, Provider, TxData } from 'ethereum-types';
+import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../polyResponse';
 export declare type GeneralTransferManagerEventArgs = GeneralTransferManagerChangeIssuanceAddressEventArgs | GeneralTransferManagerAllowAllTransfersEventArgs | GeneralTransferManagerAllowAllWhitelistTransfersEventArgs | GeneralTransferManagerAllowAllWhitelistIssuancesEventArgs | GeneralTransferManagerAllowAllBurnTransfersEventArgs | GeneralTransferManagerChangeSigningAddressEventArgs | GeneralTransferManagerChangeDefaultsEventArgs | GeneralTransferManagerModifyWhitelistEventArgs | GeneralTransferManagerPauseEventArgs | GeneralTransferManagerUnpauseEventArgs;
@@ -204,6 +204,7 @@ export declare class GeneralTransferManagerContract extends BaseContract {
     getPermissions: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
     };
-    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
+    static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>, _securityToken: string, _polyAddress: string): Promise<GeneralTransferManagerContract>;
+    constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=general_transfer_manager.d.ts.map

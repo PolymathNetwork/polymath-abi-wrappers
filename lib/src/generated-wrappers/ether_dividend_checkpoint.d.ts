@@ -1,5 +1,5 @@
 import { BaseContract } from '@0x/base-contract';
-import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, Provider, TxData, TxDataPayable } from 'ethereum-types';
+import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, TxDataPayable, SupportedProvider } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../polyResponse';
 export declare type EtherDividendCheckpointEventArgs = EtherDividendCheckpointEtherDividendDepositedEventArgs | EtherDividendCheckpointEtherDividendClaimedEventArgs | EtherDividendCheckpointEtherDividendReclaimedEventArgs | EtherDividendCheckpointEtherDividendClaimFailedEventArgs | EtherDividendCheckpointEtherDividendWithholdingWithdrawnEventArgs | EtherDividendCheckpointSetDefaultExcludedAddressesEventArgs | EtherDividendCheckpointSetWithholdingEventArgs | EtherDividendCheckpointSetWithholdingFixedEventArgs | EtherDividendCheckpointSetWalletEventArgs | EtherDividendCheckpointUpdateDividendDatesEventArgs | EtherDividendCheckpointPauseEventArgs | EtherDividendCheckpointUnpauseEventArgs;
@@ -280,6 +280,7 @@ export declare class EtherDividendCheckpointContract extends BaseContract {
         getABIEncodedTransactionData(_dividendIndex: BigNumber): string;
         callAsync(_dividendIndex: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
-    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
+    static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>, _securityToken: string, _polyAddress: string): Promise<EtherDividendCheckpointContract>;
+    constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=ether_dividend_checkpoint.d.ts.map
