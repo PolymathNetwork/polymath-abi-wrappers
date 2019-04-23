@@ -1,5 +1,5 @@
 import { BaseContract } from '@0x/base-contract';
-import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, Provider, TxData } from 'ethereum-types';
+import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider } from 'ethereum-types';
 import { PolyResponse } from '../polyResponse';
 export declare type FeatureRegistryEventArgs = FeatureRegistryChangeFeatureStatusEventArgs | FeatureRegistryOwnershipRenouncedEventArgs | FeatureRegistryOwnershipTransferredEventArgs;
 export declare enum FeatureRegistryEvents {
@@ -53,6 +53,7 @@ export declare class FeatureRegistryContract extends BaseContract {
         getABIEncodedTransactionData(_nameKey: string, _newStatus: boolean): string;
         callAsync(_nameKey: string, _newStatus: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
-    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
+    static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>): Promise<FeatureRegistryContract>;
+    constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=feature_registry.d.ts.map

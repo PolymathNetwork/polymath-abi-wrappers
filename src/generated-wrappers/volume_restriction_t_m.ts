@@ -2,13 +2,12 @@
 // tslint:disable:no-unused-variable
 // tslint:disable:no-unbound-method
 import { BaseContract } from '@0x/base-contract';
-import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact, DecodedLogArgs, MethodAbi, Provider, TxData, TxDataPayable, TransactionReceiptWithDecodedLogs } from 'ethereum-types';
-import { BigNumber, classUtils, logUtils } from '@0x/utils';
+import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact, DecodedLogArgs, MethodAbi, TxData, TxDataPayable, SupportedProvider } from 'ethereum-types';
+import { BigNumber, classUtils, logUtils, providerUtils } from '@0x/utils';
 import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { PolyResponse } from '../polyResponse';
 import * as ethers from 'ethers';
-import * as _ from 'lodash';
 // tslint:enable:no-unused-variable
 
 export type VolumeRestrictionTMEventArgs =
@@ -153,24 +152,19 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('unpause()').inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const encodedData = self._lookupEthersInterface('unpause()').functions.unpause.encode([]);
+            const encodedData = self._strictEncodeArguments('unpause()', []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.unpause.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     
@@ -187,132 +181,110 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('unpause()').inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('unpause()').functions.unpause.encode([]);
+            const encodedData = self._strictEncodeArguments('unpause()',
+            []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('unpause()').inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('unpause()').functions.unpause.encode([]);
+            const abiEncodedTransactionData = self._strictEncodeArguments('unpause()',
+            []);
             return abiEncodedTransactionData;
         },
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'unpause()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.unpause;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('unpause()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'unpause'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('unpause()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public individualRestriction = {
         async callAsync(
             index_0: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'individualRestriction(address)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [index_0
-        ] = BaseContract._formatABIDataItemList(inputAbi, [index_0
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [index_0
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.individualRestriction;
-            const encodedData = ethersFunction.encode([index_0
+            const encodedData = self._strictEncodeArguments('individualRestriction(address)', [index_0
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'individualRestriction'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('individualRestriction(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public paused = {
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<boolean
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'paused()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.paused;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('paused()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'paused'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('paused()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<boolean
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public takeFee = {
         async sendTransactionAsync(
             _amount: BigNumber,
@@ -320,28 +292,20 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('takeFee(uint256)').inputs;
-            [_amount
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_amount
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_amount
+            const encodedData = self._strictEncodeArguments('takeFee(uint256)', [_amount
     ]);
-            const encodedData = self._lookupEthersInterface('takeFee(uint256)').functions.takeFee.encode([_amount
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.takeFee.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _amount
@@ -360,30 +324,25 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('takeFee(uint256)').inputs;
+            const encodedData = self._strictEncodeArguments('takeFee(uint256)',
             [_amount
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_amount
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('takeFee(uint256)').functions.takeFee.encode([_amount
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -391,102 +350,81 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _amount: BigNumber,
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('takeFee(uint256)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('takeFee(uint256)',
             [_amount
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_amount
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('takeFee(uint256)').functions.takeFee.encode([_amount
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _amount: BigNumber,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<boolean
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'takeFee(uint256)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_amount
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_amount
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_amount
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.takeFee;
-            const encodedData = ethersFunction.encode([_amount
+            const encodedData = self._strictEncodeArguments('takeFee(uint256)', [_amount
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'takeFee'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('takeFee(uint256)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<boolean
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public polyToken = {
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'polyToken()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.polyToken;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('polyToken()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'polyToken'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('polyToken()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public pause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('pause()').inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const encodedData = self._lookupEthersInterface('pause()').functions.pause.encode([]);
+            const encodedData = self._strictEncodeArguments('pause()', []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.pause.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     
@@ -503,287 +441,237 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('pause()').inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('pause()').functions.pause.encode([]);
+            const encodedData = self._strictEncodeArguments('pause()',
+            []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('pause()').inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('pause()').functions.pause.encode([]);
+            const abiEncodedTransactionData = self._strictEncodeArguments('pause()',
+            []);
             return abiEncodedTransactionData;
         },
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'pause()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.pause;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('pause()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'pause'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('pause()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public defaultRestriction = {
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'defaultRestriction()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.defaultRestriction;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('defaultRestriction()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'defaultRestriction'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('defaultRestriction()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public securityToken = {
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'securityToken()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.securityToken;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('securityToken()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'securityToken'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('securityToken()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public factory = {
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'factory()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.factory;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('factory()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'factory'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('factory()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public FEE_ADMIN = {
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'FEE_ADMIN()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.FEE_ADMIN;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('FEE_ADMIN()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'FEE_ADMIN'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('FEE_ADMIN()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public defaultDailyRestriction = {
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'defaultDailyRestriction()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.defaultDailyRestriction;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('defaultDailyRestriction()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'defaultDailyRestriction'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('defaultDailyRestriction()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public exemptAddresses = {
         async callAsync(
             index_0: BigNumber,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'exemptAddresses(uint256)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [index_0
-        ] = BaseContract._formatABIDataItemList(inputAbi, [index_0
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [index_0
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.exemptAddresses;
-            const encodedData = ethersFunction.encode([index_0
+            const encodedData = self._strictEncodeArguments('exemptAddresses(uint256)', [index_0
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'exemptAddresses'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('exemptAddresses(uint256)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public individualDailyRestriction = {
         async callAsync(
             index_0: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'individualDailyRestriction(address)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [index_0
-        ] = BaseContract._formatABIDataItemList(inputAbi, [index_0
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [index_0
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.individualDailyRestriction;
-            const encodedData = ethersFunction.encode([index_0
+            const encodedData = self._strictEncodeArguments('individualDailyRestriction(address)', [index_0
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'individualDailyRestriction'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('individualDailyRestriction(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public verifyTransfer = {
         async sendTransactionAsync(
             _from: string,
@@ -795,44 +683,24 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('verifyTransfer(address,address,uint256,bytes,bool)').inputs;
-            [_from,
-    index_1,
-    _amount,
-    index_3,
-    _isTransfer
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_from,
-    index_1,
-    _amount,
-    index_3,
-    _isTransfer
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_from,
+            const encodedData = self._strictEncodeArguments('verifyTransfer(address,address,uint256,bytes,bool)', [_from,
     index_1,
     _amount,
     index_3,
     _isTransfer
     ]);
-            const encodedData = self._lookupEthersInterface('verifyTransfer(address,address,uint256,bytes,bool)').functions.verifyTransfer.encode([_from,
-    index_1,
-    _amount,
-    index_3,
-    _isTransfer
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.verifyTransfer.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _from,
@@ -859,42 +727,29 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('verifyTransfer(address,address,uint256,bytes,bool)').inputs;
+            const encodedData = self._strictEncodeArguments('verifyTransfer(address,address,uint256,bytes,bool)',
             [_from,
     index_1,
     _amount,
     index_3,
     _isTransfer
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_from,
-    index_1,
-    _amount,
-    index_3,
-    _isTransfer
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('verifyTransfer(address,address,uint256,bytes,bool)').functions.verifyTransfer.encode([_from,
-    index_1,
-    _amount,
-    index_3,
-    _isTransfer
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -906,19 +761,8 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _isTransfer: boolean,
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('verifyTransfer(address,address,uint256,bytes,bool)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('verifyTransfer(address,address,uint256,bytes,bool)',
             [_from,
-    index_1,
-    _amount,
-    index_3,
-    _isTransfer
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_from,
-    index_1,
-    _amount,
-    index_3,
-    _isTransfer
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('verifyTransfer(address,address,uint256,bytes,bool)').functions.verifyTransfer.encode([_from,
     index_1,
     _amount,
     index_3,
@@ -932,54 +776,34 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _amount: BigNumber,
             index_3: string,
             _isTransfer: boolean,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<BigNumber
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'verifyTransfer(address,address,uint256,bytes,bool)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_from,
-        index_1,
-        _amount,
-        index_3,
-        _isTransfer
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_from,
-        index_1,
-        _amount,
-        index_3,
-        _isTransfer
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_from,
-        index_1,
-        _amount,
-        index_3,
-        _isTransfer
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.verifyTransfer;
-            const encodedData = ethersFunction.encode([_from,
+            const encodedData = self._strictEncodeArguments('verifyTransfer(address,address,uint256,bytes,bool)', [_from,
         index_1,
         _amount,
         index_3,
         _isTransfer
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'verifyTransfer'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('verifyTransfer(address,address,uint256,bytes,bool)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public changeExemptWalletList = {
         async sendTransactionAsync(
             _wallet: string,
@@ -988,32 +812,21 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('changeExemptWalletList(address,bool)').inputs;
-            [_wallet,
-    _change
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_wallet,
-    _change
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_wallet,
+            const encodedData = self._strictEncodeArguments('changeExemptWalletList(address,bool)', [_wallet,
     _change
     ]);
-            const encodedData = self._lookupEthersInterface('changeExemptWalletList(address,bool)').functions.changeExemptWalletList.encode([_wallet,
-    _change
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.changeExemptWalletList.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _wallet,
@@ -1034,33 +847,26 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('changeExemptWalletList(address,bool)').inputs;
+            const encodedData = self._strictEncodeArguments('changeExemptWalletList(address,bool)',
             [_wallet,
     _change
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_wallet,
-    _change
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('changeExemptWalletList(address,bool)').functions.changeExemptWalletList.encode([_wallet,
-    _change
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -1069,13 +875,8 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _change: boolean,
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('changeExemptWalletList(address,bool)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('changeExemptWalletList(address,bool)',
             [_wallet,
-    _change
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_wallet,
-    _change
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('changeExemptWalletList(address,bool)').functions.changeExemptWalletList.encode([_wallet,
     _change
     ]);
             return abiEncodedTransactionData;
@@ -1083,42 +884,31 @@ export class VolumeRestrictionTMContract extends BaseContract {
         async callAsync(
             _wallet: string,
             _change: boolean,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'changeExemptWalletList(address,bool)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_wallet,
-        _change
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_wallet,
-        _change
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_wallet,
-        _change
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.changeExemptWalletList;
-            const encodedData = ethersFunction.encode([_wallet,
+            const encodedData = self._strictEncodeArguments('changeExemptWalletList(address,bool)', [_wallet,
         _change
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'changeExemptWalletList'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('changeExemptWalletList(address,bool)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public addIndividualRestriction = {
         async sendTransactionAsync(
             _holder: string,
@@ -1131,48 +921,25 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('addIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)').inputs;
-            [_holder,
-    _allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holder,
-    _allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holder,
+            const encodedData = self._strictEncodeArguments('addIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)', [_holder,
     _allowedTokens,
     _startTime,
     _rollingPeriodInDays,
     _endTime,
     _restrictionType
     ]);
-            const encodedData = self._lookupEthersInterface('addIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)').functions.addIndividualRestriction.encode([_holder,
-    _allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.addIndividualRestriction.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _holder,
@@ -1201,45 +968,30 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('addIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)').inputs;
+            const encodedData = self._strictEncodeArguments('addIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)',
             [_holder,
     _allowedTokens,
     _startTime,
     _rollingPeriodInDays,
     _endTime,
     _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holder,
-    _allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('addIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)').functions.addIndividualRestriction.encode([_holder,
-    _allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -1252,21 +1004,8 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _restrictionType: number|BigNumber,
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('addIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('addIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)',
             [_holder,
-    _allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holder,
-    _allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('addIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)').functions.addIndividualRestriction.encode([_holder,
     _allowedTokens,
     _startTime,
     _rollingPeriodInDays,
@@ -1282,35 +1021,12 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _rollingPeriodInDays: BigNumber,
             _endTime: BigNumber,
             _restrictionType: number|BigNumber,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'addIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_holder,
-        _allowedTokens,
-        _startTime,
-        _rollingPeriodInDays,
-        _endTime,
-        _restrictionType
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_holder,
-        _allowedTokens,
-        _startTime,
-        _rollingPeriodInDays,
-        _endTime,
-        _restrictionType
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holder,
-        _allowedTokens,
-        _startTime,
-        _rollingPeriodInDays,
-        _endTime,
-        _restrictionType
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.addIndividualRestriction;
-            const encodedData = ethersFunction.encode([_holder,
+            const encodedData = self._strictEncodeArguments('addIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)', [_holder,
         _allowedTokens,
         _startTime,
         _rollingPeriodInDays,
@@ -1318,22 +1034,22 @@ export class VolumeRestrictionTMContract extends BaseContract {
         _restrictionType
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'addIndividualRestriction'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('addIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public addIndividualDailyRestriction = {
         async sendTransactionAsync(
             _holder: string,
@@ -1345,44 +1061,24 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('addIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)').inputs;
-            [_holder,
-    _allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holder,
-    _allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holder,
+            const encodedData = self._strictEncodeArguments('addIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)', [_holder,
     _allowedTokens,
     _startTime,
     _endTime,
     _restrictionType
     ]);
-            const encodedData = self._lookupEthersInterface('addIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)').functions.addIndividualDailyRestriction.encode([_holder,
-    _allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.addIndividualDailyRestriction.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _holder,
@@ -1409,42 +1105,29 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('addIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)').inputs;
+            const encodedData = self._strictEncodeArguments('addIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)',
             [_holder,
     _allowedTokens,
     _startTime,
     _endTime,
     _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holder,
-    _allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('addIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)').functions.addIndividualDailyRestriction.encode([_holder,
-    _allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -1456,19 +1139,8 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _restrictionType: number|BigNumber,
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('addIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('addIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)',
             [_holder,
-    _allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holder,
-    _allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('addIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)').functions.addIndividualDailyRestriction.encode([_holder,
     _allowedTokens,
     _startTime,
     _endTime,
@@ -1482,54 +1154,34 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _startTime: BigNumber,
             _endTime: BigNumber,
             _restrictionType: number|BigNumber,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'addIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_holder,
-        _allowedTokens,
-        _startTime,
-        _endTime,
-        _restrictionType
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_holder,
-        _allowedTokens,
-        _startTime,
-        _endTime,
-        _restrictionType
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holder,
-        _allowedTokens,
-        _startTime,
-        _endTime,
-        _restrictionType
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.addIndividualDailyRestriction;
-            const encodedData = ethersFunction.encode([_holder,
+            const encodedData = self._strictEncodeArguments('addIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)', [_holder,
         _allowedTokens,
         _startTime,
         _endTime,
         _restrictionType
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'addIndividualDailyRestriction'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('addIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public addIndividualDailyRestrictionMulti = {
         async sendTransactionAsync(
             _holders: string[],
@@ -1541,44 +1193,24 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('addIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])').inputs;
-            [_holders,
-    _allowedTokens,
-    _startTimes,
-    _endTimes,
-    _restrictionTypes
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holders,
-    _allowedTokens,
-    _startTimes,
-    _endTimes,
-    _restrictionTypes
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holders,
+            const encodedData = self._strictEncodeArguments('addIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])', [_holders,
     _allowedTokens,
     _startTimes,
     _endTimes,
     _restrictionTypes
     ]);
-            const encodedData = self._lookupEthersInterface('addIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])').functions.addIndividualDailyRestrictionMulti.encode([_holders,
-    _allowedTokens,
-    _startTimes,
-    _endTimes,
-    _restrictionTypes
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.addIndividualDailyRestrictionMulti.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _holders,
@@ -1605,42 +1237,29 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('addIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])').inputs;
+            const encodedData = self._strictEncodeArguments('addIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])',
             [_holders,
     _allowedTokens,
     _startTimes,
     _endTimes,
     _restrictionTypes
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holders,
-    _allowedTokens,
-    _startTimes,
-    _endTimes,
-    _restrictionTypes
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('addIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])').functions.addIndividualDailyRestrictionMulti.encode([_holders,
-    _allowedTokens,
-    _startTimes,
-    _endTimes,
-    _restrictionTypes
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -1652,19 +1271,8 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _restrictionTypes: Array<number|BigNumber>,
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('addIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('addIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])',
             [_holders,
-    _allowedTokens,
-    _startTimes,
-    _endTimes,
-    _restrictionTypes
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holders,
-    _allowedTokens,
-    _startTimes,
-    _endTimes,
-    _restrictionTypes
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('addIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])').functions.addIndividualDailyRestrictionMulti.encode([_holders,
     _allowedTokens,
     _startTimes,
     _endTimes,
@@ -1678,54 +1286,34 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _startTimes: BigNumber[],
             _endTimes: BigNumber[],
             _restrictionTypes: Array<number|BigNumber>,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'addIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_holders,
-        _allowedTokens,
-        _startTimes,
-        _endTimes,
-        _restrictionTypes
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_holders,
-        _allowedTokens,
-        _startTimes,
-        _endTimes,
-        _restrictionTypes
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holders,
-        _allowedTokens,
-        _startTimes,
-        _endTimes,
-        _restrictionTypes
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.addIndividualDailyRestrictionMulti;
-            const encodedData = ethersFunction.encode([_holders,
+            const encodedData = self._strictEncodeArguments('addIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])', [_holders,
         _allowedTokens,
         _startTimes,
         _endTimes,
         _restrictionTypes
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'addIndividualDailyRestrictionMulti'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('addIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public addIndividualRestrictionMulti = {
         async sendTransactionAsync(
             _holders: string[],
@@ -1738,48 +1326,25 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('addIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])').inputs;
-            [_holders,
-    _allowedTokens,
-    _startTimes,
-    _rollingPeriodInDays,
-    _endTimes,
-    _restrictionTypes
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holders,
-    _allowedTokens,
-    _startTimes,
-    _rollingPeriodInDays,
-    _endTimes,
-    _restrictionTypes
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holders,
+            const encodedData = self._strictEncodeArguments('addIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])', [_holders,
     _allowedTokens,
     _startTimes,
     _rollingPeriodInDays,
     _endTimes,
     _restrictionTypes
     ]);
-            const encodedData = self._lookupEthersInterface('addIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])').functions.addIndividualRestrictionMulti.encode([_holders,
-    _allowedTokens,
-    _startTimes,
-    _rollingPeriodInDays,
-    _endTimes,
-    _restrictionTypes
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.addIndividualRestrictionMulti.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _holders,
@@ -1808,45 +1373,30 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('addIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])').inputs;
+            const encodedData = self._strictEncodeArguments('addIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])',
             [_holders,
     _allowedTokens,
     _startTimes,
     _rollingPeriodInDays,
     _endTimes,
     _restrictionTypes
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holders,
-    _allowedTokens,
-    _startTimes,
-    _rollingPeriodInDays,
-    _endTimes,
-    _restrictionTypes
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('addIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])').functions.addIndividualRestrictionMulti.encode([_holders,
-    _allowedTokens,
-    _startTimes,
-    _rollingPeriodInDays,
-    _endTimes,
-    _restrictionTypes
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -1859,21 +1409,8 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _restrictionTypes: Array<number|BigNumber>,
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('addIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('addIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])',
             [_holders,
-    _allowedTokens,
-    _startTimes,
-    _rollingPeriodInDays,
-    _endTimes,
-    _restrictionTypes
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holders,
-    _allowedTokens,
-    _startTimes,
-    _rollingPeriodInDays,
-    _endTimes,
-    _restrictionTypes
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('addIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])').functions.addIndividualRestrictionMulti.encode([_holders,
     _allowedTokens,
     _startTimes,
     _rollingPeriodInDays,
@@ -1889,35 +1426,12 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _rollingPeriodInDays: BigNumber[],
             _endTimes: BigNumber[],
             _restrictionTypes: Array<number|BigNumber>,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'addIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_holders,
-        _allowedTokens,
-        _startTimes,
-        _rollingPeriodInDays,
-        _endTimes,
-        _restrictionTypes
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_holders,
-        _allowedTokens,
-        _startTimes,
-        _rollingPeriodInDays,
-        _endTimes,
-        _restrictionTypes
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holders,
-        _allowedTokens,
-        _startTimes,
-        _rollingPeriodInDays,
-        _endTimes,
-        _restrictionTypes
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.addIndividualRestrictionMulti;
-            const encodedData = ethersFunction.encode([_holders,
+            const encodedData = self._strictEncodeArguments('addIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])', [_holders,
         _allowedTokens,
         _startTimes,
         _rollingPeriodInDays,
@@ -1925,22 +1439,22 @@ export class VolumeRestrictionTMContract extends BaseContract {
         _restrictionTypes
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'addIndividualRestrictionMulti'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('addIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public addDefaultRestriction = {
         async sendTransactionAsync(
             _allowedTokens: BigNumber,
@@ -1952,44 +1466,24 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('addDefaultRestriction(uint256,uint256,uint256,uint256,uint8)').inputs;
-            [_allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_allowedTokens,
+            const encodedData = self._strictEncodeArguments('addDefaultRestriction(uint256,uint256,uint256,uint256,uint8)', [_allowedTokens,
     _startTime,
     _rollingPeriodInDays,
     _endTime,
     _restrictionType
     ]);
-            const encodedData = self._lookupEthersInterface('addDefaultRestriction(uint256,uint256,uint256,uint256,uint8)').functions.addDefaultRestriction.encode([_allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.addDefaultRestriction.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _allowedTokens,
@@ -2016,42 +1510,29 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('addDefaultRestriction(uint256,uint256,uint256,uint256,uint8)').inputs;
+            const encodedData = self._strictEncodeArguments('addDefaultRestriction(uint256,uint256,uint256,uint256,uint8)',
             [_allowedTokens,
     _startTime,
     _rollingPeriodInDays,
     _endTime,
     _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('addDefaultRestriction(uint256,uint256,uint256,uint256,uint8)').functions.addDefaultRestriction.encode([_allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -2063,19 +1544,8 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _restrictionType: number|BigNumber,
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('addDefaultRestriction(uint256,uint256,uint256,uint256,uint8)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('addDefaultRestriction(uint256,uint256,uint256,uint256,uint8)',
             [_allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('addDefaultRestriction(uint256,uint256,uint256,uint256,uint8)').functions.addDefaultRestriction.encode([_allowedTokens,
     _startTime,
     _rollingPeriodInDays,
     _endTime,
@@ -2089,54 +1559,34 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _rollingPeriodInDays: BigNumber,
             _endTime: BigNumber,
             _restrictionType: number|BigNumber,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'addDefaultRestriction(uint256,uint256,uint256,uint256,uint8)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_allowedTokens,
-        _startTime,
-        _rollingPeriodInDays,
-        _endTime,
-        _restrictionType
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_allowedTokens,
-        _startTime,
-        _rollingPeriodInDays,
-        _endTime,
-        _restrictionType
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_allowedTokens,
-        _startTime,
-        _rollingPeriodInDays,
-        _endTime,
-        _restrictionType
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.addDefaultRestriction;
-            const encodedData = ethersFunction.encode([_allowedTokens,
+            const encodedData = self._strictEncodeArguments('addDefaultRestriction(uint256,uint256,uint256,uint256,uint8)', [_allowedTokens,
         _startTime,
         _rollingPeriodInDays,
         _endTime,
         _restrictionType
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'addDefaultRestriction'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('addDefaultRestriction(uint256,uint256,uint256,uint256,uint8)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public addDefaultDailyRestriction = {
         async sendTransactionAsync(
             _allowedTokens: BigNumber,
@@ -2147,40 +1597,23 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('addDefaultDailyRestriction(uint256,uint256,uint256,uint8)').inputs;
-            [_allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_allowedTokens,
+            const encodedData = self._strictEncodeArguments('addDefaultDailyRestriction(uint256,uint256,uint256,uint8)', [_allowedTokens,
     _startTime,
     _endTime,
     _restrictionType
     ]);
-            const encodedData = self._lookupEthersInterface('addDefaultDailyRestriction(uint256,uint256,uint256,uint8)').functions.addDefaultDailyRestriction.encode([_allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.addDefaultDailyRestriction.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _allowedTokens,
@@ -2205,39 +1638,28 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('addDefaultDailyRestriction(uint256,uint256,uint256,uint8)').inputs;
+            const encodedData = self._strictEncodeArguments('addDefaultDailyRestriction(uint256,uint256,uint256,uint8)',
             [_allowedTokens,
     _startTime,
     _endTime,
     _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('addDefaultDailyRestriction(uint256,uint256,uint256,uint8)').functions.addDefaultDailyRestriction.encode([_allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -2248,17 +1670,8 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _restrictionType: number|BigNumber,
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('addDefaultDailyRestriction(uint256,uint256,uint256,uint8)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('addDefaultDailyRestriction(uint256,uint256,uint256,uint8)',
             [_allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('addDefaultDailyRestriction(uint256,uint256,uint256,uint8)').functions.addDefaultDailyRestriction.encode([_allowedTokens,
     _startTime,
     _endTime,
     _restrictionType
@@ -2270,50 +1683,33 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _startTime: BigNumber,
             _endTime: BigNumber,
             _restrictionType: number|BigNumber,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'addDefaultDailyRestriction(uint256,uint256,uint256,uint8)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_allowedTokens,
-        _startTime,
-        _endTime,
-        _restrictionType
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_allowedTokens,
-        _startTime,
-        _endTime,
-        _restrictionType
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_allowedTokens,
-        _startTime,
-        _endTime,
-        _restrictionType
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.addDefaultDailyRestriction;
-            const encodedData = ethersFunction.encode([_allowedTokens,
+            const encodedData = self._strictEncodeArguments('addDefaultDailyRestriction(uint256,uint256,uint256,uint8)', [_allowedTokens,
         _startTime,
         _endTime,
         _restrictionType
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'addDefaultDailyRestriction'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('addDefaultDailyRestriction(uint256,uint256,uint256,uint8)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public removeIndividualRestriction = {
         async sendTransactionAsync(
             _holder: string,
@@ -2321,28 +1717,20 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('removeIndividualRestriction(address)').inputs;
-            [_holder
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holder
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holder
+            const encodedData = self._strictEncodeArguments('removeIndividualRestriction(address)', [_holder
     ]);
-            const encodedData = self._lookupEthersInterface('removeIndividualRestriction(address)').functions.removeIndividualRestriction.encode([_holder
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.removeIndividualRestriction.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _holder
@@ -2361,30 +1749,25 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('removeIndividualRestriction(address)').inputs;
+            const encodedData = self._strictEncodeArguments('removeIndividualRestriction(address)',
             [_holder
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holder
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('removeIndividualRestriction(address)').functions.removeIndividualRestriction.encode([_holder
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -2392,48 +1775,37 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _holder: string,
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('removeIndividualRestriction(address)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('removeIndividualRestriction(address)',
             [_holder
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holder
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('removeIndividualRestriction(address)').functions.removeIndividualRestriction.encode([_holder
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _holder: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'removeIndividualRestriction(address)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_holder
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_holder
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holder
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.removeIndividualRestriction;
-            const encodedData = ethersFunction.encode([_holder
+            const encodedData = self._strictEncodeArguments('removeIndividualRestriction(address)', [_holder
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'removeIndividualRestriction'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('removeIndividualRestriction(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public removeIndividualRestrictionMulti = {
         async sendTransactionAsync(
             _holders: string[],
@@ -2441,28 +1813,20 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('removeIndividualRestrictionMulti(address[])').inputs;
-            [_holders
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holders
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holders
+            const encodedData = self._strictEncodeArguments('removeIndividualRestrictionMulti(address[])', [_holders
     ]);
-            const encodedData = self._lookupEthersInterface('removeIndividualRestrictionMulti(address[])').functions.removeIndividualRestrictionMulti.encode([_holders
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.removeIndividualRestrictionMulti.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _holders
@@ -2481,30 +1845,25 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('removeIndividualRestrictionMulti(address[])').inputs;
+            const encodedData = self._strictEncodeArguments('removeIndividualRestrictionMulti(address[])',
             [_holders
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holders
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('removeIndividualRestrictionMulti(address[])').functions.removeIndividualRestrictionMulti.encode([_holders
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -2512,48 +1871,37 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _holders: string[],
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('removeIndividualRestrictionMulti(address[])').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('removeIndividualRestrictionMulti(address[])',
             [_holders
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holders
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('removeIndividualRestrictionMulti(address[])').functions.removeIndividualRestrictionMulti.encode([_holders
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _holders: string[],
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'removeIndividualRestrictionMulti(address[])';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_holders
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_holders
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holders
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.removeIndividualRestrictionMulti;
-            const encodedData = ethersFunction.encode([_holders
+            const encodedData = self._strictEncodeArguments('removeIndividualRestrictionMulti(address[])', [_holders
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'removeIndividualRestrictionMulti'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('removeIndividualRestrictionMulti(address[])');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public removeIndividualDailyRestriction = {
         async sendTransactionAsync(
             _holder: string,
@@ -2561,28 +1909,20 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('removeIndividualDailyRestriction(address)').inputs;
-            [_holder
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holder
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holder
+            const encodedData = self._strictEncodeArguments('removeIndividualDailyRestriction(address)', [_holder
     ]);
-            const encodedData = self._lookupEthersInterface('removeIndividualDailyRestriction(address)').functions.removeIndividualDailyRestriction.encode([_holder
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.removeIndividualDailyRestriction.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _holder
@@ -2601,30 +1941,25 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('removeIndividualDailyRestriction(address)').inputs;
+            const encodedData = self._strictEncodeArguments('removeIndividualDailyRestriction(address)',
             [_holder
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holder
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('removeIndividualDailyRestriction(address)').functions.removeIndividualDailyRestriction.encode([_holder
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -2632,48 +1967,37 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _holder: string,
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('removeIndividualDailyRestriction(address)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('removeIndividualDailyRestriction(address)',
             [_holder
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holder
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('removeIndividualDailyRestriction(address)').functions.removeIndividualDailyRestriction.encode([_holder
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _holder: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'removeIndividualDailyRestriction(address)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_holder
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_holder
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holder
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.removeIndividualDailyRestriction;
-            const encodedData = ethersFunction.encode([_holder
+            const encodedData = self._strictEncodeArguments('removeIndividualDailyRestriction(address)', [_holder
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'removeIndividualDailyRestriction'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('removeIndividualDailyRestriction(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public removeIndividualDailyRestrictionMulti = {
         async sendTransactionAsync(
             _holders: string[],
@@ -2681,28 +2005,20 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('removeIndividualDailyRestrictionMulti(address[])').inputs;
-            [_holders
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holders
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holders
+            const encodedData = self._strictEncodeArguments('removeIndividualDailyRestrictionMulti(address[])', [_holders
     ]);
-            const encodedData = self._lookupEthersInterface('removeIndividualDailyRestrictionMulti(address[])').functions.removeIndividualDailyRestrictionMulti.encode([_holders
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.removeIndividualDailyRestrictionMulti.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _holders
@@ -2721,30 +2037,25 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('removeIndividualDailyRestrictionMulti(address[])').inputs;
+            const encodedData = self._strictEncodeArguments('removeIndividualDailyRestrictionMulti(address[])',
             [_holders
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holders
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('removeIndividualDailyRestrictionMulti(address[])').functions.removeIndividualDailyRestrictionMulti.encode([_holders
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -2752,72 +2063,56 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _holders: string[],
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('removeIndividualDailyRestrictionMulti(address[])').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('removeIndividualDailyRestrictionMulti(address[])',
             [_holders
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holders
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('removeIndividualDailyRestrictionMulti(address[])').functions.removeIndividualDailyRestrictionMulti.encode([_holders
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _holders: string[],
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'removeIndividualDailyRestrictionMulti(address[])';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_holders
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_holders
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holders
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.removeIndividualDailyRestrictionMulti;
-            const encodedData = ethersFunction.encode([_holders
+            const encodedData = self._strictEncodeArguments('removeIndividualDailyRestrictionMulti(address[])', [_holders
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'removeIndividualDailyRestrictionMulti'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('removeIndividualDailyRestrictionMulti(address[])');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public removeDefaultRestriction = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('removeDefaultRestriction()').inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const encodedData = self._lookupEthersInterface('removeDefaultRestriction()').functions.removeDefaultRestriction.encode([]);
+            const encodedData = self._strictEncodeArguments('removeDefaultRestriction()', []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.removeDefaultRestriction.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     
@@ -2834,91 +2129,77 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('removeDefaultRestriction()').inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('removeDefaultRestriction()').functions.removeDefaultRestriction.encode([]);
+            const encodedData = self._strictEncodeArguments('removeDefaultRestriction()',
+            []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('removeDefaultRestriction()').inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('removeDefaultRestriction()').functions.removeDefaultRestriction.encode([]);
+            const abiEncodedTransactionData = self._strictEncodeArguments('removeDefaultRestriction()',
+            []);
             return abiEncodedTransactionData;
         },
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'removeDefaultRestriction()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.removeDefaultRestriction;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('removeDefaultRestriction()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'removeDefaultRestriction'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('removeDefaultRestriction()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public removeDefaultDailyRestriction = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('removeDefaultDailyRestriction()').inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const encodedData = self._lookupEthersInterface('removeDefaultDailyRestriction()').functions.removeDefaultDailyRestriction.encode([]);
+            const encodedData = self._strictEncodeArguments('removeDefaultDailyRestriction()', []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.removeDefaultDailyRestriction.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     
@@ -2935,67 +2216,58 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('removeDefaultDailyRestriction()').inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('removeDefaultDailyRestriction()').functions.removeDefaultDailyRestriction.encode([]);
+            const encodedData = self._strictEncodeArguments('removeDefaultDailyRestriction()',
+            []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('removeDefaultDailyRestriction()').inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('removeDefaultDailyRestriction()').functions.removeDefaultDailyRestriction.encode([]);
+            const abiEncodedTransactionData = self._strictEncodeArguments('removeDefaultDailyRestriction()',
+            []);
             return abiEncodedTransactionData;
         },
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'removeDefaultDailyRestriction()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.removeDefaultDailyRestriction;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('removeDefaultDailyRestriction()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'removeDefaultDailyRestriction'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('removeDefaultDailyRestriction()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public modifyIndividualRestriction = {
         async sendTransactionAsync(
             _holder: string,
@@ -3008,48 +2280,25 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('modifyIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)').inputs;
-            [_holder,
-    _allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holder,
-    _allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holder,
+            const encodedData = self._strictEncodeArguments('modifyIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)', [_holder,
     _allowedTokens,
     _startTime,
     _rollingPeriodInDays,
     _endTime,
     _restrictionType
     ]);
-            const encodedData = self._lookupEthersInterface('modifyIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)').functions.modifyIndividualRestriction.encode([_holder,
-    _allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.modifyIndividualRestriction.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _holder,
@@ -3078,45 +2327,30 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('modifyIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)').inputs;
+            const encodedData = self._strictEncodeArguments('modifyIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)',
             [_holder,
     _allowedTokens,
     _startTime,
     _rollingPeriodInDays,
     _endTime,
     _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holder,
-    _allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('modifyIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)').functions.modifyIndividualRestriction.encode([_holder,
-    _allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -3129,21 +2363,8 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _restrictionType: number|BigNumber,
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('modifyIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('modifyIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)',
             [_holder,
-    _allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holder,
-    _allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('modifyIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)').functions.modifyIndividualRestriction.encode([_holder,
     _allowedTokens,
     _startTime,
     _rollingPeriodInDays,
@@ -3159,35 +2380,12 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _rollingPeriodInDays: BigNumber,
             _endTime: BigNumber,
             _restrictionType: number|BigNumber,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'modifyIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_holder,
-        _allowedTokens,
-        _startTime,
-        _rollingPeriodInDays,
-        _endTime,
-        _restrictionType
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_holder,
-        _allowedTokens,
-        _startTime,
-        _rollingPeriodInDays,
-        _endTime,
-        _restrictionType
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holder,
-        _allowedTokens,
-        _startTime,
-        _rollingPeriodInDays,
-        _endTime,
-        _restrictionType
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.modifyIndividualRestriction;
-            const encodedData = ethersFunction.encode([_holder,
+            const encodedData = self._strictEncodeArguments('modifyIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)', [_holder,
         _allowedTokens,
         _startTime,
         _rollingPeriodInDays,
@@ -3195,22 +2393,22 @@ export class VolumeRestrictionTMContract extends BaseContract {
         _restrictionType
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'modifyIndividualRestriction'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('modifyIndividualRestriction(address,uint256,uint256,uint256,uint256,uint8)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public modifyIndividualDailyRestriction = {
         async sendTransactionAsync(
             _holder: string,
@@ -3222,44 +2420,24 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('modifyIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)').inputs;
-            [_holder,
-    _allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holder,
-    _allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holder,
+            const encodedData = self._strictEncodeArguments('modifyIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)', [_holder,
     _allowedTokens,
     _startTime,
     _endTime,
     _restrictionType
     ]);
-            const encodedData = self._lookupEthersInterface('modifyIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)').functions.modifyIndividualDailyRestriction.encode([_holder,
-    _allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.modifyIndividualDailyRestriction.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _holder,
@@ -3286,42 +2464,29 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('modifyIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)').inputs;
+            const encodedData = self._strictEncodeArguments('modifyIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)',
             [_holder,
     _allowedTokens,
     _startTime,
     _endTime,
     _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holder,
-    _allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('modifyIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)').functions.modifyIndividualDailyRestriction.encode([_holder,
-    _allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -3333,19 +2498,8 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _restrictionType: number|BigNumber,
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('modifyIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('modifyIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)',
             [_holder,
-    _allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holder,
-    _allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('modifyIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)').functions.modifyIndividualDailyRestriction.encode([_holder,
     _allowedTokens,
     _startTime,
     _endTime,
@@ -3359,54 +2513,34 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _startTime: BigNumber,
             _endTime: BigNumber,
             _restrictionType: number|BigNumber,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'modifyIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_holder,
-        _allowedTokens,
-        _startTime,
-        _endTime,
-        _restrictionType
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_holder,
-        _allowedTokens,
-        _startTime,
-        _endTime,
-        _restrictionType
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holder,
-        _allowedTokens,
-        _startTime,
-        _endTime,
-        _restrictionType
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.modifyIndividualDailyRestriction;
-            const encodedData = ethersFunction.encode([_holder,
+            const encodedData = self._strictEncodeArguments('modifyIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)', [_holder,
         _allowedTokens,
         _startTime,
         _endTime,
         _restrictionType
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'modifyIndividualDailyRestriction'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('modifyIndividualDailyRestriction(address,uint256,uint256,uint256,uint8)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public modifyIndividualDailyRestrictionMulti = {
         async sendTransactionAsync(
             _holders: string[],
@@ -3418,44 +2552,24 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('modifyIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])').inputs;
-            [_holders,
-    _allowedTokens,
-    _startTimes,
-    _endTimes,
-    _restrictionTypes
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holders,
-    _allowedTokens,
-    _startTimes,
-    _endTimes,
-    _restrictionTypes
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holders,
+            const encodedData = self._strictEncodeArguments('modifyIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])', [_holders,
     _allowedTokens,
     _startTimes,
     _endTimes,
     _restrictionTypes
     ]);
-            const encodedData = self._lookupEthersInterface('modifyIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])').functions.modifyIndividualDailyRestrictionMulti.encode([_holders,
-    _allowedTokens,
-    _startTimes,
-    _endTimes,
-    _restrictionTypes
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.modifyIndividualDailyRestrictionMulti.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _holders,
@@ -3482,42 +2596,29 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('modifyIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])').inputs;
+            const encodedData = self._strictEncodeArguments('modifyIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])',
             [_holders,
     _allowedTokens,
     _startTimes,
     _endTimes,
     _restrictionTypes
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holders,
-    _allowedTokens,
-    _startTimes,
-    _endTimes,
-    _restrictionTypes
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('modifyIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])').functions.modifyIndividualDailyRestrictionMulti.encode([_holders,
-    _allowedTokens,
-    _startTimes,
-    _endTimes,
-    _restrictionTypes
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -3529,19 +2630,8 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _restrictionTypes: Array<number|BigNumber>,
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('modifyIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('modifyIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])',
             [_holders,
-    _allowedTokens,
-    _startTimes,
-    _endTimes,
-    _restrictionTypes
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holders,
-    _allowedTokens,
-    _startTimes,
-    _endTimes,
-    _restrictionTypes
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('modifyIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])').functions.modifyIndividualDailyRestrictionMulti.encode([_holders,
     _allowedTokens,
     _startTimes,
     _endTimes,
@@ -3555,54 +2645,34 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _startTimes: BigNumber[],
             _endTimes: BigNumber[],
             _restrictionTypes: Array<number|BigNumber>,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'modifyIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_holders,
-        _allowedTokens,
-        _startTimes,
-        _endTimes,
-        _restrictionTypes
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_holders,
-        _allowedTokens,
-        _startTimes,
-        _endTimes,
-        _restrictionTypes
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holders,
-        _allowedTokens,
-        _startTimes,
-        _endTimes,
-        _restrictionTypes
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.modifyIndividualDailyRestrictionMulti;
-            const encodedData = ethersFunction.encode([_holders,
+            const encodedData = self._strictEncodeArguments('modifyIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])', [_holders,
         _allowedTokens,
         _startTimes,
         _endTimes,
         _restrictionTypes
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'modifyIndividualDailyRestrictionMulti'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('modifyIndividualDailyRestrictionMulti(address[],uint256[],uint256[],uint256[],uint8[])');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public modifyIndividualRestrictionMulti = {
         async sendTransactionAsync(
             _holders: string[],
@@ -3615,48 +2685,25 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('modifyIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])').inputs;
-            [_holders,
-    _allowedTokens,
-    _startTimes,
-    _rollingPeriodInDays,
-    _endTimes,
-    _restrictionTypes
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holders,
-    _allowedTokens,
-    _startTimes,
-    _rollingPeriodInDays,
-    _endTimes,
-    _restrictionTypes
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holders,
+            const encodedData = self._strictEncodeArguments('modifyIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])', [_holders,
     _allowedTokens,
     _startTimes,
     _rollingPeriodInDays,
     _endTimes,
     _restrictionTypes
     ]);
-            const encodedData = self._lookupEthersInterface('modifyIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])').functions.modifyIndividualRestrictionMulti.encode([_holders,
-    _allowedTokens,
-    _startTimes,
-    _rollingPeriodInDays,
-    _endTimes,
-    _restrictionTypes
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.modifyIndividualRestrictionMulti.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _holders,
@@ -3685,45 +2732,30 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('modifyIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])').inputs;
+            const encodedData = self._strictEncodeArguments('modifyIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])',
             [_holders,
     _allowedTokens,
     _startTimes,
     _rollingPeriodInDays,
     _endTimes,
     _restrictionTypes
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holders,
-    _allowedTokens,
-    _startTimes,
-    _rollingPeriodInDays,
-    _endTimes,
-    _restrictionTypes
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('modifyIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])').functions.modifyIndividualRestrictionMulti.encode([_holders,
-    _allowedTokens,
-    _startTimes,
-    _rollingPeriodInDays,
-    _endTimes,
-    _restrictionTypes
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -3736,21 +2768,8 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _restrictionTypes: Array<number|BigNumber>,
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('modifyIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('modifyIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])',
             [_holders,
-    _allowedTokens,
-    _startTimes,
-    _rollingPeriodInDays,
-    _endTimes,
-    _restrictionTypes
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_holders,
-    _allowedTokens,
-    _startTimes,
-    _rollingPeriodInDays,
-    _endTimes,
-    _restrictionTypes
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('modifyIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])').functions.modifyIndividualRestrictionMulti.encode([_holders,
     _allowedTokens,
     _startTimes,
     _rollingPeriodInDays,
@@ -3766,35 +2785,12 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _rollingPeriodInDays: BigNumber[],
             _endTimes: BigNumber[],
             _restrictionTypes: Array<number|BigNumber>,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'modifyIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_holders,
-        _allowedTokens,
-        _startTimes,
-        _rollingPeriodInDays,
-        _endTimes,
-        _restrictionTypes
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_holders,
-        _allowedTokens,
-        _startTimes,
-        _rollingPeriodInDays,
-        _endTimes,
-        _restrictionTypes
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_holders,
-        _allowedTokens,
-        _startTimes,
-        _rollingPeriodInDays,
-        _endTimes,
-        _restrictionTypes
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.modifyIndividualRestrictionMulti;
-            const encodedData = ethersFunction.encode([_holders,
+            const encodedData = self._strictEncodeArguments('modifyIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])', [_holders,
         _allowedTokens,
         _startTimes,
         _rollingPeriodInDays,
@@ -3802,22 +2798,22 @@ export class VolumeRestrictionTMContract extends BaseContract {
         _restrictionTypes
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'modifyIndividualRestrictionMulti'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('modifyIndividualRestrictionMulti(address[],uint256[],uint256[],uint256[],uint256[],uint8[])');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public modifyDefaultRestriction = {
         async sendTransactionAsync(
             _allowedTokens: BigNumber,
@@ -3829,44 +2825,24 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('modifyDefaultRestriction(uint256,uint256,uint256,uint256,uint8)').inputs;
-            [_allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_allowedTokens,
+            const encodedData = self._strictEncodeArguments('modifyDefaultRestriction(uint256,uint256,uint256,uint256,uint8)', [_allowedTokens,
     _startTime,
     _rollingPeriodInDays,
     _endTime,
     _restrictionType
     ]);
-            const encodedData = self._lookupEthersInterface('modifyDefaultRestriction(uint256,uint256,uint256,uint256,uint8)').functions.modifyDefaultRestriction.encode([_allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.modifyDefaultRestriction.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _allowedTokens,
@@ -3893,42 +2869,29 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('modifyDefaultRestriction(uint256,uint256,uint256,uint256,uint8)').inputs;
+            const encodedData = self._strictEncodeArguments('modifyDefaultRestriction(uint256,uint256,uint256,uint256,uint8)',
             [_allowedTokens,
     _startTime,
     _rollingPeriodInDays,
     _endTime,
     _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('modifyDefaultRestriction(uint256,uint256,uint256,uint256,uint8)').functions.modifyDefaultRestriction.encode([_allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -3940,19 +2903,8 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _restrictionType: number|BigNumber,
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('modifyDefaultRestriction(uint256,uint256,uint256,uint256,uint8)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('modifyDefaultRestriction(uint256,uint256,uint256,uint256,uint8)',
             [_allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_allowedTokens,
-    _startTime,
-    _rollingPeriodInDays,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('modifyDefaultRestriction(uint256,uint256,uint256,uint256,uint8)').functions.modifyDefaultRestriction.encode([_allowedTokens,
     _startTime,
     _rollingPeriodInDays,
     _endTime,
@@ -3966,54 +2918,34 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _rollingPeriodInDays: BigNumber,
             _endTime: BigNumber,
             _restrictionType: number|BigNumber,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'modifyDefaultRestriction(uint256,uint256,uint256,uint256,uint8)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_allowedTokens,
-        _startTime,
-        _rollingPeriodInDays,
-        _endTime,
-        _restrictionType
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_allowedTokens,
-        _startTime,
-        _rollingPeriodInDays,
-        _endTime,
-        _restrictionType
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_allowedTokens,
-        _startTime,
-        _rollingPeriodInDays,
-        _endTime,
-        _restrictionType
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.modifyDefaultRestriction;
-            const encodedData = ethersFunction.encode([_allowedTokens,
+            const encodedData = self._strictEncodeArguments('modifyDefaultRestriction(uint256,uint256,uint256,uint256,uint8)', [_allowedTokens,
         _startTime,
         _rollingPeriodInDays,
         _endTime,
         _restrictionType
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'modifyDefaultRestriction'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('modifyDefaultRestriction(uint256,uint256,uint256,uint256,uint8)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public modifyDefaultDailyRestriction = {
         async sendTransactionAsync(
             _allowedTokens: BigNumber,
@@ -4024,40 +2956,23 @@ export class VolumeRestrictionTMContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('modifyDefaultDailyRestriction(uint256,uint256,uint256,uint8)').inputs;
-            [_allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_allowedTokens,
+            const encodedData = self._strictEncodeArguments('modifyDefaultDailyRestriction(uint256,uint256,uint256,uint8)', [_allowedTokens,
     _startTime,
     _endTime,
     _restrictionType
     ]);
-            const encodedData = self._lookupEthersInterface('modifyDefaultDailyRestriction(uint256,uint256,uint256,uint8)').functions.modifyDefaultDailyRestriction.encode([_allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.modifyDefaultDailyRestriction.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _allowedTokens,
@@ -4082,39 +2997,28 @@ export class VolumeRestrictionTMContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('modifyDefaultDailyRestriction(uint256,uint256,uint256,uint8)').inputs;
+            const encodedData = self._strictEncodeArguments('modifyDefaultDailyRestriction(uint256,uint256,uint256,uint8)',
             [_allowedTokens,
     _startTime,
     _endTime,
     _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('modifyDefaultDailyRestriction(uint256,uint256,uint256,uint8)').functions.modifyDefaultDailyRestriction.encode([_allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -4125,17 +3029,8 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _restrictionType: number|BigNumber,
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const inputAbi = self._lookupAbi('modifyDefaultDailyRestriction(uint256,uint256,uint256,uint8)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('modifyDefaultDailyRestriction(uint256,uint256,uint256,uint8)',
             [_allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_allowedTokens,
-    _startTime,
-    _endTime,
-    _restrictionType
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('modifyDefaultDailyRestriction(uint256,uint256,uint256,uint8)').functions.modifyDefaultDailyRestriction.encode([_allowedTokens,
     _startTime,
     _endTime,
     _restrictionType
@@ -4147,285 +3042,261 @@ export class VolumeRestrictionTMContract extends BaseContract {
             _startTime: BigNumber,
             _endTime: BigNumber,
             _restrictionType: number|BigNumber,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'modifyDefaultDailyRestriction(uint256,uint256,uint256,uint8)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_allowedTokens,
-        _startTime,
-        _endTime,
-        _restrictionType
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_allowedTokens,
-        _startTime,
-        _endTime,
-        _restrictionType
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_allowedTokens,
-        _startTime,
-        _endTime,
-        _restrictionType
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.modifyDefaultDailyRestriction;
-            const encodedData = ethersFunction.encode([_allowedTokens,
+            const encodedData = self._strictEncodeArguments('modifyDefaultDailyRestriction(uint256,uint256,uint256,uint8)', [_allowedTokens,
         _startTime,
         _endTime,
         _restrictionType
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'modifyDefaultDailyRestriction'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('modifyDefaultDailyRestriction(uint256,uint256,uint256,uint8)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getIndividualBucketDetailsToUser = {
         async callAsync(
             _user: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'getIndividualBucketDetailsToUser(address)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_user
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_user
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_user
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getIndividualBucketDetailsToUser;
-            const encodedData = ethersFunction.encode([_user
+            const encodedData = self._strictEncodeArguments('getIndividualBucketDetailsToUser(address)', [_user
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getIndividualBucketDetailsToUser'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getIndividualBucketDetailsToUser(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getDefaultBucketDetailsToUser = {
         async callAsync(
             _user: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'getDefaultBucketDetailsToUser(address)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_user
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_user
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_user
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getDefaultBucketDetailsToUser;
-            const encodedData = ethersFunction.encode([_user
+            const encodedData = self._strictEncodeArguments('getDefaultBucketDetailsToUser(address)', [_user
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getDefaultBucketDetailsToUser'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getDefaultBucketDetailsToUser(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getTotalTradedByUser = {
         async callAsync(
             _user: string,
             _at: BigNumber,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<BigNumber
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'getTotalTradedByUser(address,uint256)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_user,
-        _at
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_user,
-        _at
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_user,
-        _at
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getTotalTradedByUser;
-            const encodedData = ethersFunction.encode([_user,
+            const encodedData = self._strictEncodeArguments('getTotalTradedByUser(address,uint256)', [_user,
         _at
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getTotalTradedByUser'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getTotalTradedByUser(address,uint256)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getInitFunction = {
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'getInitFunction()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getInitFunction;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('getInitFunction()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getInitFunction'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getInitFunction()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getExemptAddress = {
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string[]
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'getExemptAddress()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getExemptAddress;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('getExemptAddress()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getExemptAddress'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getExemptAddress()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string[]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getRestrictedData = {
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<[string[], BigNumber[], BigNumber[], BigNumber[], BigNumber[], BigNumber[]]
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'getRestrictedData()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getRestrictedData;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('getRestrictedData()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getRestrictedData'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getRestrictedData()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[string[], BigNumber[], BigNumber[], BigNumber[], BigNumber[], BigNumber[]]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getPermissions = {
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string[]
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const functionSignature = 'getPermissions()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getPermissions;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('getPermissions()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getPermissions'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
-    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number) {
-        super('VolumeRestrictionTM', abi, address, provider, txDefaults);
-        this._defaultEstimateGasFactor = _.isUndefined(defaultEstimateGasFactor) ? 1.1 : defaultEstimateGasFactor;
+            const abiEncoder = self._lookupAbiEncoder('getPermissions()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string[]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public static async deployAsync(
+        bytecode: string,
+        abi: ContractAbi,
+        supportedProvider: SupportedProvider,
+        txDefaults: Partial<TxData>,
+            _securityToken: string,
+            _polyAddress: string,
+    ): Promise<VolumeRestrictionTMContract> {
+        const provider = providerUtils.standardizeOrThrow(supportedProvider);
+        const constructorAbi = BaseContract._lookupConstructorAbi(abi);
+        [_securityToken,
+_polyAddress
+] = BaseContract._formatABIDataItemList(
+            constructorAbi.inputs,
+            [_securityToken,
+_polyAddress
+],
+            BaseContract._bigNumberToString,
+        );
+        const iface = new ethers.utils.Interface(abi);
+        const deployInfo = iface.deployFunction;
+        const txData = deployInfo.encode(bytecode, [_securityToken,
+_polyAddress
+]);
+        const web3Wrapper = new Web3Wrapper(provider);
+        const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {data: txData},
+            txDefaults,
+            web3Wrapper.estimateGasAsync.bind(web3Wrapper),
+        );
+        const txHash = await web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+        logUtils.log(`transactionHash: ${txHash}`);
+        const txReceipt = await web3Wrapper.awaitTransactionSuccessAsync(txHash);
+        logUtils.log(`VolumeRestrictionTM successfully deployed at ${txReceipt.contractAddress}`);
+        const contractInstance = new VolumeRestrictionTMContract(abi, txReceipt.contractAddress as string, provider, txDefaults);
+        contractInstance.constructorArgs = [_securityToken,
+_polyAddress
+];
+        return contractInstance;
+    }
+    constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number) {
+        super('VolumeRestrictionTM', abi, address, supportedProvider, txDefaults);
+        this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
         this._web3Wrapper.abiDecoder.addABI(abi);
-        classUtils.bindAll(this, ['_ethersInterfacesByFunctionSignature', 'address', 'abi', '_web3Wrapper', '_defaultEstimateGasFactor']);
+        classUtils.bindAll(this, ['_abiEncoderByFunctionSignature', 'address', 'abi', '_web3Wrapper', '_defaultEstimateGasFactor']);
     }
 } // tslint:disable:max-file-line-count
 // tslint:enable:no-unbound-method

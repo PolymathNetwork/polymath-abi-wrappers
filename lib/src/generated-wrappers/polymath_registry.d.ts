@@ -1,5 +1,5 @@
 import { BaseContract } from '@0x/base-contract';
-import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, Provider, TxData } from 'ethereum-types';
+import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider } from 'ethereum-types';
 import { PolyResponse } from '../polyResponse';
 export declare type PolymathRegistryEventArgs = PolymathRegistryChangeAddressEventArgs | PolymathRegistryOwnershipRenouncedEventArgs | PolymathRegistryOwnershipTransferredEventArgs;
 export declare enum PolymathRegistryEvents {
@@ -54,6 +54,7 @@ export declare class PolymathRegistryContract extends BaseContract {
         getABIEncodedTransactionData(_nameKey: string, _newAddress: string): string;
         callAsync(_nameKey: string, _newAddress: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
-    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
+    static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>): Promise<PolymathRegistryContract>;
+    constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=polymath_registry.d.ts.map

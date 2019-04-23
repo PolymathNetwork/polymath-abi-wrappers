@@ -1,5 +1,5 @@
 import { BaseContract } from '@0x/base-contract';
-import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, Provider, TxData, TxDataPayable } from 'ethereum-types';
+import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, TxDataPayable, SupportedProvider } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../polyResponse';
 export declare type USDTieredSTOEventArgs = USDTieredSTOSetAllowBeneficialInvestmentsEventArgs | USDTieredSTOSetNonAccreditedLimitEventArgs | USDTieredSTOSetAccreditedEventArgs | USDTieredSTOTokenPurchaseEventArgs | USDTieredSTOFundsReceivedEventArgs | USDTieredSTOReserveTokenMintEventArgs | USDTieredSTOSetAddressesEventArgs | USDTieredSTOSetLimitsEventArgs | USDTieredSTOSetTimesEventArgs | USDTieredSTOSetTiersEventArgs | USDTieredSTOSetFundRaiseTypesEventArgs | USDTieredSTOPauseEventArgs | USDTieredSTOUnpauseEventArgs;
@@ -355,6 +355,7 @@ export declare class USDTieredSTOContract extends BaseContract {
     getInitFunction: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
-    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
+    static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>, _securityToken: string, _polyAddress: string): Promise<USDTieredSTOContract>;
+    constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=u_s_d_tiered_s_t_o.d.ts.map
