@@ -2,13 +2,12 @@
 // tslint:disable:no-unused-variable
 // tslint:disable:no-unbound-method
 import { BaseContract } from '@0x/base-contract';
-import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact, DecodedLogArgs, MethodAbi, Provider, TxData, TxDataPayable, TransactionReceiptWithDecodedLogs } from 'ethereum-types';
-import { BigNumber, classUtils, logUtils } from '@0x/utils';
+import { BlockParam, BlockParamLiteral, CallData, ContractAbi, ContractArtifact, DecodedLogArgs, MethodAbi, TxData, TxDataPayable, SupportedProvider } from 'ethereum-types';
+import { BigNumber, classUtils, logUtils, providerUtils } from '@0x/utils';
 import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { PolyResponse } from '../polyResponse';
 import * as ethers from 'ethers';
-import * as _ from 'lodash';
 // tslint:enable:no-unused-variable
 
 export type SecurityTokenRegistryEventArgs =
@@ -106,318 +105,246 @@ export class SecurityTokenRegistryContract extends BaseContract {
     public getBytes32Value = {
         async callAsync(
             _variable: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'getBytes32Value(bytes32)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_variable
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_variable
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_variable
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getBytes32Value;
-            const encodedData = ethersFunction.encode([_variable
+            const encodedData = self._strictEncodeArguments('getBytes32Value(bytes32)', [_variable
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getBytes32Value'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getBytes32Value(bytes32)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getBytesValue = {
         async callAsync(
             _variable: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'getBytesValue(bytes32)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_variable
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_variable
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_variable
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getBytesValue;
-            const encodedData = ethersFunction.encode([_variable
+            const encodedData = self._strictEncodeArguments('getBytesValue(bytes32)', [_variable
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getBytesValue'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getBytesValue(bytes32)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getAddressValue = {
         async callAsync(
             _variable: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'getAddressValue(bytes32)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_variable
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_variable
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_variable
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getAddressValue;
-            const encodedData = ethersFunction.encode([_variable
+            const encodedData = self._strictEncodeArguments('getAddressValue(bytes32)', [_variable
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getAddressValue'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getAddressValue(bytes32)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getArrayAddress = {
         async callAsync(
             _key: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string[]
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'getArrayAddress(bytes32)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_key
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_key
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_key
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getArrayAddress;
-            const encodedData = ethersFunction.encode([_key
+            const encodedData = self._strictEncodeArguments('getArrayAddress(bytes32)', [_key
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getArrayAddress'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getArrayAddress(bytes32)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string[]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getBoolValue = {
         async callAsync(
             _variable: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<boolean
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'getBoolValue(bytes32)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_variable
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_variable
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_variable
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getBoolValue;
-            const encodedData = ethersFunction.encode([_variable
+            const encodedData = self._strictEncodeArguments('getBoolValue(bytes32)', [_variable
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getBoolValue'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getBoolValue(bytes32)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<boolean
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getStringValue = {
         async callAsync(
             _variable: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'getStringValue(bytes32)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_variable
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_variable
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_variable
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getStringValue;
-            const encodedData = ethersFunction.encode([_variable
+            const encodedData = self._strictEncodeArguments('getStringValue(bytes32)', [_variable
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getStringValue'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getStringValue(bytes32)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getArrayBytes32 = {
         async callAsync(
             _key: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string[]
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'getArrayBytes32(bytes32)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_key
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_key
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_key
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getArrayBytes32;
-            const encodedData = ethersFunction.encode([_key
+            const encodedData = self._strictEncodeArguments('getArrayBytes32(bytes32)', [_key
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getArrayBytes32'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getArrayBytes32(bytes32)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string[]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getUintValue = {
         async callAsync(
             _variable: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<BigNumber
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'getUintValue(bytes32)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_variable
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_variable
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_variable
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getUintValue;
-            const encodedData = ethersFunction.encode([_variable
+            const encodedData = self._strictEncodeArguments('getUintValue(bytes32)', [_variable
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getUintValue'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getUintValue(bytes32)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getArrayUint = {
         async callAsync(
             _key: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<BigNumber[]
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'getArrayUint(bytes32)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_key
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_key
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_key
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getArrayUint;
-            const encodedData = ethersFunction.encode([_key
+            const encodedData = self._strictEncodeArguments('getArrayUint(bytes32)', [_key
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getArrayUint'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getArrayUint(bytes32)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber[]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public initialize = {
         async sendTransactionAsync(
             _polymathRegistry: string,
@@ -430,48 +357,25 @@ export class SecurityTokenRegistryContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('initialize(address,address,uint256,uint256,address,address)').inputs;
-            [_polymathRegistry,
-    _STFactory,
-    _stLaunchFee,
-    _tickerRegFee,
-    _polyToken,
-    _owner
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_polymathRegistry,
-    _STFactory,
-    _stLaunchFee,
-    _tickerRegFee,
-    _polyToken,
-    _owner
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_polymathRegistry,
+            const encodedData = self._strictEncodeArguments('initialize(address,address,uint256,uint256,address,address)', [_polymathRegistry,
     _STFactory,
     _stLaunchFee,
     _tickerRegFee,
     _polyToken,
     _owner
     ]);
-            const encodedData = self._lookupEthersInterface('initialize(address,address,uint256,uint256,address,address)').functions.initialize.encode([_polymathRegistry,
-    _STFactory,
-    _stLaunchFee,
-    _tickerRegFee,
-    _polyToken,
-    _owner
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.initialize.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _polymathRegistry,
@@ -500,45 +404,30 @@ export class SecurityTokenRegistryContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('initialize(address,address,uint256,uint256,address,address)').inputs;
+            const encodedData = self._strictEncodeArguments('initialize(address,address,uint256,uint256,address,address)',
             [_polymathRegistry,
     _STFactory,
     _stLaunchFee,
     _tickerRegFee,
     _polyToken,
     _owner
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_polymathRegistry,
-    _STFactory,
-    _stLaunchFee,
-    _tickerRegFee,
-    _polyToken,
-    _owner
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('initialize(address,address,uint256,uint256,address,address)').functions.initialize.encode([_polymathRegistry,
-    _STFactory,
-    _stLaunchFee,
-    _tickerRegFee,
-    _polyToken,
-    _owner
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -551,21 +440,8 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _owner: string,
         ): string {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('initialize(address,address,uint256,uint256,address,address)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('initialize(address,address,uint256,uint256,address,address)',
             [_polymathRegistry,
-    _STFactory,
-    _stLaunchFee,
-    _tickerRegFee,
-    _polyToken,
-    _owner
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_polymathRegistry,
-    _STFactory,
-    _stLaunchFee,
-    _tickerRegFee,
-    _polyToken,
-    _owner
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('initialize(address,address,uint256,uint256,address,address)').functions.initialize.encode([_polymathRegistry,
     _STFactory,
     _stLaunchFee,
     _tickerRegFee,
@@ -581,35 +457,12 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _tickerRegFee: BigNumber,
             _polyToken: string,
             _owner: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'initialize(address,address,uint256,uint256,address,address)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_polymathRegistry,
-        _STFactory,
-        _stLaunchFee,
-        _tickerRegFee,
-        _polyToken,
-        _owner
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_polymathRegistry,
-        _STFactory,
-        _stLaunchFee,
-        _tickerRegFee,
-        _polyToken,
-        _owner
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_polymathRegistry,
-        _STFactory,
-        _stLaunchFee,
-        _tickerRegFee,
-        _polyToken,
-        _owner
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.initialize;
-            const encodedData = ethersFunction.encode([_polymathRegistry,
+            const encodedData = self._strictEncodeArguments('initialize(address,address,uint256,uint256,address,address)', [_polymathRegistry,
         _STFactory,
         _stLaunchFee,
         _tickerRegFee,
@@ -617,22 +470,22 @@ export class SecurityTokenRegistryContract extends BaseContract {
         _owner
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'initialize'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('initialize(address,address,uint256,uint256,address,address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public registerTicker = {
         async sendTransactionAsync(
             _owner: string,
@@ -642,36 +495,22 @@ export class SecurityTokenRegistryContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('registerTicker(address,string,string)').inputs;
-            [_owner,
-    _ticker,
-    _tokenName
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_owner,
-    _ticker,
-    _tokenName
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_owner,
+            const encodedData = self._strictEncodeArguments('registerTicker(address,string,string)', [_owner,
     _ticker,
     _tokenName
     ]);
-            const encodedData = self._lookupEthersInterface('registerTicker(address,string,string)').functions.registerTicker.encode([_owner,
-    _ticker,
-    _tokenName
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.registerTicker.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _owner,
@@ -694,36 +533,27 @@ export class SecurityTokenRegistryContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('registerTicker(address,string,string)').inputs;
+            const encodedData = self._strictEncodeArguments('registerTicker(address,string,string)',
             [_owner,
     _ticker,
     _tokenName
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_owner,
-    _ticker,
-    _tokenName
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('registerTicker(address,string,string)').functions.registerTicker.encode([_owner,
-    _ticker,
-    _tokenName
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -733,15 +563,8 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _tokenName: string,
         ): string {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('registerTicker(address,string,string)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('registerTicker(address,string,string)',
             [_owner,
-    _ticker,
-    _tokenName
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_owner,
-    _ticker,
-    _tokenName
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('registerTicker(address,string,string)').functions.registerTicker.encode([_owner,
     _ticker,
     _tokenName
     ]);
@@ -751,46 +574,32 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _owner: string,
             _ticker: string,
             _tokenName: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'registerTicker(address,string,string)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_owner,
-        _ticker,
-        _tokenName
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_owner,
-        _ticker,
-        _tokenName
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_owner,
-        _ticker,
-        _tokenName
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.registerTicker;
-            const encodedData = ethersFunction.encode([_owner,
+            const encodedData = self._strictEncodeArguments('registerTicker(address,string,string)', [_owner,
         _ticker,
         _tokenName
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'registerTicker'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('registerTicker(address,string,string)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public modifyTicker = {
         async sendTransactionAsync(
             _owner: string,
@@ -803,48 +612,25 @@ export class SecurityTokenRegistryContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('modifyTicker(address,string,string,uint256,uint256,bool)').inputs;
-            [_owner,
-    _ticker,
-    _tokenName,
-    _registrationDate,
-    _expiryDate,
-    _status
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_owner,
-    _ticker,
-    _tokenName,
-    _registrationDate,
-    _expiryDate,
-    _status
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_owner,
+            const encodedData = self._strictEncodeArguments('modifyTicker(address,string,string,uint256,uint256,bool)', [_owner,
     _ticker,
     _tokenName,
     _registrationDate,
     _expiryDate,
     _status
     ]);
-            const encodedData = self._lookupEthersInterface('modifyTicker(address,string,string,uint256,uint256,bool)').functions.modifyTicker.encode([_owner,
-    _ticker,
-    _tokenName,
-    _registrationDate,
-    _expiryDate,
-    _status
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.modifyTicker.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _owner,
@@ -873,45 +659,30 @@ export class SecurityTokenRegistryContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('modifyTicker(address,string,string,uint256,uint256,bool)').inputs;
+            const encodedData = self._strictEncodeArguments('modifyTicker(address,string,string,uint256,uint256,bool)',
             [_owner,
     _ticker,
     _tokenName,
     _registrationDate,
     _expiryDate,
     _status
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_owner,
-    _ticker,
-    _tokenName,
-    _registrationDate,
-    _expiryDate,
-    _status
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('modifyTicker(address,string,string,uint256,uint256,bool)').functions.modifyTicker.encode([_owner,
-    _ticker,
-    _tokenName,
-    _registrationDate,
-    _expiryDate,
-    _status
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -924,21 +695,8 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _status: boolean,
         ): string {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('modifyTicker(address,string,string,uint256,uint256,bool)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('modifyTicker(address,string,string,uint256,uint256,bool)',
             [_owner,
-    _ticker,
-    _tokenName,
-    _registrationDate,
-    _expiryDate,
-    _status
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_owner,
-    _ticker,
-    _tokenName,
-    _registrationDate,
-    _expiryDate,
-    _status
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('modifyTicker(address,string,string,uint256,uint256,bool)').functions.modifyTicker.encode([_owner,
     _ticker,
     _tokenName,
     _registrationDate,
@@ -954,35 +712,12 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _registrationDate: BigNumber,
             _expiryDate: BigNumber,
             _status: boolean,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'modifyTicker(address,string,string,uint256,uint256,bool)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_owner,
-        _ticker,
-        _tokenName,
-        _registrationDate,
-        _expiryDate,
-        _status
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_owner,
-        _ticker,
-        _tokenName,
-        _registrationDate,
-        _expiryDate,
-        _status
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_owner,
-        _ticker,
-        _tokenName,
-        _registrationDate,
-        _expiryDate,
-        _status
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.modifyTicker;
-            const encodedData = ethersFunction.encode([_owner,
+            const encodedData = self._strictEncodeArguments('modifyTicker(address,string,string,uint256,uint256,bool)', [_owner,
         _ticker,
         _tokenName,
         _registrationDate,
@@ -990,22 +725,22 @@ export class SecurityTokenRegistryContract extends BaseContract {
         _status
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'modifyTicker'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('modifyTicker(address,string,string,uint256,uint256,bool)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public removeTicker = {
         async sendTransactionAsync(
             _ticker: string,
@@ -1013,28 +748,20 @@ export class SecurityTokenRegistryContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('removeTicker(string)').inputs;
-            [_ticker
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_ticker
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_ticker
+            const encodedData = self._strictEncodeArguments('removeTicker(string)', [_ticker
     ]);
-            const encodedData = self._lookupEthersInterface('removeTicker(string)').functions.removeTicker.encode([_ticker
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.removeTicker.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _ticker
@@ -1053,30 +780,25 @@ export class SecurityTokenRegistryContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('removeTicker(string)').inputs;
+            const encodedData = self._strictEncodeArguments('removeTicker(string)',
             [_ticker
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_ticker
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('removeTicker(string)').functions.removeTicker.encode([_ticker
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -1084,48 +806,37 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _ticker: string,
         ): string {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('removeTicker(string)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('removeTicker(string)',
             [_ticker
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_ticker
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('removeTicker(string)').functions.removeTicker.encode([_ticker
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _ticker: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'removeTicker(string)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_ticker
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_ticker
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_ticker
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.removeTicker;
-            const encodedData = ethersFunction.encode([_ticker
+            const encodedData = self._strictEncodeArguments('removeTicker(string)', [_ticker
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'removeTicker'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('removeTicker(string)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public transferTickerOwnership = {
         async sendTransactionAsync(
             _newOwner: string,
@@ -1134,32 +845,21 @@ export class SecurityTokenRegistryContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('transferTickerOwnership(address,string)').inputs;
-            [_newOwner,
-    _ticker
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_newOwner,
-    _ticker
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_newOwner,
+            const encodedData = self._strictEncodeArguments('transferTickerOwnership(address,string)', [_newOwner,
     _ticker
     ]);
-            const encodedData = self._lookupEthersInterface('transferTickerOwnership(address,string)').functions.transferTickerOwnership.encode([_newOwner,
-    _ticker
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.transferTickerOwnership.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _newOwner,
@@ -1180,33 +880,26 @@ export class SecurityTokenRegistryContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('transferTickerOwnership(address,string)').inputs;
+            const encodedData = self._strictEncodeArguments('transferTickerOwnership(address,string)',
             [_newOwner,
     _ticker
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_newOwner,
-    _ticker
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('transferTickerOwnership(address,string)').functions.transferTickerOwnership.encode([_newOwner,
-    _ticker
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -1215,13 +908,8 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _ticker: string,
         ): string {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('transferTickerOwnership(address,string)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('transferTickerOwnership(address,string)',
             [_newOwner,
-    _ticker
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_newOwner,
-    _ticker
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('transferTickerOwnership(address,string)').functions.transferTickerOwnership.encode([_newOwner,
     _ticker
     ]);
             return abiEncodedTransactionData;
@@ -1229,42 +917,31 @@ export class SecurityTokenRegistryContract extends BaseContract {
         async callAsync(
             _newOwner: string,
             _ticker: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'transferTickerOwnership(address,string)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_newOwner,
-        _ticker
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_newOwner,
-        _ticker
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_newOwner,
-        _ticker
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.transferTickerOwnership;
-            const encodedData = ethersFunction.encode([_newOwner,
+            const encodedData = self._strictEncodeArguments('transferTickerOwnership(address,string)', [_newOwner,
         _ticker
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'transferTickerOwnership'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('transferTickerOwnership(address,string)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public changeExpiryLimit = {
         async sendTransactionAsync(
             _newExpiry: BigNumber,
@@ -1272,28 +949,20 @@ export class SecurityTokenRegistryContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('changeExpiryLimit(uint256)').inputs;
-            [_newExpiry
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_newExpiry
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_newExpiry
+            const encodedData = self._strictEncodeArguments('changeExpiryLimit(uint256)', [_newExpiry
     ]);
-            const encodedData = self._lookupEthersInterface('changeExpiryLimit(uint256)').functions.changeExpiryLimit.encode([_newExpiry
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.changeExpiryLimit.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _newExpiry
@@ -1312,30 +981,25 @@ export class SecurityTokenRegistryContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('changeExpiryLimit(uint256)').inputs;
+            const encodedData = self._strictEncodeArguments('changeExpiryLimit(uint256)',
             [_newExpiry
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_newExpiry
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('changeExpiryLimit(uint256)').functions.changeExpiryLimit.encode([_newExpiry
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -1343,153 +1007,118 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _newExpiry: BigNumber,
         ): string {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('changeExpiryLimit(uint256)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('changeExpiryLimit(uint256)',
             [_newExpiry
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_newExpiry
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('changeExpiryLimit(uint256)').functions.changeExpiryLimit.encode([_newExpiry
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _newExpiry: BigNumber,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'changeExpiryLimit(uint256)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_newExpiry
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_newExpiry
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_newExpiry
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.changeExpiryLimit;
-            const encodedData = ethersFunction.encode([_newExpiry
+            const encodedData = self._strictEncodeArguments('changeExpiryLimit(uint256)', [_newExpiry
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'changeExpiryLimit'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('changeExpiryLimit(uint256)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getTickersByOwner = {
         async callAsync(
             _owner: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string[]
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'getTickersByOwner(address)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_owner
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_owner
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_owner
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getTickersByOwner;
-            const encodedData = ethersFunction.encode([_owner
+            const encodedData = self._strictEncodeArguments('getTickersByOwner(address)', [_owner
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getTickersByOwner'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getTickersByOwner(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string[]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getTokensByOwner = {
         async callAsync(
             _owner: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string[]
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'getTokensByOwner(address)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_owner
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_owner
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_owner
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getTokensByOwner;
-            const encodedData = ethersFunction.encode([_owner
+            const encodedData = self._strictEncodeArguments('getTokensByOwner(address)', [_owner
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getTokensByOwner'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getTokensByOwner(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string[]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getTickerDetails = {
         async callAsync(
             _ticker: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<[string, BigNumber, BigNumber, string, boolean]
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'getTickerDetails(string)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_ticker
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_ticker
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_ticker
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getTickerDetails;
-            const encodedData = ethersFunction.encode([_ticker
+            const encodedData = self._strictEncodeArguments('getTickerDetails(string)', [_ticker
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getTickerDetails'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getTickerDetails(string)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[string, BigNumber, BigNumber, string, boolean]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public generateSecurityToken = {
         async sendTransactionAsync(
             _name: string,
@@ -1500,40 +1129,23 @@ export class SecurityTokenRegistryContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('generateSecurityToken(string,string,string,bool)').inputs;
-            [_name,
-    _ticker,
-    _tokenDetails,
-    _divisible
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_name,
-    _ticker,
-    _tokenDetails,
-    _divisible
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_name,
+            const encodedData = self._strictEncodeArguments('generateSecurityToken(string,string,string,bool)', [_name,
     _ticker,
     _tokenDetails,
     _divisible
     ]);
-            const encodedData = self._lookupEthersInterface('generateSecurityToken(string,string,string,bool)').functions.generateSecurityToken.encode([_name,
-    _ticker,
-    _tokenDetails,
-    _divisible
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.generateSecurityToken.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _name,
@@ -1558,39 +1170,28 @@ export class SecurityTokenRegistryContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('generateSecurityToken(string,string,string,bool)').inputs;
+            const encodedData = self._strictEncodeArguments('generateSecurityToken(string,string,string,bool)',
             [_name,
     _ticker,
     _tokenDetails,
     _divisible
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_name,
-    _ticker,
-    _tokenDetails,
-    _divisible
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('generateSecurityToken(string,string,string,bool)').functions.generateSecurityToken.encode([_name,
-    _ticker,
-    _tokenDetails,
-    _divisible
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -1601,17 +1202,8 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _divisible: boolean,
         ): string {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('generateSecurityToken(string,string,string,bool)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('generateSecurityToken(string,string,string,bool)',
             [_name,
-    _ticker,
-    _tokenDetails,
-    _divisible
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_name,
-    _ticker,
-    _tokenDetails,
-    _divisible
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('generateSecurityToken(string,string,string,bool)').functions.generateSecurityToken.encode([_name,
     _ticker,
     _tokenDetails,
     _divisible
@@ -1623,50 +1215,33 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _ticker: string,
             _tokenDetails: string,
             _divisible: boolean,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'generateSecurityToken(string,string,string,bool)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_name,
-        _ticker,
-        _tokenDetails,
-        _divisible
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_name,
-        _ticker,
-        _tokenDetails,
-        _divisible
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_name,
-        _ticker,
-        _tokenDetails,
-        _divisible
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.generateSecurityToken;
-            const encodedData = ethersFunction.encode([_name,
+            const encodedData = self._strictEncodeArguments('generateSecurityToken(string,string,string,bool)', [_name,
         _ticker,
         _tokenDetails,
         _divisible
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'generateSecurityToken'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('generateSecurityToken(string,string,string,bool)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public modifySecurityToken = {
         async sendTransactionAsync(
             _name: string,
@@ -1679,48 +1254,25 @@ export class SecurityTokenRegistryContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('modifySecurityToken(string,string,address,address,string,uint256)').inputs;
-            [_name,
-    _ticker,
-    _owner,
-    _securityToken,
-    _tokenDetails,
-    _deployedAt
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_name,
-    _ticker,
-    _owner,
-    _securityToken,
-    _tokenDetails,
-    _deployedAt
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_name,
+            const encodedData = self._strictEncodeArguments('modifySecurityToken(string,string,address,address,string,uint256)', [_name,
     _ticker,
     _owner,
     _securityToken,
     _tokenDetails,
     _deployedAt
     ]);
-            const encodedData = self._lookupEthersInterface('modifySecurityToken(string,string,address,address,string,uint256)').functions.modifySecurityToken.encode([_name,
-    _ticker,
-    _owner,
-    _securityToken,
-    _tokenDetails,
-    _deployedAt
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.modifySecurityToken.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _name,
@@ -1749,45 +1301,30 @@ export class SecurityTokenRegistryContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('modifySecurityToken(string,string,address,address,string,uint256)').inputs;
+            const encodedData = self._strictEncodeArguments('modifySecurityToken(string,string,address,address,string,uint256)',
             [_name,
     _ticker,
     _owner,
     _securityToken,
     _tokenDetails,
     _deployedAt
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_name,
-    _ticker,
-    _owner,
-    _securityToken,
-    _tokenDetails,
-    _deployedAt
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('modifySecurityToken(string,string,address,address,string,uint256)').functions.modifySecurityToken.encode([_name,
-    _ticker,
-    _owner,
-    _securityToken,
-    _tokenDetails,
-    _deployedAt
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -1800,21 +1337,8 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _deployedAt: BigNumber,
         ): string {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('modifySecurityToken(string,string,address,address,string,uint256)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('modifySecurityToken(string,string,address,address,string,uint256)',
             [_name,
-    _ticker,
-    _owner,
-    _securityToken,
-    _tokenDetails,
-    _deployedAt
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_name,
-    _ticker,
-    _owner,
-    _securityToken,
-    _tokenDetails,
-    _deployedAt
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('modifySecurityToken(string,string,address,address,string,uint256)').functions.modifySecurityToken.encode([_name,
     _ticker,
     _owner,
     _securityToken,
@@ -1830,35 +1354,12 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _securityToken: string,
             _tokenDetails: string,
             _deployedAt: BigNumber,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'modifySecurityToken(string,string,address,address,string,uint256)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_name,
-        _ticker,
-        _owner,
-        _securityToken,
-        _tokenDetails,
-        _deployedAt
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_name,
-        _ticker,
-        _owner,
-        _securityToken,
-        _tokenDetails,
-        _deployedAt
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_name,
-        _ticker,
-        _owner,
-        _securityToken,
-        _tokenDetails,
-        _deployedAt
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.modifySecurityToken;
-            const encodedData = ethersFunction.encode([_name,
+            const encodedData = self._strictEncodeArguments('modifySecurityToken(string,string,address,address,string,uint256)', [_name,
         _ticker,
         _owner,
         _securityToken,
@@ -1866,127 +1367,103 @@ export class SecurityTokenRegistryContract extends BaseContract {
         _deployedAt
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'modifySecurityToken'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('modifySecurityToken(string,string,address,address,string,uint256)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public isSecurityToken = {
         async callAsync(
             _securityToken: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<boolean
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'isSecurityToken(address)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_securityToken
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_securityToken
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_securityToken
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.isSecurityToken;
-            const encodedData = ethersFunction.encode([_securityToken
+            const encodedData = self._strictEncodeArguments('isSecurityToken(address)', [_securityToken
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'isSecurityToken'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('isSecurityToken(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<boolean
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getSecurityTokenAddress = {
         async callAsync(
             _ticker: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'getSecurityTokenAddress(string)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_ticker
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_ticker
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_ticker
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getSecurityTokenAddress;
-            const encodedData = ethersFunction.encode([_ticker
+            const encodedData = self._strictEncodeArguments('getSecurityTokenAddress(string)', [_ticker
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getSecurityTokenAddress'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getSecurityTokenAddress(string)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getSecurityTokenData = {
         async callAsync(
             _securityToken: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<[string, string, string, BigNumber]
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'getSecurityTokenData(address)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_securityToken
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_securityToken
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_securityToken
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getSecurityTokenData;
-            const encodedData = ethersFunction.encode([_securityToken
+            const encodedData = self._strictEncodeArguments('getSecurityTokenData(address)', [_securityToken
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getSecurityTokenData'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getSecurityTokenData(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[string, string, string, BigNumber]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public transferOwnership = {
         async sendTransactionAsync(
             _newOwner: string,
@@ -1994,28 +1471,20 @@ export class SecurityTokenRegistryContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('transferOwnership(address)').inputs;
-            [_newOwner
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_newOwner
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_newOwner
+            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [_newOwner
     ]);
-            const encodedData = self._lookupEthersInterface('transferOwnership(address)').functions.transferOwnership.encode([_newOwner
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.transferOwnership.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _newOwner
@@ -2034,30 +1503,25 @@ export class SecurityTokenRegistryContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('transferOwnership(address)').inputs;
+            const encodedData = self._strictEncodeArguments('transferOwnership(address)',
             [_newOwner
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_newOwner
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('transferOwnership(address)').functions.transferOwnership.encode([_newOwner
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -2065,72 +1529,56 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _newOwner: string,
         ): string {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('transferOwnership(address)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('transferOwnership(address)',
             [_newOwner
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_newOwner
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('transferOwnership(address)').functions.transferOwnership.encode([_newOwner
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _newOwner: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'transferOwnership(address)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_newOwner
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_newOwner
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_newOwner
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.transferOwnership;
-            const encodedData = ethersFunction.encode([_newOwner
+            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [_newOwner
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'transferOwnership'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('transferOwnership(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public pause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('pause()').inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const encodedData = self._lookupEthersInterface('pause()').functions.pause.encode([]);
+            const encodedData = self._strictEncodeArguments('pause()', []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.pause.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     
@@ -2147,91 +1595,77 @@ export class SecurityTokenRegistryContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('pause()').inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('pause()').functions.pause.encode([]);
+            const encodedData = self._strictEncodeArguments('pause()',
+            []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
         ): string {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('pause()').inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('pause()').functions.pause.encode([]);
+            const abiEncodedTransactionData = self._strictEncodeArguments('pause()',
+            []);
             return abiEncodedTransactionData;
         },
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'pause()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.pause;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('pause()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'pause'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('pause()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public unpause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('unpause()').inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const encodedData = self._lookupEthersInterface('unpause()').functions.unpause.encode([]);
+            const encodedData = self._strictEncodeArguments('unpause()', []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.unpause.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     
@@ -2248,67 +1682,58 @@ export class SecurityTokenRegistryContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('unpause()').inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('unpause()').functions.unpause.encode([]);
+            const encodedData = self._strictEncodeArguments('unpause()',
+            []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
         ): string {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('unpause()').inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('unpause()').functions.unpause.encode([]);
+            const abiEncodedTransactionData = self._strictEncodeArguments('unpause()',
+            []);
             return abiEncodedTransactionData;
         },
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'unpause()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.unpause;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('unpause()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'unpause'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('unpause()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public changeTickerRegistrationFee = {
         async sendTransactionAsync(
             _tickerRegFee: BigNumber,
@@ -2316,28 +1741,20 @@ export class SecurityTokenRegistryContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('changeTickerRegistrationFee(uint256)').inputs;
-            [_tickerRegFee
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_tickerRegFee
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_tickerRegFee
+            const encodedData = self._strictEncodeArguments('changeTickerRegistrationFee(uint256)', [_tickerRegFee
     ]);
-            const encodedData = self._lookupEthersInterface('changeTickerRegistrationFee(uint256)').functions.changeTickerRegistrationFee.encode([_tickerRegFee
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.changeTickerRegistrationFee.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _tickerRegFee
@@ -2356,30 +1773,25 @@ export class SecurityTokenRegistryContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('changeTickerRegistrationFee(uint256)').inputs;
+            const encodedData = self._strictEncodeArguments('changeTickerRegistrationFee(uint256)',
             [_tickerRegFee
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_tickerRegFee
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('changeTickerRegistrationFee(uint256)').functions.changeTickerRegistrationFee.encode([_tickerRegFee
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -2387,48 +1799,37 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _tickerRegFee: BigNumber,
         ): string {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('changeTickerRegistrationFee(uint256)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('changeTickerRegistrationFee(uint256)',
             [_tickerRegFee
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_tickerRegFee
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('changeTickerRegistrationFee(uint256)').functions.changeTickerRegistrationFee.encode([_tickerRegFee
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _tickerRegFee: BigNumber,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'changeTickerRegistrationFee(uint256)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_tickerRegFee
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_tickerRegFee
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_tickerRegFee
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.changeTickerRegistrationFee;
-            const encodedData = ethersFunction.encode([_tickerRegFee
+            const encodedData = self._strictEncodeArguments('changeTickerRegistrationFee(uint256)', [_tickerRegFee
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'changeTickerRegistrationFee'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('changeTickerRegistrationFee(uint256)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public changeSecurityLaunchFee = {
         async sendTransactionAsync(
             _stLaunchFee: BigNumber,
@@ -2436,28 +1837,20 @@ export class SecurityTokenRegistryContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('changeSecurityLaunchFee(uint256)').inputs;
-            [_stLaunchFee
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_stLaunchFee
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_stLaunchFee
+            const encodedData = self._strictEncodeArguments('changeSecurityLaunchFee(uint256)', [_stLaunchFee
     ]);
-            const encodedData = self._lookupEthersInterface('changeSecurityLaunchFee(uint256)').functions.changeSecurityLaunchFee.encode([_stLaunchFee
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.changeSecurityLaunchFee.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _stLaunchFee
@@ -2476,30 +1869,25 @@ export class SecurityTokenRegistryContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('changeSecurityLaunchFee(uint256)').inputs;
+            const encodedData = self._strictEncodeArguments('changeSecurityLaunchFee(uint256)',
             [_stLaunchFee
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_stLaunchFee
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('changeSecurityLaunchFee(uint256)').functions.changeSecurityLaunchFee.encode([_stLaunchFee
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -2507,48 +1895,37 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _stLaunchFee: BigNumber,
         ): string {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('changeSecurityLaunchFee(uint256)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('changeSecurityLaunchFee(uint256)',
             [_stLaunchFee
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_stLaunchFee
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('changeSecurityLaunchFee(uint256)').functions.changeSecurityLaunchFee.encode([_stLaunchFee
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _stLaunchFee: BigNumber,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'changeSecurityLaunchFee(uint256)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_stLaunchFee
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_stLaunchFee
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_stLaunchFee
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.changeSecurityLaunchFee;
-            const encodedData = ethersFunction.encode([_stLaunchFee
+            const encodedData = self._strictEncodeArguments('changeSecurityLaunchFee(uint256)', [_stLaunchFee
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'changeSecurityLaunchFee'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('changeSecurityLaunchFee(uint256)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public reclaimERC20 = {
         async sendTransactionAsync(
             _tokenContract: string,
@@ -2556,28 +1933,20 @@ export class SecurityTokenRegistryContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('reclaimERC20(address)').inputs;
-            [_tokenContract
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_tokenContract
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_tokenContract
+            const encodedData = self._strictEncodeArguments('reclaimERC20(address)', [_tokenContract
     ]);
-            const encodedData = self._lookupEthersInterface('reclaimERC20(address)').functions.reclaimERC20.encode([_tokenContract
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.reclaimERC20.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _tokenContract
@@ -2596,30 +1965,25 @@ export class SecurityTokenRegistryContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('reclaimERC20(address)').inputs;
+            const encodedData = self._strictEncodeArguments('reclaimERC20(address)',
             [_tokenContract
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_tokenContract
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('reclaimERC20(address)').functions.reclaimERC20.encode([_tokenContract
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -2627,48 +1991,37 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _tokenContract: string,
         ): string {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('reclaimERC20(address)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('reclaimERC20(address)',
             [_tokenContract
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_tokenContract
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('reclaimERC20(address)').functions.reclaimERC20.encode([_tokenContract
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _tokenContract: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'reclaimERC20(address)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_tokenContract
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_tokenContract
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_tokenContract
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.reclaimERC20;
-            const encodedData = ethersFunction.encode([_tokenContract
+            const encodedData = self._strictEncodeArguments('reclaimERC20(address)', [_tokenContract
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'reclaimERC20'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('reclaimERC20(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public setProtocolVersion = {
         async sendTransactionAsync(
             _STFactoryAddress: string,
@@ -2679,40 +2032,23 @@ export class SecurityTokenRegistryContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('setProtocolVersion(address,uint8,uint8,uint8)').inputs;
-            [_STFactoryAddress,
-    _major,
-    _minor,
-    _patch
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_STFactoryAddress,
-    _major,
-    _minor,
-    _patch
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_STFactoryAddress,
+            const encodedData = self._strictEncodeArguments('setProtocolVersion(address,uint8,uint8,uint8)', [_STFactoryAddress,
     _major,
     _minor,
     _patch
     ]);
-            const encodedData = self._lookupEthersInterface('setProtocolVersion(address,uint8,uint8,uint8)').functions.setProtocolVersion.encode([_STFactoryAddress,
-    _major,
-    _minor,
-    _patch
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.setProtocolVersion.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _STFactoryAddress,
@@ -2737,39 +2073,28 @@ export class SecurityTokenRegistryContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('setProtocolVersion(address,uint8,uint8,uint8)').inputs;
+            const encodedData = self._strictEncodeArguments('setProtocolVersion(address,uint8,uint8,uint8)',
             [_STFactoryAddress,
     _major,
     _minor,
     _patch
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_STFactoryAddress,
-    _major,
-    _minor,
-    _patch
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('setProtocolVersion(address,uint8,uint8,uint8)').functions.setProtocolVersion.encode([_STFactoryAddress,
-    _major,
-    _minor,
-    _patch
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -2780,17 +2105,8 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _patch: number|BigNumber,
         ): string {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('setProtocolVersion(address,uint8,uint8,uint8)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('setProtocolVersion(address,uint8,uint8,uint8)',
             [_STFactoryAddress,
-    _major,
-    _minor,
-    _patch
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_STFactoryAddress,
-    _major,
-    _minor,
-    _patch
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('setProtocolVersion(address,uint8,uint8,uint8)').functions.setProtocolVersion.encode([_STFactoryAddress,
     _major,
     _minor,
     _patch
@@ -2802,110 +2118,83 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _major: number|BigNumber,
             _minor: number|BigNumber,
             _patch: number|BigNumber,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'setProtocolVersion(address,uint8,uint8,uint8)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_STFactoryAddress,
-        _major,
-        _minor,
-        _patch
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_STFactoryAddress,
-        _major,
-        _minor,
-        _patch
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_STFactoryAddress,
-        _major,
-        _minor,
-        _patch
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.setProtocolVersion;
-            const encodedData = ethersFunction.encode([_STFactoryAddress,
+            const encodedData = self._strictEncodeArguments('setProtocolVersion(address,uint8,uint8,uint8)', [_STFactoryAddress,
         _major,
         _minor,
         _patch
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'setProtocolVersion'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('setProtocolVersion(address,uint8,uint8,uint8)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getSTFactoryAddress = {
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'getSTFactoryAddress()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getSTFactoryAddress;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('getSTFactoryAddress()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getSTFactoryAddress'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getSTFactoryAddress()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getProtocolVersion = {
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<BigNumber[]
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'getProtocolVersion()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getProtocolVersion;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('getProtocolVersion()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getProtocolVersion'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getProtocolVersion()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber[]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public updatePolyTokenAddress = {
         async sendTransactionAsync(
             _newAddress: string,
@@ -2913,28 +2202,20 @@ export class SecurityTokenRegistryContract extends BaseContract {
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('updatePolyTokenAddress(address)').inputs;
-            [_newAddress
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_newAddress
-    ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_newAddress
+            const encodedData = self._strictEncodeArguments('updatePolyTokenAddress(address)', [_newAddress
     ]);
-            const encodedData = self._lookupEthersInterface('updatePolyTokenAddress(address)').functions.updatePolyTokenAddress.encode([_newAddress
-    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults,
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
                 self.updatePolyTokenAddress.estimateGasAsync.bind<SecurityTokenRegistryContract, any, Promise<number>>(
                     self,
                     _newAddress
@@ -2953,30 +2234,25 @@ export class SecurityTokenRegistryContract extends BaseContract {
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('updatePolyTokenAddress(address)').inputs;
+            const encodedData = self._strictEncodeArguments('updatePolyTokenAddress(address)',
             [_newAddress
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_newAddress
-    ], BaseContract._bigNumberToString);
-            const encodedData = self._lookupEthersInterface('updatePolyTokenAddress(address)').functions.updatePolyTokenAddress.encode([_newAddress
     ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const contractDefaults = _.defaults(
-                    self._web3Wrapper.getContractDefaults(),
-                    {
-                        from: defaultFromAddress 
-                    }
-                );
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
                 {
                     to: self.address,
                     ...txData,
                     data: encodedData,
                 },
-                contractDefaults
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
             );
             const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
             const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
             const _safetyGasEstimation = Math.round(_factor * gas);
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
@@ -2984,203 +2260,197 @@ export class SecurityTokenRegistryContract extends BaseContract {
             _newAddress: string,
         ): string {
             const self = this as any as SecurityTokenRegistryContract;
-            const inputAbi = self._lookupAbi('updatePolyTokenAddress(address)').inputs;
+            const abiEncodedTransactionData = self._strictEncodeArguments('updatePolyTokenAddress(address)',
             [_newAddress
-    ] = BaseContract._formatABIDataItemList(inputAbi, [_newAddress
-    ], BaseContract._bigNumberToString);
-            const abiEncodedTransactionData = self._lookupEthersInterface('updatePolyTokenAddress(address)').functions.updatePolyTokenAddress.encode([_newAddress
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _newAddress: string,
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'updatePolyTokenAddress(address)';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [_newAddress
-        ] = BaseContract._formatABIDataItemList(inputAbi, [_newAddress
-        ], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, [_newAddress
-        ]);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.updatePolyTokenAddress;
-            const encodedData = ethersFunction.encode([_newAddress
+            const encodedData = self._strictEncodeArguments('updatePolyTokenAddress(address)', [_newAddress
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'updatePolyTokenAddress'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray;
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('updatePolyTokenAddress(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getSecurityTokenLaunchFee = {
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<BigNumber
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'getSecurityTokenLaunchFee()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getSecurityTokenLaunchFee;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('getSecurityTokenLaunchFee()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getSecurityTokenLaunchFee'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getSecurityTokenLaunchFee()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getTickerRegistrationFee = {
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<BigNumber
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'getTickerRegistrationFee()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getTickerRegistrationFee;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('getTickerRegistrationFee()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getTickerRegistrationFee'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getTickerRegistrationFee()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getExpiryLimit = {
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<BigNumber
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'getExpiryLimit()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.getExpiryLimit;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('getExpiryLimit()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'getExpiryLimit'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('getExpiryLimit()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public isPaused = {
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<boolean
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'isPaused()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.isPaused;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('isPaused()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'isPaused'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
+            const abiEncoder = self._lookupAbiEncoder('isPaused()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<boolean
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public owner = {
         async callAsync(
-            callData: Partial<CallData> = {},
+        callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
             const self = this as any as SecurityTokenRegistryContract;
-            const functionSignature = 'owner()';
-            const inputAbi = self._lookupAbi(functionSignature).inputs;
-            [] = BaseContract._formatABIDataItemList(inputAbi, [], BaseContract._bigNumberToString.bind(self));
-            BaseContract.strictArgumentEncodingCheck(inputAbi, []);
-            const ethersFunction = self._lookupEthersInterface(functionSignature).functions.owner;
-            const encodedData = ethersFunction.encode([]);
+            const encodedData = self._strictEncodeArguments('owner()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...callData,
-                    data: encodedData,
-                },
-                self._web3Wrapper.getContractDefaults(),
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            let resultArray = ethersFunction.decode(rawCallResult);
-            const outputAbi = (_.find(self.abi, {name: 'owner'}) as MethodAbi).outputs;
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._lowercaseAddress.bind(this));
-            resultArray = BaseContract._formatABIDataItemList(outputAbi, resultArray, BaseContract._bnToBigNumber.bind(this));
-            return resultArray[0];
-        },
-    };
-    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number) {
-        super('SecurityTokenRegistry', abi, address, provider, txDefaults);
-        this._defaultEstimateGasFactor = _.isUndefined(defaultEstimateGasFactor) ? 1.1 : defaultEstimateGasFactor;
+            const abiEncoder = self._lookupAbiEncoder('owner()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public static async deployAsync(
+        bytecode: string,
+        abi: ContractAbi,
+        supportedProvider: SupportedProvider,
+        txDefaults: Partial<TxData>,
+    ): Promise<SecurityTokenRegistryContract> {
+        const provider = providerUtils.standardizeOrThrow(supportedProvider);
+        const constructorAbi = BaseContract._lookupConstructorAbi(abi);
+        [] = BaseContract._formatABIDataItemList(
+            constructorAbi.inputs,
+            [],
+            BaseContract._bigNumberToString,
+        );
+        const iface = new ethers.utils.Interface(abi);
+        const deployInfo = iface.deployFunction;
+        const txData = deployInfo.encode(bytecode, []);
+        const web3Wrapper = new Web3Wrapper(provider);
+        const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {data: txData},
+            txDefaults,
+            web3Wrapper.estimateGasAsync.bind(web3Wrapper),
+        );
+        const txHash = await web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+        logUtils.log(`transactionHash: ${txHash}`);
+        const txReceipt = await web3Wrapper.awaitTransactionSuccessAsync(txHash);
+        logUtils.log(`SecurityTokenRegistry successfully deployed at ${txReceipt.contractAddress}`);
+        const contractInstance = new SecurityTokenRegistryContract(abi, txReceipt.contractAddress as string, provider, txDefaults);
+        contractInstance.constructorArgs = [];
+        return contractInstance;
+    }
+    constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number) {
+        super('SecurityTokenRegistry', abi, address, supportedProvider, txDefaults);
+        this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
         this._web3Wrapper.abiDecoder.addABI(abi);
-        classUtils.bindAll(this, ['_ethersInterfacesByFunctionSignature', 'address', 'abi', '_web3Wrapper', '_defaultEstimateGasFactor']);
+        classUtils.bindAll(this, ['_abiEncoderByFunctionSignature', 'address', 'abi', '_web3Wrapper', '_defaultEstimateGasFactor']);
     }
 } // tslint:disable:max-file-line-count
 // tslint:enable:no-unbound-method

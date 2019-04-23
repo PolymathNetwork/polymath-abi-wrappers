@@ -1,5 +1,5 @@
 import { BaseContract } from '@0x/base-contract';
-import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, Provider, TxData, TxDataPayable } from 'ethereum-types';
+import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, TxDataPayable, SupportedProvider } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../polyResponse';
 export declare type ModuleRegistryEventArgs = ModuleRegistryPauseEventArgs | ModuleRegistryUnpauseEventArgs | ModuleRegistryModuleUsedEventArgs | ModuleRegistryModuleRegisteredEventArgs | ModuleRegistryModuleVerifiedEventArgs | ModuleRegistryModuleRemovedEventArgs | ModuleRegistryOwnershipTransferredEventArgs;
@@ -148,6 +148,7 @@ export declare class ModuleRegistryContract extends BaseContract {
     isPaused: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
-    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
+    static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>): Promise<ModuleRegistryContract>;
+    constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=module_registry.d.ts.map

@@ -10,24 +10,19 @@ public {{this.tsName}} = {
         estimateGasFactor?: number,
     ): Promise<PolyResponse> {
         const self = this as any as {{contractName}}Contract;
-        const inputAbi = self._lookupAbi('{{this.functionSignature}}').inputs;
-        [{{> params inputs=inputs}}] = BaseContract._formatABIDataItemList(inputAbi, [{{> params inputs=inputs}}], BaseContract._bigNumberToString.bind(self));
-        BaseContract.strictArgumentEncodingCheck(inputAbi, [{{> params inputs=inputs}}]);
-        const encodedData = self._lookupEthersInterface('{{this.functionSignature}}').functions.{{this.name}}.encode([{{> params inputs=inputs}}]);
+        const encodedData = self._strictEncodeArguments('{{this.functionSignature}}', [{{> params inputs=inputs}}]);
+        const contractDefaults = self._web3Wrapper.getContractDefaults();
         const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-        const contractDefaults = _.defaults(
-                self._web3Wrapper.getContractDefaults(),
-                {
-                    from: defaultFromAddress 
-                }
-            );
         const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
                 to: self.address,
                 ...txData,
                 data: encodedData,
             },
-            contractDefaults,
+            {
+                from: defaultFromAddress,
+                ...contractDefaults
+            },
             self.{{this.tsName}}.estimateGasAsync.bind<{{contractName}}Contract, any, Promise<number>>(
                 self,
                 {{> params inputs=inputs}}{{#if inputs.length}},{{/if}}
@@ -45,27 +40,24 @@ public {{this.tsName}} = {
         txData: Partial<TxData> = {},
     ): Promise<number> {
         const self = this as any as {{contractName}}Contract;
-        const inputAbi = self._lookupAbi('{{this.functionSignature}}').inputs;
-        [{{> params inputs=inputs}}] = BaseContract._formatABIDataItemList(inputAbi, [{{> params inputs=inputs}}], BaseContract._bigNumberToString);
-        const encodedData = self._lookupEthersInterface('{{this.functionSignature}}').functions.{{this.name}}.encode([{{> params inputs=inputs}}]);
+        const encodedData = self._strictEncodeArguments('{{this.functionSignature}}',
+        [{{> params inputs=inputs}}]);
+        const contractDefaults = self._web3Wrapper.getContractDefaults();
         const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-        const contractDefaults = _.defaults(
-                self._web3Wrapper.getContractDefaults(),
-                {
-                    from: defaultFromAddress 
-                }
-            );
         const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
                 to: self.address,
                 ...txData,
                 data: encodedData,
             },
-            contractDefaults
+            {
+                from: defaultFromAddress,
+                ...contractDefaults
+            },
         );
         const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
         const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-        const _factor = _.isUndefined(factor) ? self._defaultEstimateGasFactor : factor;
+        const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
         const _safetyGasEstimation = Math.round(_factor * gas);
         return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
     },
@@ -73,9 +65,8 @@ public {{this.tsName}} = {
     {{> typed_params inputs=inputs}}
     ): string {
         const self = this as any as {{contractName}}Contract;
-        const inputAbi = self._lookupAbi('{{this.functionSignature}}').inputs;
-        [{{> params inputs=inputs}}] = BaseContract._formatABIDataItemList(inputAbi, [{{> params inputs=inputs}}], BaseContract._bigNumberToString);
-        const abiEncodedTransactionData = self._lookupEthersInterface('{{this.functionSignature}}').functions.{{this.name}}.encode([{{> params inputs=inputs}}]);
+        const abiEncodedTransactionData = self._strictEncodeArguments('{{this.functionSignature}}',
+        [{{> params inputs=inputs}}]);
         return abiEncodedTransactionData;
     },
     {{> callAsync}}

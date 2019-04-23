@@ -1,5 +1,5 @@
 import { BaseContract } from '@0x/base-contract';
-import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, Provider, TxData } from 'ethereum-types';
+import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../polyResponse';
 export declare type SecurityTokenEventArgs = SecurityTokenModuleAddedEventArgs | SecurityTokenUpdateTokenDetailsEventArgs | SecurityTokenGranularityChangedEventArgs | SecurityTokenModuleArchivedEventArgs | SecurityTokenModuleUnarchivedEventArgs | SecurityTokenModuleRemovedEventArgs | SecurityTokenModuleBudgetChangedEventArgs | SecurityTokenFreezeTransfersEventArgs | SecurityTokenCheckpointCreatedEventArgs | SecurityTokenFreezeMintingEventArgs | SecurityTokenMintedEventArgs | SecurityTokenBurntEventArgs | SecurityTokenSetControllerEventArgs | SecurityTokenForceTransferEventArgs | SecurityTokenForceBurnEventArgs | SecurityTokenDisableControllerEventArgs | SecurityTokenOwnershipRenouncedEventArgs | SecurityTokenOwnershipTransferredEventArgs | SecurityTokenApprovalEventArgs | SecurityTokenTransferEventArgs;
@@ -408,6 +408,7 @@ export declare class SecurityTokenContract extends BaseContract {
     getVersion: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber[]>;
     };
-    constructor(abi: ContractAbi, address: string, provider: Provider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
+    static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>, _name: string, _symbol: string, _decimals: number | BigNumber, _granularity: BigNumber, _tokenDetails: string, _polymathRegistry: string): Promise<SecurityTokenContract>;
+    constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=security_token.d.ts.map
