@@ -11,28 +11,22 @@ import * as ethers from 'ethers';
 // tslint:enable:no-unused-variable
 
 export type FeatureRegistryEventArgs =
-    | FeatureRegistryChangeFeatureStatusEventArgs
-    | FeatureRegistryOwnershipRenouncedEventArgs
-    | FeatureRegistryOwnershipTransferredEventArgs;
+    | FeatureRegistryOwnershipTransferredEventArgs
+    | FeatureRegistryChangeFeatureStatusEventArgs;
 
 export enum FeatureRegistryEvents {
-    ChangeFeatureStatus = 'ChangeFeatureStatus',
-    OwnershipRenounced = 'OwnershipRenounced',
     OwnershipTransferred = 'OwnershipTransferred',
-}
-
-export interface FeatureRegistryChangeFeatureStatusEventArgs extends DecodedLogArgs {
-    _nameKey: string;
-    _newStatus: boolean;
-}
-
-export interface FeatureRegistryOwnershipRenouncedEventArgs extends DecodedLogArgs {
-    previousOwner: string;
+    ChangeFeatureStatus = 'ChangeFeatureStatus',
 }
 
 export interface FeatureRegistryOwnershipTransferredEventArgs extends DecodedLogArgs {
     previousOwner: string;
     newOwner: string;
+}
+
+export interface FeatureRegistryChangeFeatureStatusEventArgs extends DecodedLogArgs {
+    _nameKey: string;
+    _newStatus: boolean;
 }
 
 
@@ -249,6 +243,31 @@ export class FeatureRegistryContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
+    public isOwner = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<boolean
+        > {
+            const self = this as any as FeatureRegistryContract;
+            const encodedData = self._strictEncodeArguments('isOwner()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('isOwner()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<boolean
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public featureStatus = {
         async callAsync(
             index_0: string,
@@ -278,12 +297,12 @@ export class FeatureRegistryContract extends BaseContract {
         },};
     public transferOwnership = {
         async sendTransactionAsync(
-            _newOwner: string,
+            newOwner: string,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as FeatureRegistryContract;
-            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [_newOwner
+            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [newOwner
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -299,7 +318,7 @@ export class FeatureRegistryContract extends BaseContract {
                 },
                 self.transferOwnership.estimateGasAsync.bind<FeatureRegistryContract, any, Promise<number>>(
                     self,
-                    _newOwner
+                    newOwner
     ,
                     estimateGasFactor,
                 ),
@@ -310,13 +329,13 @@ export class FeatureRegistryContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
-            _newOwner: string,
+            newOwner: string,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as FeatureRegistryContract;
             const encodedData = self._strictEncodeArguments('transferOwnership(address)',
-            [_newOwner
+            [newOwner
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -338,22 +357,22 @@ export class FeatureRegistryContract extends BaseContract {
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
-            _newOwner: string,
+            newOwner: string,
         ): string {
             const self = this as any as FeatureRegistryContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('transferOwnership(address)',
-            [_newOwner
+            [newOwner
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
-            _newOwner: string,
+            newOwner: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as FeatureRegistryContract;
-            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [_newOwner
+            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [newOwner
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {

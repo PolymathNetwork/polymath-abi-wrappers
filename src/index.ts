@@ -1,6 +1,5 @@
 export { PolyResponse } from "./polyResponse";
 export { BaseContract } from "@0x/base-contract";
-export * from "./generated-wrappers/alternative_erc20";
 export * from "./generated-wrappers/blacklist_transfer_manager";
 export * from "./generated-wrappers/capped_s_t_o";
 export * from "./generated-wrappers/capped_s_t_o_factory";

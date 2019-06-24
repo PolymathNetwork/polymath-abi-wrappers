@@ -11,26 +11,35 @@ import * as ethers from 'ethers';
 // tslint:enable:no-unused-variable
 
 export type USDTieredSTOFactoryEventArgs =
-    | USDTieredSTOFactoryOwnershipRenouncedEventArgs
+    | USDTieredSTOFactoryLogicContractSetEventArgs
+    | USDTieredSTOFactoryModuleUpgradedEventArgs
     | USDTieredSTOFactoryOwnershipTransferredEventArgs
-    | USDTieredSTOFactoryChangeFactorySetupFeeEventArgs
-    | USDTieredSTOFactoryChangeFactoryUsageFeeEventArgs
-    | USDTieredSTOFactoryChangeFactorySubscriptionFeeEventArgs
+    | USDTieredSTOFactoryChangeSetupCostEventArgs
+    | USDTieredSTOFactoryChangeCostTypeEventArgs
     | USDTieredSTOFactoryGenerateModuleFromFactoryEventArgs
     | USDTieredSTOFactoryChangeSTVersionBoundEventArgs;
 
 export enum USDTieredSTOFactoryEvents {
-    OwnershipRenounced = 'OwnershipRenounced',
+    LogicContractSet = 'LogicContractSet',
+    ModuleUpgraded = 'ModuleUpgraded',
     OwnershipTransferred = 'OwnershipTransferred',
-    ChangeFactorySetupFee = 'ChangeFactorySetupFee',
-    ChangeFactoryUsageFee = 'ChangeFactoryUsageFee',
-    ChangeFactorySubscriptionFee = 'ChangeFactorySubscriptionFee',
+    ChangeSetupCost = 'ChangeSetupCost',
+    ChangeCostType = 'ChangeCostType',
     GenerateModuleFromFactory = 'GenerateModuleFromFactory',
     ChangeSTVersionBound = 'ChangeSTVersionBound',
 }
 
-export interface USDTieredSTOFactoryOwnershipRenouncedEventArgs extends DecodedLogArgs {
-    previousOwner: string;
+export interface USDTieredSTOFactoryLogicContractSetEventArgs extends DecodedLogArgs {
+    _version: string;
+    _upgrade: BigNumber;
+    _logicContract: string;
+    _upgradeData: string;
+}
+
+export interface USDTieredSTOFactoryModuleUpgradedEventArgs extends DecodedLogArgs {
+    _module: string;
+    _securityToken: string;
+    _version: BigNumber;
 }
 
 export interface USDTieredSTOFactoryOwnershipTransferredEventArgs extends DecodedLogArgs {
@@ -38,22 +47,14 @@ export interface USDTieredSTOFactoryOwnershipTransferredEventArgs extends Decode
     newOwner: string;
 }
 
-export interface USDTieredSTOFactoryChangeFactorySetupFeeEventArgs extends DecodedLogArgs {
+export interface USDTieredSTOFactoryChangeSetupCostEventArgs extends DecodedLogArgs {
     _oldSetupCost: BigNumber;
     _newSetupCost: BigNumber;
-    _moduleFactory: string;
 }
 
-export interface USDTieredSTOFactoryChangeFactoryUsageFeeEventArgs extends DecodedLogArgs {
-    _oldUsageCost: BigNumber;
-    _newUsageCost: BigNumber;
-    _moduleFactory: string;
-}
-
-export interface USDTieredSTOFactoryChangeFactorySubscriptionFeeEventArgs extends DecodedLogArgs {
-    _oldSubscriptionCost: BigNumber;
-    _newMonthlySubscriptionCost: BigNumber;
-    _moduleFactory: string;
+export interface USDTieredSTOFactoryChangeCostTypeEventArgs extends DecodedLogArgs {
+    _isOldCostInPoly: boolean;
+    _isNewCostInPoly: boolean;
 }
 
 export interface USDTieredSTOFactoryGenerateModuleFromFactoryEventArgs extends DecodedLogArgs {
@@ -62,7 +63,7 @@ export interface USDTieredSTOFactoryGenerateModuleFromFactoryEventArgs extends D
     _moduleFactory: string;
     _creator: string;
     _setupCost: BigNumber;
-    _timestamp: BigNumber;
+    _setupCostInPoly: BigNumber;
 }
 
 export interface USDTieredSTOFactoryChangeSTVersionBoundEventArgs extends DecodedLogArgs {
@@ -78,31 +79,6 @@ export interface USDTieredSTOFactoryChangeSTVersionBoundEventArgs extends Decode
 // tslint:disable-next-line:class-name
 export class USDTieredSTOFactoryContract extends BaseContract {
     private _defaultEstimateGasFactor: number;
-    public monthlySubscriptionCost = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<BigNumber
-        > {
-            const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('monthlySubscriptionCost()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('monthlySubscriptionCost()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<BigNumber
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
     public name = {
         async callAsync(
         callData: Partial<CallData> = {},
@@ -128,39 +104,14 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public getName = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('getName()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('getName()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public changeTitle = {
+    public upgrade = {
         async sendTransactionAsync(
-            _newTitle: string,
+            _module: string,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeTitle(string)', [_newTitle
+            const encodedData = self._strictEncodeArguments('upgrade(address)', [_module
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -174,9 +125,9 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                     from: defaultFromAddress,
                     ...contractDefaults
                 },
-                self.changeTitle.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
+                self.upgrade.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
-                    _newTitle
+                    _module
     ,
                     estimateGasFactor,
                 ),
@@ -187,13 +138,13 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
-            _newTitle: string,
+            _module: string,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeTitle(string)',
-            [_newTitle
+            const encodedData = self._strictEncodeArguments('upgrade(address)',
+            [_module
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -215,22 +166,397 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
-            _newTitle: string,
+            _module: string,
         ): string {
             const self = this as any as USDTieredSTOFactoryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changeTitle(string)',
-            [_newTitle
+            const abiEncodedTransactionData = self._strictEncodeArguments('upgrade(address)',
+            [_module
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
-            _newTitle: string,
+            _module: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeTitle(string)', [_newTitle
+            const encodedData = self._strictEncodeArguments('upgrade(address)', [_module
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('upgrade(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public changeSetupCost = {
+        async sendTransactionAsync(
+            _setupCost: BigNumber,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('changeSetupCost(uint256)', [_setupCost
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.changeSetupCost.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
+                    self,
+                    _setupCost
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _setupCost: BigNumber,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('changeSetupCost(uint256)',
+            [_setupCost
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _setupCost: BigNumber,
+        ): string {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('changeSetupCost(uint256)',
+            [_setupCost
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _setupCost: BigNumber,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('changeSetupCost(uint256)', [_setupCost
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('changeSetupCost(uint256)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public changeTags = {
+        async sendTransactionAsync(
+            _tagsData: string[],
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('changeTags(bytes32[])', [_tagsData
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.changeTags.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
+                    self,
+                    _tagsData
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _tagsData: string[],
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('changeTags(bytes32[])',
+            [_tagsData
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _tagsData: string[],
+        ): string {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('changeTags(bytes32[])',
+            [_tagsData
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _tagsData: string[],
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('changeTags(bytes32[])', [_tagsData
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('changeTags(bytes32[])');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public setupCostInPoly = {
+        async sendTransactionAsync(
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('setupCostInPoly()', []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.setupCostInPoly.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
+                    self,
+                    
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('setupCostInPoly()',
+            []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+        ): string {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('setupCostInPoly()',
+            []);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<BigNumber
+        > {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('setupCostInPoly()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('setupCostInPoly()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public changeTitle = {
+        async sendTransactionAsync(
+            _title: string,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('changeTitle(string)', [_title
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.changeTitle.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
+                    self,
+                    _title
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _title: string,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('changeTitle(string)',
+            [_title
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _title: string,
+        ): string {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('changeTitle(string)',
+            [_title
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _title: string,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('changeTitle(string)', [_title
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -249,14 +575,18 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public changeFactorySubscriptionFee = {
+    public setLogicContract = {
         async sendTransactionAsync(
-            _newSubscriptionCost: BigNumber,
+            _version: string,
+            _logicContract: string,
+            _upgradeData: string,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeFactorySubscriptionFee(uint256)', [_newSubscriptionCost
+            const encodedData = self._strictEncodeArguments('setLogicContract(string,address,bytes)', [_version,
+    _logicContract,
+    _upgradeData
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -270,9 +600,11 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                     from: defaultFromAddress,
                     ...contractDefaults
                 },
-                self.changeFactorySubscriptionFee.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
+                self.setLogicContract.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
-                    _newSubscriptionCost
+                    _version,
+    _logicContract,
+    _upgradeData
     ,
                     estimateGasFactor,
                 ),
@@ -283,13 +615,17 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
-            _newSubscriptionCost: BigNumber,
+            _version: string,
+            _logicContract: string,
+            _upgradeData: string,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeFactorySubscriptionFee(uint256)',
-            [_newSubscriptionCost
+            const encodedData = self._strictEncodeArguments('setLogicContract(string,address,bytes)',
+            [_version,
+    _logicContract,
+    _upgradeData
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -311,22 +647,30 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
-            _newSubscriptionCost: BigNumber,
+            _version: string,
+            _logicContract: string,
+            _upgradeData: string,
         ): string {
             const self = this as any as USDTieredSTOFactoryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changeFactorySubscriptionFee(uint256)',
-            [_newSubscriptionCost
+            const abiEncodedTransactionData = self._strictEncodeArguments('setLogicContract(string,address,bytes)',
+            [_version,
+    _logicContract,
+    _upgradeData
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
-            _newSubscriptionCost: BigNumber,
+            _version: string,
+            _logicContract: string,
+            _upgradeData: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeFactorySubscriptionFee(uint256)', [_newSubscriptionCost
+            const encodedData = self._strictEncodeArguments('setLogicContract(string,address,bytes)', [_version,
+        _logicContract,
+        _upgradeData
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -338,9 +682,34 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('changeFactorySubscriptionFee(uint256)');
+            const abiEncoder = self._lookupAbiEncoder('setLogicContract(string,address,bytes)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public isCostInPoly = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<boolean
+        > {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('isCostInPoly()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('isCostInPoly()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<boolean
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -395,84 +764,40 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public changeFactorySetupFee = {
-        async sendTransactionAsync(
-            _newSetupCost: BigNumber,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeFactorySetupFee(uint256)', [_newSetupCost
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.changeFactorySetupFee.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
-                    self,
-                    _newSetupCost
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _newSetupCost: BigNumber,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeFactorySetupFee(uint256)',
-            [_newSetupCost
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _newSetupCost: BigNumber,
-        ): string {
-            const self = this as any as USDTieredSTOFactoryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changeFactorySetupFee(uint256)',
-            [_newSetupCost
-    ]);
-            return abiEncodedTransactionData;
-        },
+    public latestUpgrade = {
         async callAsync(
-            _newSetupCost: BigNumber,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<void
+        ): Promise<BigNumber
         > {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeFactorySetupFee(uint256)', [_newSetupCost
+            const encodedData = self._strictEncodeArguments('latestUpgrade()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('latestUpgrade()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public logicContracts = {
+        async callAsync(
+            index_0: BigNumber,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<[string, string, string]
+        > {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('logicContracts(uint256)', [index_0
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -484,92 +809,21 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('changeFactorySetupFee(uint256)');
+            const abiEncoder = self._lookupAbiEncoder('logicContracts(uint256)');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
+            const result = abiEncoder.strictDecodeReturnValue<[string, string, string]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public changeVersion = {
-        async sendTransactionAsync(
-            _newVersion: string,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeVersion(string)', [_newVersion
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.changeVersion.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
-                    self,
-                    _newVersion
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _newVersion: string,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeVersion(string)',
-            [_newVersion
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _newVersion: string,
-        ): string {
-            const self = this as any as USDTieredSTOFactoryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changeVersion(string)',
-            [_newVersion
-    ]);
-            return abiEncodedTransactionData;
-        },
+    public lowerSTVersionBounds = {
         async callAsync(
-            _newVersion: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<void
+        ): Promise<BigNumber[]
         > {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeVersion(string)', [_newVersion
-        ]);
+            const encodedData = self._strictEncodeArguments('lowerSTVersionBounds()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -580,34 +834,9 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('changeVersion(string)');
+            const abiEncoder = self._lookupAbiEncoder('lowerSTVersionBounds()');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public polyToken = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('polyToken()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('polyToken()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber[]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -724,6 +953,31 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
+    public polymathRegistry = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('polymathRegistry()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('polymathRegistry()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public setupCost = {
         async callAsync(
         callData: Partial<CallData> = {},
@@ -749,39 +1003,14 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public getLowerSTVersionBounds = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<BigNumber[]
-        > {
-            const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('getLowerSTVersionBounds()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('getLowerSTVersionBounds()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<BigNumber[]
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
     public changeName = {
         async sendTransactionAsync(
-            _newName: string,
+            _name: string,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeName(bytes32)', [_newName
+            const encodedData = self._strictEncodeArguments('changeName(bytes32)', [_name
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -797,7 +1026,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 },
                 self.changeName.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
-                    _newName
+                    _name
     ,
                     estimateGasFactor,
                 ),
@@ -808,13 +1037,13 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
-            _newName: string,
+            _name: string,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOFactoryContract;
             const encodedData = self._strictEncodeArguments('changeName(bytes32)',
-            [_newName
+            [_name
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -836,22 +1065,22 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
-            _newName: string,
+            _name: string,
         ): string {
             const self = this as any as USDTieredSTOFactoryContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('changeName(bytes32)',
-            [_newName
+            [_name
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
-            _newName: string,
+            _name: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeName(bytes32)', [_newName
+            const encodedData = self._strictEncodeArguments('changeName(bytes32)', [_name
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -895,14 +1124,14 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public getSetupCost = {
+    public isOwner = {
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<BigNumber
+        ): Promise<boolean
         > {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('getSetupCost()', []);
+            const encodedData = self._strictEncodeArguments('isOwner()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -913,21 +1142,104 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('getSetupCost()');
+            const abiEncoder = self._lookupAbiEncoder('isOwner()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<boolean
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public modules = {
+        async callAsync(
+            index_0: string,
+            index_1: string,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<BigNumber
+        > {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('modules(address,address)', [index_0,
+        index_1
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('modules(address,address)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<BigNumber
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public changeFactoryUsageFee = {
+    public moduleToSecurityToken = {
+        async callAsync(
+            index_0: string,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('moduleToSecurityToken(address)', [index_0
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('moduleToSecurityToken(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public upperSTVersionBounds = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<BigNumber[]
+        > {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('upperSTVersionBounds()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('upperSTVersionBounds()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber[]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public changeCostAndType = {
         async sendTransactionAsync(
-            _newUsageCost: BigNumber,
+            _setupCost: BigNumber,
+            _isCostInPoly: boolean,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeFactoryUsageFee(uint256)', [_newUsageCost
+            const encodedData = self._strictEncodeArguments('changeCostAndType(uint256,bool)', [_setupCost,
+    _isCostInPoly
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -941,9 +1253,10 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                     from: defaultFromAddress,
                     ...contractDefaults
                 },
-                self.changeFactoryUsageFee.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
+                self.changeCostAndType.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
-                    _newUsageCost
+                    _setupCost,
+    _isCostInPoly
     ,
                     estimateGasFactor,
                 ),
@@ -954,13 +1267,15 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
-            _newUsageCost: BigNumber,
+            _setupCost: BigNumber,
+            _isCostInPoly: boolean,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeFactoryUsageFee(uint256)',
-            [_newUsageCost
+            const encodedData = self._strictEncodeArguments('changeCostAndType(uint256,bool)',
+            [_setupCost,
+    _isCostInPoly
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -982,22 +1297,26 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
-            _newUsageCost: BigNumber,
+            _setupCost: BigNumber,
+            _isCostInPoly: boolean,
         ): string {
             const self = this as any as USDTieredSTOFactoryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changeFactoryUsageFee(uint256)',
-            [_newUsageCost
+            const abiEncodedTransactionData = self._strictEncodeArguments('changeCostAndType(uint256,bool)',
+            [_setupCost,
+    _isCostInPoly
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
-            _newUsageCost: BigNumber,
+            _setupCost: BigNumber,
+            _isCostInPoly: boolean,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeFactoryUsageFee(uint256)', [_newUsageCost
+            const encodedData = self._strictEncodeArguments('changeCostAndType(uint256,bool)', [_setupCost,
+        _isCostInPoly
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -1009,21 +1328,21 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('changeFactoryUsageFee(uint256)');
+            const abiEncoder = self._lookupAbiEncoder('changeCostAndType(uint256,bool)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<void
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public logicContract = {
+    public types = {
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<string
+        ): Promise<BigNumber[]
         > {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('logicContract()', []);
+            const encodedData = self._strictEncodeArguments('types()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -1034,21 +1353,119 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('logicContract()');
+            const abiEncoder = self._lookupAbiEncoder('types()');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber[]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public usageCost = {
+    public updateLogicContract = {
+        async sendTransactionAsync(
+            _upgrade: BigNumber,
+            _version: string,
+            _logicContract: string,
+            _upgradeData: string,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('updateLogicContract(uint256,string,address,bytes)', [_upgrade,
+    _version,
+    _logicContract,
+    _upgradeData
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.updateLogicContract.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
+                    self,
+                    _upgrade,
+    _version,
+    _logicContract,
+    _upgradeData
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _upgrade: BigNumber,
+            _version: string,
+            _logicContract: string,
+            _upgradeData: string,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('updateLogicContract(uint256,string,address,bytes)',
+            [_upgrade,
+    _version,
+    _logicContract,
+    _upgradeData
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _upgrade: BigNumber,
+            _version: string,
+            _logicContract: string,
+            _upgradeData: string,
+        ): string {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('updateLogicContract(uint256,string,address,bytes)',
+            [_upgrade,
+    _version,
+    _logicContract,
+    _upgradeData
+    ]);
+            return abiEncodedTransactionData;
+        },
         async callAsync(
+            _upgrade: BigNumber,
+            _version: string,
+            _logicContract: string,
+            _upgradeData: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<BigNumber
+        ): Promise<void
         > {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('usageCost()', []);
+            const encodedData = self._strictEncodeArguments('updateLogicContract(uint256,string,address,bytes)', [_upgrade,
+        _version,
+        _logicContract,
+        _upgradeData
+        ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -1059,21 +1476,46 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('usageCost()');
+            const abiEncoder = self._lookupAbiEncoder('updateLogicContract(uint256,string,address,bytes)');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<BigNumber
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public tags = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string[]
+        > {
+            const self = this as any as USDTieredSTOFactoryContract;
+            const encodedData = self._strictEncodeArguments('tags()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('tags()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string[]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
     public changeDescription = {
         async sendTransactionAsync(
-            _newDesc: string,
+            _description: string,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeDescription(string)', [_newDesc
+            const encodedData = self._strictEncodeArguments('changeDescription(string)', [_description
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -1089,7 +1531,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 },
                 self.changeDescription.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
-                    _newDesc
+                    _description
     ,
                     estimateGasFactor,
                 ),
@@ -1100,13 +1542,13 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
-            _newDesc: string,
+            _description: string,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOFactoryContract;
             const encodedData = self._strictEncodeArguments('changeDescription(string)',
-            [_newDesc
+            [_description
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -1128,22 +1570,22 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
-            _newDesc: string,
+            _description: string,
         ): string {
             const self = this as any as USDTieredSTOFactoryContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('changeDescription(string)',
-            [_newDesc
+            [_description
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
-            _newDesc: string,
+            _description: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeDescription(string)', [_newDesc
+            const encodedData = self._strictEncodeArguments('changeDescription(string)', [_description
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -1164,12 +1606,12 @@ export class USDTieredSTOFactoryContract extends BaseContract {
         },};
     public transferOwnership = {
         async sendTransactionAsync(
-            _newOwner: string,
+            newOwner: string,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [_newOwner
+            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [newOwner
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -1185,7 +1627,7 @@ export class USDTieredSTOFactoryContract extends BaseContract {
                 },
                 self.transferOwnership.estimateGasAsync.bind<USDTieredSTOFactoryContract, any, Promise<number>>(
                     self,
-                    _newOwner
+                    newOwner
     ,
                     estimateGasFactor,
                 ),
@@ -1196,13 +1638,13 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
-            _newOwner: string,
+            newOwner: string,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as USDTieredSTOFactoryContract;
             const encodedData = self._strictEncodeArguments('transferOwnership(address)',
-            [_newOwner
+            [newOwner
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -1224,22 +1666,22 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
-            _newOwner: string,
+            newOwner: string,
         ): string {
             const self = this as any as USDTieredSTOFactoryContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('transferOwnership(address)',
-            [_newOwner
+            [newOwner
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
-            _newOwner: string,
+            newOwner: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [_newOwner
+            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [newOwner
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -1254,31 +1696,6 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             const abiEncoder = self._lookupAbiEncoder('transferOwnership(address)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public getUpperSTVersionBounds = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<BigNumber[]
-        > {
-            const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('getUpperSTVersionBounds()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('getUpperSTVersionBounds()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<BigNumber[]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -1484,116 +1901,37 @@ export class USDTieredSTOFactoryContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public getTypes = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<BigNumber[]
-        > {
-            const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('getTypes()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('getTypes()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<BigNumber[]
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public getInstructions = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('getInstructions()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('getInstructions()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public getTags = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string[]
-        > {
-            const self = this as any as USDTieredSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('getTags()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('getTags()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string[]
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
     public static async deployAsync(
         bytecode: string,
         abi: ContractAbi,
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
-            _polyAddress: string,
             _setupCost: BigNumber,
-            _usageCost: BigNumber,
-            _subscriptionCost: BigNumber,
             _logicContract: string,
+            _polymathRegistry: string,
+            _isCostInPoly: boolean,
     ): Promise<USDTieredSTOFactoryContract> {
         const provider = providerUtils.standardizeOrThrow(supportedProvider);
         const constructorAbi = BaseContract._lookupConstructorAbi(abi);
-        [_polyAddress,
-_setupCost,
-_usageCost,
-_subscriptionCost,
-_logicContract
+        [_setupCost,
+_logicContract,
+_polymathRegistry,
+_isCostInPoly
 ] = BaseContract._formatABIDataItemList(
             constructorAbi.inputs,
-            [_polyAddress,
-_setupCost,
-_usageCost,
-_subscriptionCost,
-_logicContract
+            [_setupCost,
+_logicContract,
+_polymathRegistry,
+_isCostInPoly
 ],
             BaseContract._bigNumberToString,
         );
         const iface = new ethers.utils.Interface(abi);
         const deployInfo = iface.deployFunction;
-        const txData = deployInfo.encode(bytecode, [_polyAddress,
-_setupCost,
-_usageCost,
-_subscriptionCost,
-_logicContract
+        const txData = deployInfo.encode(bytecode, [_setupCost,
+_logicContract,
+_polymathRegistry,
+_isCostInPoly
 ]);
         const web3Wrapper = new Web3Wrapper(provider);
         const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
@@ -1606,11 +1944,10 @@ _logicContract
         const txReceipt = await web3Wrapper.awaitTransactionSuccessAsync(txHash);
         logUtils.log(`USDTieredSTOFactory successfully deployed at ${txReceipt.contractAddress}`);
         const contractInstance = new USDTieredSTOFactoryContract(abi, txReceipt.contractAddress as string, provider, txDefaults);
-        contractInstance.constructorArgs = [_polyAddress,
-_setupCost,
-_usageCost,
-_subscriptionCost,
-_logicContract
+        contractInstance.constructorArgs = [_setupCost,
+_logicContract,
+_polymathRegistry,
+_isCostInPoly
 ];
         return contractInstance;
     }

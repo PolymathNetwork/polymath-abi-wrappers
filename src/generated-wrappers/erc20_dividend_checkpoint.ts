@@ -40,7 +40,6 @@ export enum ERC20DividendCheckpointEvents {
 export interface ERC20DividendCheckpointERC20DividendDepositedEventArgs extends DecodedLogArgs {
     _depositor: string;
     _checkpointId: BigNumber;
-    _created: BigNumber;
     _maturity: BigNumber;
     _expiry: BigNumber;
     _token: string;
@@ -74,25 +73,21 @@ export interface ERC20DividendCheckpointERC20DividendWithholdingWithdrawnEventAr
 
 export interface ERC20DividendCheckpointSetDefaultExcludedAddressesEventArgs extends DecodedLogArgs {
     _excluded: string[];
-    _timestamp: BigNumber;
 }
 
 export interface ERC20DividendCheckpointSetWithholdingEventArgs extends DecodedLogArgs {
     _investors: string[];
     _withholding: BigNumber[];
-    _timestamp: BigNumber;
 }
 
 export interface ERC20DividendCheckpointSetWithholdingFixedEventArgs extends DecodedLogArgs {
     _investors: string[];
     _withholding: BigNumber;
-    _timestamp: BigNumber;
 }
 
 export interface ERC20DividendCheckpointSetWalletEventArgs extends DecodedLogArgs {
     _oldWallet: string;
     _newWallet: string;
-    _timestamp: BigNumber;
 }
 
 export interface ERC20DividendCheckpointUpdateDividendDatesEventArgs extends DecodedLogArgs {
@@ -102,11 +97,11 @@ export interface ERC20DividendCheckpointUpdateDividendDatesEventArgs extends Dec
 }
 
 export interface ERC20DividendCheckpointPauseEventArgs extends DecodedLogArgs {
-    _timestammp: BigNumber;
+    account: string;
 }
 
 export interface ERC20DividendCheckpointUnpauseEventArgs extends DecodedLogArgs {
-    _timestamp: BigNumber;
+    account: string;
 }
 
 
@@ -384,6 +379,56 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
+    public ADMIN = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as ERC20DividendCheckpointContract;
+            const encodedData = self._strictEncodeArguments('ADMIN()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('ADMIN()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getTreasuryWallet = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as ERC20DividendCheckpointContract;
+            const encodedData = self._strictEncodeArguments('getTreasuryWallet()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getTreasuryWallet()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public pullDividendPayment = {
         async sendTransactionAsync(
             _dividendIndex: BigNumber,
@@ -480,14 +525,16 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public CHECKPOINT = {
+    public investorWithheld = {
         async callAsync(
+            index_0: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<string
+        ): Promise<BigNumber
         > {
             const self = this as any as ERC20DividendCheckpointContract;
-            const encodedData = self._strictEncodeArguments('CHECKPOINT()', []);
+            const encodedData = self._strictEncodeArguments('investorWithheld(address)', [index_0
+        ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -498,9 +545,9 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('CHECKPOINT()');
+            const abiEncoder = self._lookupAbiEncoder('investorWithheld(address)');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -780,31 +827,6 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public MANAGE = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as ERC20DividendCheckpointContract;
-            const encodedData = self._strictEncodeArguments('MANAGE()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('MANAGE()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
     public paused = {
         async callAsync(
         callData: Partial<CallData> = {},
@@ -853,102 +875,6 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             const abiEncoder = self._lookupAbiEncoder('getDividendIndex(uint256)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<BigNumber[]
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public takeFee = {
-        async sendTransactionAsync(
-            _amount: BigNumber,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as ERC20DividendCheckpointContract;
-            const encodedData = self._strictEncodeArguments('takeFee(uint256)', [_amount
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.takeFee.estimateGasAsync.bind<ERC20DividendCheckpointContract, any, Promise<number>>(
-                    self,
-                    _amount
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _amount: BigNumber,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as ERC20DividendCheckpointContract;
-            const encodedData = self._strictEncodeArguments('takeFee(uint256)',
-            [_amount
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _amount: BigNumber,
-        ): string {
-            const self = this as any as ERC20DividendCheckpointContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('takeFee(uint256)',
-            [_amount
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _amount: BigNumber,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<boolean
-        > {
-            const self = this as any as ERC20DividendCheckpointContract;
-            const encodedData = self._strictEncodeArguments('takeFee(uint256)', [_amount
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('takeFee(uint256)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<boolean
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -1238,31 +1164,6 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             const abiEncoder = self._lookupAbiEncoder('getCheckpointData(uint256)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<[string[], BigNumber[], BigNumber[]]
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public DISTRIBUTE = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as ERC20DividendCheckpointContract;
-            const encodedData = self._strictEncodeArguments('DISTRIBUTE()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('DISTRIBUTE()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -1638,6 +1539,31 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
+    public OPERATOR = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as ERC20DividendCheckpointContract;
+            const encodedData = self._strictEncodeArguments('OPERATOR()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('OPERATOR()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public changeWallet = {
         async sendTransactionAsync(
             _wallet: string,
@@ -1957,43 +1883,18 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public FEE_ADMIN = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as ERC20DividendCheckpointContract;
-            const encodedData = self._strictEncodeArguments('FEE_ADMIN()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('FEE_ADMIN()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
     public pushDividendPayment = {
         async sendTransactionAsync(
             _dividendIndex: BigNumber,
             _start: BigNumber,
-            _iterations: BigNumber,
+            _end: BigNumber,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ERC20DividendCheckpointContract;
             const encodedData = self._strictEncodeArguments('pushDividendPayment(uint256,uint256,uint256)', [_dividendIndex,
     _start,
-    _iterations
+    _end
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -2011,7 +1912,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
                     self,
                     _dividendIndex,
     _start,
-    _iterations
+    _end
     ,
                     estimateGasFactor,
                 ),
@@ -2024,7 +1925,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
         async estimateGasAsync(
             _dividendIndex: BigNumber,
             _start: BigNumber,
-            _iterations: BigNumber,
+            _end: BigNumber,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
@@ -2032,7 +1933,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             const encodedData = self._strictEncodeArguments('pushDividendPayment(uint256,uint256,uint256)',
             [_dividendIndex,
     _start,
-    _iterations
+    _end
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -2056,20 +1957,20 @@ export class ERC20DividendCheckpointContract extends BaseContract {
         getABIEncodedTransactionData(
             _dividendIndex: BigNumber,
             _start: BigNumber,
-            _iterations: BigNumber,
+            _end: BigNumber,
         ): string {
             const self = this as any as ERC20DividendCheckpointContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('pushDividendPayment(uint256,uint256,uint256)',
             [_dividendIndex,
     _start,
-    _iterations
+    _end
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _dividendIndex: BigNumber,
             _start: BigNumber,
-            _iterations: BigNumber,
+            _end: BigNumber,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
@@ -2077,7 +1978,7 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             const self = this as any as ERC20DividendCheckpointContract;
             const encodedData = self._strictEncodeArguments('pushDividendPayment(uint256,uint256,uint256)', [_dividendIndex,
         _start,
-        _iterations
+        _end
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -2144,6 +2045,31 @@ export class ERC20DividendCheckpointContract extends BaseContract {
             const abiEncoder = self._lookupAbiEncoder('getDividendProgress(uint256)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<[string[], boolean[], boolean[], BigNumber[], BigNumber[], BigNumber[]]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getDataStore = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as ERC20DividendCheckpointContract;
+            const encodedData = self._strictEncodeArguments('getDataStore()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getDataStore()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -2997,23 +2923,23 @@ export class ERC20DividendCheckpointContract extends BaseContract {
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
             _securityToken: string,
-            _polyAddress: string,
+            _polyToken: string,
     ): Promise<ERC20DividendCheckpointContract> {
         const provider = providerUtils.standardizeOrThrow(supportedProvider);
         const constructorAbi = BaseContract._lookupConstructorAbi(abi);
         [_securityToken,
-_polyAddress
+_polyToken
 ] = BaseContract._formatABIDataItemList(
             constructorAbi.inputs,
             [_securityToken,
-_polyAddress
+_polyToken
 ],
             BaseContract._bigNumberToString,
         );
         const iface = new ethers.utils.Interface(abi);
         const deployInfo = iface.deployFunction;
         const txData = deployInfo.encode(bytecode, [_securityToken,
-_polyAddress
+_polyToken
 ]);
         const web3Wrapper = new Web3Wrapper(provider);
         const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
@@ -3027,7 +2953,7 @@ _polyAddress
         logUtils.log(`ERC20DividendCheckpoint successfully deployed at ${txReceipt.contractAddress}`);
         const contractInstance = new ERC20DividendCheckpointContract(abi, txReceipt.contractAddress as string, provider, txDefaults);
         contractInstance.constructorArgs = [_securityToken,
-_polyAddress
+_polyToken
 ];
         return contractInstance;
     }

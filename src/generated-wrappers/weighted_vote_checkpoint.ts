@@ -10,36 +10,62 @@ import { PolyResponse } from '../polyResponse';
 import * as ethers from 'ethers';
 // tslint:enable:no-unused-variable
 
-export type GeneralPermissionManagerEventArgs =
-    | GeneralPermissionManagerChangePermissionEventArgs
-    | GeneralPermissionManagerAddDelegateEventArgs
-    | GeneralPermissionManagerPauseEventArgs
-    | GeneralPermissionManagerUnpauseEventArgs;
+export type WeightedVoteCheckpointEventArgs =
+    | WeightedVoteCheckpointBallotCreatedEventArgs
+    | WeightedVoteCheckpointVoteCastEventArgs
+    | WeightedVoteCheckpointBallotStatusChangedEventArgs
+    | WeightedVoteCheckpointChangedBallotExemptedVotersListEventArgs
+    | WeightedVoteCheckpointChangedDefaultExemptedVotersListEventArgs
+    | WeightedVoteCheckpointPauseEventArgs
+    | WeightedVoteCheckpointUnpauseEventArgs;
 
-export enum GeneralPermissionManagerEvents {
-    ChangePermission = 'ChangePermission',
-    AddDelegate = 'AddDelegate',
+export enum WeightedVoteCheckpointEvents {
+    BallotCreated = 'BallotCreated',
+    VoteCast = 'VoteCast',
+    BallotStatusChanged = 'BallotStatusChanged',
+    ChangedBallotExemptedVotersList = 'ChangedBallotExemptedVotersList',
+    ChangedDefaultExemptedVotersList = 'ChangedDefaultExemptedVotersList',
     Pause = 'Pause',
     Unpause = 'Unpause',
 }
 
-export interface GeneralPermissionManagerChangePermissionEventArgs extends DecodedLogArgs {
-    _delegate: string;
-    _module: string;
-    _perm: string;
-    _valid: boolean;
+export interface WeightedVoteCheckpointBallotCreatedEventArgs extends DecodedLogArgs {
+    _ballotId: BigNumber;
+    _checkpointId: BigNumber;
+    _startTime: BigNumber;
+    _endTime: BigNumber;
+    _noOfProposals: BigNumber;
+    _quorumPercentage: BigNumber;
 }
 
-export interface GeneralPermissionManagerAddDelegateEventArgs extends DecodedLogArgs {
-    _delegate: string;
-    _details: string;
+export interface WeightedVoteCheckpointVoteCastEventArgs extends DecodedLogArgs {
+    _voter: string;
+    _weight: BigNumber;
+    _ballotId: BigNumber;
+    _proposalId: BigNumber;
 }
 
-export interface GeneralPermissionManagerPauseEventArgs extends DecodedLogArgs {
+export interface WeightedVoteCheckpointBallotStatusChangedEventArgs extends DecodedLogArgs {
+    _ballotId: BigNumber;
+    _isActive: boolean;
+}
+
+export interface WeightedVoteCheckpointChangedBallotExemptedVotersListEventArgs extends DecodedLogArgs {
+    _ballotId: BigNumber;
+    _voter: string;
+    _exempt: boolean;
+}
+
+export interface WeightedVoteCheckpointChangedDefaultExemptedVotersListEventArgs extends DecodedLogArgs {
+    _voter: string;
+    _exempt: boolean;
+}
+
+export interface WeightedVoteCheckpointPauseEventArgs extends DecodedLogArgs {
     account: string;
 }
 
-export interface GeneralPermissionManagerUnpauseEventArgs extends DecodedLogArgs {
+export interface WeightedVoteCheckpointUnpauseEventArgs extends DecodedLogArgs {
     account: string;
 }
 
@@ -47,14 +73,14 @@ export interface GeneralPermissionManagerUnpauseEventArgs extends DecodedLogArgs
 /* istanbul ignore next */
 // tslint:disable:no-parameter-reassignment
 // tslint:disable-next-line:class-name
-export class GeneralPermissionManagerContract extends BaseContract {
+export class WeightedVoteCheckpointContract extends BaseContract {
     private _defaultEstimateGasFactor: number;
     public reclaimETH = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('reclaimETH()', []);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -68,7 +94,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
                     from: defaultFromAddress,
                     ...contractDefaults
                 },
-                self.reclaimETH.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
+                self.reclaimETH.estimateGasAsync.bind<WeightedVoteCheckpointContract, any, Promise<number>>(
                     self,
                     
                     estimateGasFactor,
@@ -83,7 +109,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('reclaimETH()',
             []);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
@@ -107,7 +133,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
         },
         getABIEncodedTransactionData(
         ): string {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('reclaimETH()',
             []);
             return abiEncodedTransactionData;
@@ -117,7 +143,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('reclaimETH()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -136,13 +162,118 @@ export class GeneralPermissionManagerContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
+    public changeDefaultExemptedVotersListMulti = {
+        async sendTransactionAsync(
+            _voters: string[],
+            _exempts: boolean[],
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeDefaultExemptedVotersListMulti(address[],bool[])', [_voters,
+    _exempts
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.changeDefaultExemptedVotersListMulti.estimateGasAsync.bind<WeightedVoteCheckpointContract, any, Promise<number>>(
+                    self,
+                    _voters,
+    _exempts
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _voters: string[],
+            _exempts: boolean[],
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeDefaultExemptedVotersListMulti(address[],bool[])',
+            [_voters,
+    _exempts
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _voters: string[],
+            _exempts: boolean[],
+        ): string {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('changeDefaultExemptedVotersListMulti(address[],bool[])',
+            [_voters,
+    _exempts
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _voters: string[],
+            _exempts: boolean[],
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeDefaultExemptedVotersListMulti(address[],bool[])', [_voters,
+        _exempts
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('changeDefaultExemptedVotersListMulti(address[],bool[])');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public ADMIN = {
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('ADMIN()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -166,7 +297,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('unpause()', []);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -180,7 +311,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
                     from: defaultFromAddress,
                     ...contractDefaults
                 },
-                self.unpause.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
+                self.unpause.estimateGasAsync.bind<WeightedVoteCheckpointContract, any, Promise<number>>(
                     self,
                     
                     estimateGasFactor,
@@ -195,7 +326,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('unpause()',
             []);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
@@ -219,7 +350,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
         },
         getABIEncodedTransactionData(
         ): string {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('unpause()',
             []);
             return abiEncodedTransactionData;
@@ -229,7 +360,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('unpause()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -248,44 +379,13 @@ export class GeneralPermissionManagerContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public perms = {
-        async callAsync(
-            index_0: string,
-            index_1: string,
-            index_2: string,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<boolean
-        > {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('perms(address,address,bytes32)', [index_0,
-        index_1,
-        index_2
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('perms(address,address,bytes32)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<boolean
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
     public paused = {
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<boolean
         > {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('paused()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -310,7 +410,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('polyToken()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -329,12 +429,37 @@ export class GeneralPermissionManagerContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
+    public getDefaultExemptionVotersList = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string[]
+        > {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('getDefaultExemptionVotersList()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getDefaultExemptionVotersList()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string[]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public pause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('pause()', []);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -348,7 +473,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
                     from: defaultFromAddress,
                     ...contractDefaults
                 },
-                self.pause.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
+                self.pause.estimateGasAsync.bind<WeightedVoteCheckpointContract, any, Promise<number>>(
                     self,
                     
                     estimateGasFactor,
@@ -363,7 +488,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('pause()',
             []);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
@@ -387,7 +512,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
         },
         getABIEncodedTransactionData(
         ): string {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('pause()',
             []);
             return abiEncodedTransactionData;
@@ -397,7 +522,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('pause()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -422,7 +547,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('reclaimERC20(address)', [_tokenContract
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
@@ -437,7 +562,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
                     from: defaultFromAddress,
                     ...contractDefaults
                 },
-                self.reclaimERC20.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
+                self.reclaimERC20.estimateGasAsync.bind<WeightedVoteCheckpointContract, any, Promise<number>>(
                     self,
                     _tokenContract
     ,
@@ -454,7 +579,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('reclaimERC20(address)',
             [_tokenContract
     ]);
@@ -480,7 +605,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
         getABIEncodedTransactionData(
             _tokenContract: string,
         ): string {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('reclaimERC20(address)',
             [_tokenContract
     ]);
@@ -492,7 +617,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('reclaimERC20(address)', [_tokenContract
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
@@ -512,40 +637,13 @@ export class GeneralPermissionManagerContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public allDelegates = {
-        async callAsync(
-            index_0: BigNumber,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('allDelegates(uint256)', [index_0
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('allDelegates(uint256)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
     public OPERATOR = {
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('OPERATOR()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -570,7 +668,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('securityToken()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -595,7 +693,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('factory()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -614,15 +712,93 @@ export class GeneralPermissionManagerContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public delegateDetails = {
+    public changeDefaultExemptedVotersList = {
+        async sendTransactionAsync(
+            _voter: string,
+            _exempt: boolean,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeDefaultExemptedVotersList(address,bool)', [_voter,
+    _exempt
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.changeDefaultExemptedVotersList.estimateGasAsync.bind<WeightedVoteCheckpointContract, any, Promise<number>>(
+                    self,
+                    _voter,
+    _exempt
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _voter: string,
+            _exempt: boolean,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeDefaultExemptedVotersList(address,bool)',
+            [_voter,
+    _exempt
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _voter: string,
+            _exempt: boolean,
+        ): string {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('changeDefaultExemptedVotersList(address,bool)',
+            [_voter,
+    _exempt
+    ]);
+            return abiEncodedTransactionData;
+        },
         async callAsync(
-            index_0: string,
+            _voter: string,
+            _exempt: boolean,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<string
+        ): Promise<void
         > {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('delegateDetails(address)', [index_0
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeDefaultExemptedVotersList(address,bool)', [_voter,
+        _exempt
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -634,9 +810,9 @@ export class GeneralPermissionManagerContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('delegateDetails(address)');
+            const abiEncoder = self._lookupAbiEncoder('changeDefaultExemptedVotersList(address,bool)');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
+            const result = abiEncoder.strictDecodeReturnValue<void
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -647,7 +823,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('getDataStore()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -672,7 +848,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('getInitFunction()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -691,19 +867,102 @@ export class GeneralPermissionManagerContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public checkPermission = {
+    public createBallot = {
+        async sendTransactionAsync(
+            _duration: BigNumber,
+            _noOfProposals: BigNumber,
+            _quorumPercentage: BigNumber,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('createBallot(uint256,uint256,uint256)', [_duration,
+    _noOfProposals,
+    _quorumPercentage
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.createBallot.estimateGasAsync.bind<WeightedVoteCheckpointContract, any, Promise<number>>(
+                    self,
+                    _duration,
+    _noOfProposals,
+    _quorumPercentage
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _duration: BigNumber,
+            _noOfProposals: BigNumber,
+            _quorumPercentage: BigNumber,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('createBallot(uint256,uint256,uint256)',
+            [_duration,
+    _noOfProposals,
+    _quorumPercentage
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _duration: BigNumber,
+            _noOfProposals: BigNumber,
+            _quorumPercentage: BigNumber,
+        ): string {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('createBallot(uint256,uint256,uint256)',
+            [_duration,
+    _noOfProposals,
+    _quorumPercentage
+    ]);
+            return abiEncodedTransactionData;
+        },
         async callAsync(
-            _delegate: string,
-            _module: string,
-            _perm: string,
+            _duration: BigNumber,
+            _noOfProposals: BigNumber,
+            _quorumPercentage: BigNumber,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<boolean
+        ): Promise<void
         > {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('checkPermission(address,address,bytes32)', [_delegate,
-        _module,
-        _perm
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('createBallot(uint256,uint256,uint256)', [_duration,
+        _noOfProposals,
+        _quorumPercentage
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -715,23 +974,517 @@ export class GeneralPermissionManagerContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('checkPermission(address,address,bytes32)');
+            const abiEncoder = self._lookupAbiEncoder('createBallot(uint256,uint256,uint256)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public createCustomBallot = {
+        async sendTransactionAsync(
+            _checkpointId: BigNumber,
+            _quorumPercentage: BigNumber,
+            _startTime: BigNumber,
+            _endTime: BigNumber,
+            _noOfProposals: BigNumber,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('createCustomBallot(uint256,uint256,uint256,uint256,uint256)', [_checkpointId,
+    _quorumPercentage,
+    _startTime,
+    _endTime,
+    _noOfProposals
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.createCustomBallot.estimateGasAsync.bind<WeightedVoteCheckpointContract, any, Promise<number>>(
+                    self,
+                    _checkpointId,
+    _quorumPercentage,
+    _startTime,
+    _endTime,
+    _noOfProposals
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _checkpointId: BigNumber,
+            _quorumPercentage: BigNumber,
+            _startTime: BigNumber,
+            _endTime: BigNumber,
+            _noOfProposals: BigNumber,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('createCustomBallot(uint256,uint256,uint256,uint256,uint256)',
+            [_checkpointId,
+    _quorumPercentage,
+    _startTime,
+    _endTime,
+    _noOfProposals
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _checkpointId: BigNumber,
+            _quorumPercentage: BigNumber,
+            _startTime: BigNumber,
+            _endTime: BigNumber,
+            _noOfProposals: BigNumber,
+        ): string {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('createCustomBallot(uint256,uint256,uint256,uint256,uint256)',
+            [_checkpointId,
+    _quorumPercentage,
+    _startTime,
+    _endTime,
+    _noOfProposals
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _checkpointId: BigNumber,
+            _quorumPercentage: BigNumber,
+            _startTime: BigNumber,
+            _endTime: BigNumber,
+            _noOfProposals: BigNumber,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('createCustomBallot(uint256,uint256,uint256,uint256,uint256)', [_checkpointId,
+        _quorumPercentage,
+        _startTime,
+        _endTime,
+        _noOfProposals
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('createCustomBallot(uint256,uint256,uint256,uint256,uint256)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public castVote = {
+        async sendTransactionAsync(
+            _ballotId: BigNumber,
+            _proposalId: BigNumber,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('castVote(uint256,uint256)', [_ballotId,
+    _proposalId
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.castVote.estimateGasAsync.bind<WeightedVoteCheckpointContract, any, Promise<number>>(
+                    self,
+                    _ballotId,
+    _proposalId
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _ballotId: BigNumber,
+            _proposalId: BigNumber,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('castVote(uint256,uint256)',
+            [_ballotId,
+    _proposalId
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _ballotId: BigNumber,
+            _proposalId: BigNumber,
+        ): string {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('castVote(uint256,uint256)',
+            [_ballotId,
+    _proposalId
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _ballotId: BigNumber,
+            _proposalId: BigNumber,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('castVote(uint256,uint256)', [_ballotId,
+        _proposalId
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('castVote(uint256,uint256)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public changeBallotExemptedVotersList = {
+        async sendTransactionAsync(
+            _ballotId: BigNumber,
+            _voter: string,
+            _exempt: boolean,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeBallotExemptedVotersList(uint256,address,bool)', [_ballotId,
+    _voter,
+    _exempt
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.changeBallotExemptedVotersList.estimateGasAsync.bind<WeightedVoteCheckpointContract, any, Promise<number>>(
+                    self,
+                    _ballotId,
+    _voter,
+    _exempt
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _ballotId: BigNumber,
+            _voter: string,
+            _exempt: boolean,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeBallotExemptedVotersList(uint256,address,bool)',
+            [_ballotId,
+    _voter,
+    _exempt
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _ballotId: BigNumber,
+            _voter: string,
+            _exempt: boolean,
+        ): string {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('changeBallotExemptedVotersList(uint256,address,bool)',
+            [_ballotId,
+    _voter,
+    _exempt
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _ballotId: BigNumber,
+            _voter: string,
+            _exempt: boolean,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeBallotExemptedVotersList(uint256,address,bool)', [_ballotId,
+        _voter,
+        _exempt
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('changeBallotExemptedVotersList(uint256,address,bool)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public changeBallotExemptedVotersListMulti = {
+        async sendTransactionAsync(
+            _ballotId: BigNumber,
+            _voters: string[],
+            _exempts: boolean[],
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeBallotExemptedVotersListMulti(uint256,address[],bool[])', [_ballotId,
+    _voters,
+    _exempts
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.changeBallotExemptedVotersListMulti.estimateGasAsync.bind<WeightedVoteCheckpointContract, any, Promise<number>>(
+                    self,
+                    _ballotId,
+    _voters,
+    _exempts
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _ballotId: BigNumber,
+            _voters: string[],
+            _exempts: boolean[],
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeBallotExemptedVotersListMulti(uint256,address[],bool[])',
+            [_ballotId,
+    _voters,
+    _exempts
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _ballotId: BigNumber,
+            _voters: string[],
+            _exempts: boolean[],
+        ): string {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('changeBallotExemptedVotersListMulti(uint256,address[],bool[])',
+            [_ballotId,
+    _voters,
+    _exempts
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _ballotId: BigNumber,
+            _voters: string[],
+            _exempts: boolean[],
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeBallotExemptedVotersListMulti(uint256,address[],bool[])', [_ballotId,
+        _voters,
+        _exempts
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('changeBallotExemptedVotersListMulti(uint256,address[],bool[])');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public isVoterAllowed = {
+        async callAsync(
+            _ballotId: BigNumber,
+            _voter: string,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<boolean
+        > {
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('isVoterAllowed(uint256,address)', [_ballotId,
+        _voter
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('isVoterAllowed(uint256,address)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<boolean
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public addDelegate = {
+    public changeBallotStatus = {
         async sendTransactionAsync(
-            _delegate: string,
-            _details: string,
+            _ballotId: BigNumber,
+            _isActive: boolean,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('addDelegate(address,bytes32)', [_delegate,
-    _details
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeBallotStatus(uint256,bool)', [_ballotId,
+    _isActive
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -745,10 +1498,10 @@ export class GeneralPermissionManagerContract extends BaseContract {
                     from: defaultFromAddress,
                     ...contractDefaults
                 },
-                self.addDelegate.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
+                self.changeBallotStatus.estimateGasAsync.bind<WeightedVoteCheckpointContract, any, Promise<number>>(
                     self,
-                    _delegate,
-    _details
+                    _ballotId,
+    _isActive
     ,
                     estimateGasFactor,
                 ),
@@ -759,15 +1512,15 @@ export class GeneralPermissionManagerContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
-            _delegate: string,
-            _details: string,
+            _ballotId: BigNumber,
+            _isActive: boolean,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('addDelegate(address,bytes32)',
-            [_delegate,
-    _details
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeBallotStatus(uint256,bool)',
+            [_ballotId,
+    _isActive
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -789,26 +1542,26 @@ export class GeneralPermissionManagerContract extends BaseContract {
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
-            _delegate: string,
-            _details: string,
+            _ballotId: BigNumber,
+            _isActive: boolean,
         ): string {
-            const self = this as any as GeneralPermissionManagerContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('addDelegate(address,bytes32)',
-            [_delegate,
-    _details
+            const self = this as any as WeightedVoteCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('changeBallotStatus(uint256,bool)',
+            [_ballotId,
+    _isActive
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
-            _delegate: string,
-            _details: string,
+            _ballotId: BigNumber,
+            _isActive: boolean,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('addDelegate(address,bytes32)', [_delegate,
-        _details
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeBallotStatus(uint256,bool)', [_ballotId,
+        _isActive
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -820,91 +1573,22 @@ export class GeneralPermissionManagerContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('addDelegate(address,bytes32)');
+            const abiEncoder = self._lookupAbiEncoder('changeBallotStatus(uint256,bool)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<void
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public deleteDelegate = {
-        async sendTransactionAsync(
-            _delegate: string,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('deleteDelegate(address)', [_delegate
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.deleteDelegate.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
-                    self,
-                    _delegate
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _delegate: string,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('deleteDelegate(address)',
-            [_delegate
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _delegate: string,
-        ): string {
-            const self = this as any as GeneralPermissionManagerContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('deleteDelegate(address)',
-            [_delegate
-    ]);
-            return abiEncodedTransactionData;
-        },
+    public getBallotResults = {
         async callAsync(
-            _delegate: string,
+            _ballotId: BigNumber,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<void
+        ): Promise<[BigNumber[], BigNumber[], BigNumber, boolean, BigNumber]
         > {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('deleteDelegate(address)', [_delegate
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('getBallotResults(uint256)', [_ballotId
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -916,22 +1600,24 @@ export class GeneralPermissionManagerContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('deleteDelegate(address)');
+            const abiEncoder = self._lookupAbiEncoder('getBallotResults(uint256)');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber[], BigNumber[], BigNumber, boolean, BigNumber]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public checkDelegate = {
+    public getSelectedProposal = {
         async callAsync(
-            _potentialDelegate: string,
+            _ballotId: BigNumber,
+            _voter: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<boolean
+        ): Promise<BigNumber
         > {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('checkDelegate(address)', [_potentialDelegate
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('getSelectedProposal(uint256,address)', [_ballotId,
+        _voter
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -943,118 +1629,22 @@ export class GeneralPermissionManagerContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('checkDelegate(address)');
+            const abiEncoder = self._lookupAbiEncoder('getSelectedProposal(uint256,address)');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<boolean
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public changePermission = {
-        async sendTransactionAsync(
-            _delegate: string,
-            _module: string,
-            _perm: string,
-            _valid: boolean,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('changePermission(address,address,bytes32,bool)', [_delegate,
-    _module,
-    _perm,
-    _valid
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.changePermission.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
-                    self,
-                    _delegate,
-    _module,
-    _perm,
-    _valid
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _delegate: string,
-            _module: string,
-            _perm: string,
-            _valid: boolean,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('changePermission(address,address,bytes32,bool)',
-            [_delegate,
-    _module,
-    _perm,
-    _valid
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _delegate: string,
-            _module: string,
-            _perm: string,
-            _valid: boolean,
-        ): string {
-            const self = this as any as GeneralPermissionManagerContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changePermission(address,address,bytes32,bool)',
-            [_delegate,
-    _module,
-    _perm,
-    _valid
-    ]);
-            return abiEncodedTransactionData;
-        },
+    public getBallotDetails = {
         async callAsync(
-            _delegate: string,
-            _module: string,
-            _perm: string,
-            _valid: boolean,
+            _ballotId: BigNumber,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<void
+        ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, boolean]
         > {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('changePermission(address,address,bytes32,bool)', [_delegate,
-        _module,
-        _perm,
-        _valid
+            const self = this as any as WeightedVoteCheckpointContract;
+            const encodedData = self._strictEncodeArguments('getBallotDetails(uint256)', [_ballotId
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -1066,215 +1656,9 @@ export class GeneralPermissionManagerContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('changePermission(address,address,bytes32,bool)');
+            const abiEncoder = self._lookupAbiEncoder('getBallotDetails(uint256)');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public changePermissionMulti = {
-        async sendTransactionAsync(
-            _delegate: string,
-            _modules: string[],
-            _perms: string[],
-            _valids: boolean[],
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('changePermissionMulti(address,address[],bytes32[],bool[])', [_delegate,
-    _modules,
-    _perms,
-    _valids
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.changePermissionMulti.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
-                    self,
-                    _delegate,
-    _modules,
-    _perms,
-    _valids
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _delegate: string,
-            _modules: string[],
-            _perms: string[],
-            _valids: boolean[],
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('changePermissionMulti(address,address[],bytes32[],bool[])',
-            [_delegate,
-    _modules,
-    _perms,
-    _valids
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _delegate: string,
-            _modules: string[],
-            _perms: string[],
-            _valids: boolean[],
-        ): string {
-            const self = this as any as GeneralPermissionManagerContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changePermissionMulti(address,address[],bytes32[],bool[])',
-            [_delegate,
-    _modules,
-    _perms,
-    _valids
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _delegate: string,
-            _modules: string[],
-            _perms: string[],
-            _valids: boolean[],
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<void
-        > {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('changePermissionMulti(address,address[],bytes32[],bool[])', [_delegate,
-        _modules,
-        _perms,
-        _valids
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('changePermissionMulti(address,address[],bytes32[],bool[])');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public getAllDelegatesWithPerm = {
-        async callAsync(
-            _module: string,
-            _perm: string,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string[]
-        > {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('getAllDelegatesWithPerm(address,bytes32)', [_module,
-        _perm
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('getAllDelegatesWithPerm(address,bytes32)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string[]
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public getAllModulesAndPermsFromTypes = {
-        async callAsync(
-            _delegate: string,
-            _types: Array<number|BigNumber>,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<[string[], string[]]
-        > {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('getAllModulesAndPermsFromTypes(address,uint8[])', [_delegate,
-        _types
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('getAllModulesAndPermsFromTypes(address,uint8[])');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<[string[], string[]]
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public getAllDelegates = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string[]
-        > {
-            const self = this as any as GeneralPermissionManagerContract;
-            const encodedData = self._strictEncodeArguments('getAllDelegates()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('getAllDelegates()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string[]
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, boolean]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -1285,7 +1669,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
             defaultBlock?: BlockParam,
         ): Promise<string[]
         > {
-            const self = this as any as GeneralPermissionManagerContract;
+            const self = this as any as WeightedVoteCheckpointContract;
             const encodedData = self._strictEncodeArguments('getPermissions()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -1311,7 +1695,7 @@ export class GeneralPermissionManagerContract extends BaseContract {
         txDefaults: Partial<TxData>,
             _securityToken: string,
             _polyToken: string,
-    ): Promise<GeneralPermissionManagerContract> {
+    ): Promise<WeightedVoteCheckpointContract> {
         const provider = providerUtils.standardizeOrThrow(supportedProvider);
         const constructorAbi = BaseContract._lookupConstructorAbi(abi);
         [_securityToken,
@@ -1337,15 +1721,15 @@ _polyToken
         const txHash = await web3Wrapper.sendTransactionAsync(txDataWithDefaults);
         logUtils.log(`transactionHash: ${txHash}`);
         const txReceipt = await web3Wrapper.awaitTransactionSuccessAsync(txHash);
-        logUtils.log(`GeneralPermissionManager successfully deployed at ${txReceipt.contractAddress}`);
-        const contractInstance = new GeneralPermissionManagerContract(abi, txReceipt.contractAddress as string, provider, txDefaults);
+        logUtils.log(`WeightedVoteCheckpoint successfully deployed at ${txReceipt.contractAddress}`);
+        const contractInstance = new WeightedVoteCheckpointContract(abi, txReceipt.contractAddress as string, provider, txDefaults);
         contractInstance.constructorArgs = [_securityToken,
 _polyToken
 ];
         return contractInstance;
     }
     constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number) {
-        super('GeneralPermissionManager', abi, address, supportedProvider, txDefaults);
+        super('WeightedVoteCheckpoint', abi, address, supportedProvider, txDefaults);
         this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
         this._web3Wrapper.abiDecoder.addABI(abi);
         classUtils.bindAll(this, ['_abiEncoderByFunctionSignature', 'address', 'abi', '_web3Wrapper', '_defaultEstimateGasFactor']);

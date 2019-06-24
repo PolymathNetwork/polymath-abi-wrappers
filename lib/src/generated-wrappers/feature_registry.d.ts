@@ -1,22 +1,18 @@
 import { BaseContract } from '@0x/base-contract';
 import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider } from 'ethereum-types';
 import { PolyResponse } from '../polyResponse';
-export declare type FeatureRegistryEventArgs = FeatureRegistryChangeFeatureStatusEventArgs | FeatureRegistryOwnershipRenouncedEventArgs | FeatureRegistryOwnershipTransferredEventArgs;
+export declare type FeatureRegistryEventArgs = FeatureRegistryOwnershipTransferredEventArgs | FeatureRegistryChangeFeatureStatusEventArgs;
 export declare enum FeatureRegistryEvents {
-    ChangeFeatureStatus = "ChangeFeatureStatus",
-    OwnershipRenounced = "OwnershipRenounced",
-    OwnershipTransferred = "OwnershipTransferred"
-}
-export interface FeatureRegistryChangeFeatureStatusEventArgs extends DecodedLogArgs {
-    _nameKey: string;
-    _newStatus: boolean;
-}
-export interface FeatureRegistryOwnershipRenouncedEventArgs extends DecodedLogArgs {
-    previousOwner: string;
+    OwnershipTransferred = "OwnershipTransferred",
+    ChangeFeatureStatus = "ChangeFeatureStatus"
 }
 export interface FeatureRegistryOwnershipTransferredEventArgs extends DecodedLogArgs {
     previousOwner: string;
     newOwner: string;
+}
+export interface FeatureRegistryChangeFeatureStatusEventArgs extends DecodedLogArgs {
+    _nameKey: string;
+    _newStatus: boolean;
 }
 export declare class FeatureRegistryContract extends BaseContract {
     private _defaultEstimateGasFactor;
@@ -35,14 +31,17 @@ export declare class FeatureRegistryContract extends BaseContract {
     owner: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
+    isOwner: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
+    };
     featureStatus: {
         callAsync(index_0: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
     transferOwnership: {
-        sendTransactionAsync(_newOwner: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_newOwner: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_newOwner: string): string;
-        callAsync(_newOwner: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        sendTransactionAsync(newOwner: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(newOwner: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(newOwner: string): string;
+        callAsync(newOwner: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     getFeatureStatus: {
         callAsync(_nameKey: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;

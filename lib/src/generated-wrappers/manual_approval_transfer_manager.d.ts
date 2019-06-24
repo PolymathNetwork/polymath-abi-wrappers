@@ -32,13 +32,25 @@ export interface ManualApprovalTransferManagerRevokeManualApprovalEventArgs exte
     _addedBy: string;
 }
 export interface ManualApprovalTransferManagerPauseEventArgs extends DecodedLogArgs {
-    _timestammp: BigNumber;
+    account: string;
 }
 export interface ManualApprovalTransferManagerUnpauseEventArgs extends DecodedLogArgs {
-    _timestamp: BigNumber;
+    account: string;
 }
 export declare class ManualApprovalTransferManagerContract extends BaseContract {
     private _defaultEstimateGasFactor;
+    reclaimETH: {
+        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(): string;
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
+    getTokensByPartition: {
+        callAsync(_partition: string, _tokenHolder: string, index_2: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
+    };
+    ADMIN: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+    };
     unpause: {
         sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
         estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
@@ -51,14 +63,11 @@ export declare class ManualApprovalTransferManagerContract extends BaseContract 
     approvalIndex: {
         callAsync(index_0: string, index_1: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
     };
-    takeFee: {
-        sendTransactionAsync(_amount: BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_amount: BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_amount: BigNumber): string;
-        callAsync(_amount: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
-    };
     approvals: {
         callAsync(index_0: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[string, string, BigNumber, BigNumber, string]>;
+    };
+    UNLOCKED: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     polyToken: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
@@ -69,7 +78,16 @@ export declare class ManualApprovalTransferManagerContract extends BaseContract 
         getABIEncodedTransactionData(): string;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
-    TRANSFER_APPROVAL: {
+    reclaimERC20: {
+        sendTransactionAsync(_tokenContract: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_tokenContract: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_tokenContract: string): string;
+        callAsync(_tokenContract: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
+    OPERATOR: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+    };
+    LOCKED: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     securityToken: {
@@ -78,17 +96,20 @@ export declare class ManualApprovalTransferManagerContract extends BaseContract 
     factory: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
-    FEE_ADMIN: {
+    getDataStore: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     getInitFunction: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
+    executeTransfer: {
+        sendTransactionAsync(_from: string, _to: string, _amount: BigNumber, index_3: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_from: string, _to: string, _amount: BigNumber, index_3: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_from: string, _to: string, _amount: BigNumber, index_3: string): string;
+        callAsync(_from: string, _to: string, _amount: BigNumber, index_3: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
+    };
     verifyTransfer: {
-        sendTransactionAsync(_from: string, _to: string, _amount: BigNumber, index_3: string, _isTransfer: boolean, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_from: string, _to: string, _amount: BigNumber, index_3: string, _isTransfer: boolean, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_from: string, _to: string, _amount: BigNumber, index_3: string, _isTransfer: boolean): string;
-        callAsync(_from: string, _to: string, _amount: BigNumber, index_3: string, _isTransfer: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
+        callAsync(_from: string, _to: string, _amount: BigNumber, index_3: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, string]>;
     };
     addManualApproval: {
         sendTransactionAsync(_from: string, _to: string, _allowance: BigNumber, _expiryTime: BigNumber, _description: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
@@ -109,10 +130,10 @@ export declare class ManualApprovalTransferManagerContract extends BaseContract 
         callAsync(_from: string, _to: string, _expiryTime: BigNumber, _changeInAllowance: BigNumber, _description: string, _increase: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     modifyManualApprovalMulti: {
-        sendTransactionAsync(_from: string[], _to: string[], _expiryTimes: BigNumber[], _changedAllowances: BigNumber[], _descriptions: string[], _increase: boolean[], txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_from: string[], _to: string[], _expiryTimes: BigNumber[], _changedAllowances: BigNumber[], _descriptions: string[], _increase: boolean[], factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_from: string[], _to: string[], _expiryTimes: BigNumber[], _changedAllowances: BigNumber[], _descriptions: string[], _increase: boolean[]): string;
-        callAsync(_from: string[], _to: string[], _expiryTimes: BigNumber[], _changedAllowances: BigNumber[], _descriptions: string[], _increase: boolean[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        sendTransactionAsync(_from: string[], _to: string[], _expiryTimes: BigNumber[], _changeInAllowance: BigNumber[], _descriptions: string[], _increase: boolean[], txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_from: string[], _to: string[], _expiryTimes: BigNumber[], _changeInAllowance: BigNumber[], _descriptions: string[], _increase: boolean[], factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_from: string[], _to: string[], _expiryTimes: BigNumber[], _changeInAllowance: BigNumber[], _descriptions: string[], _increase: boolean[]): string;
+        callAsync(_from: string[], _to: string[], _expiryTimes: BigNumber[], _changeInAllowance: BigNumber[], _descriptions: string[], _increase: boolean[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     revokeManualApproval: {
         sendTransactionAsync(_from: string, _to: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
@@ -141,7 +162,7 @@ export declare class ManualApprovalTransferManagerContract extends BaseContract 
     getPermissions: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
     };
-    static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>, _securityToken: string, _polyAddress: string): Promise<ManualApprovalTransferManagerContract>;
+    static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>, _securityToken: string, _polyToken: string): Promise<ManualApprovalTransferManagerContract>;
     constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=manual_approval_transfer_manager.d.ts.map

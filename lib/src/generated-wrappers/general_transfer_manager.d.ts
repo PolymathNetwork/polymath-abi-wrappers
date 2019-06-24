@@ -2,66 +2,61 @@ import { BaseContract } from '@0x/base-contract';
 import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../polyResponse';
-export declare type GeneralTransferManagerEventArgs = GeneralTransferManagerChangeIssuanceAddressEventArgs | GeneralTransferManagerAllowAllTransfersEventArgs | GeneralTransferManagerAllowAllWhitelistTransfersEventArgs | GeneralTransferManagerAllowAllWhitelistIssuancesEventArgs | GeneralTransferManagerAllowAllBurnTransfersEventArgs | GeneralTransferManagerChangeSigningAddressEventArgs | GeneralTransferManagerChangeDefaultsEventArgs | GeneralTransferManagerModifyWhitelistEventArgs | GeneralTransferManagerPauseEventArgs | GeneralTransferManagerUnpauseEventArgs;
+export declare type GeneralTransferManagerEventArgs = GeneralTransferManagerChangeIssuanceAddressEventArgs | GeneralTransferManagerChangeDefaultsEventArgs | GeneralTransferManagerModifyKYCDataEventArgs | GeneralTransferManagerModifyInvestorFlagEventArgs | GeneralTransferManagerModifyTransferRequirementsEventArgs | GeneralTransferManagerPauseEventArgs | GeneralTransferManagerUnpauseEventArgs;
 export declare enum GeneralTransferManagerEvents {
     ChangeIssuanceAddress = "ChangeIssuanceAddress",
-    AllowAllTransfers = "AllowAllTransfers",
-    AllowAllWhitelistTransfers = "AllowAllWhitelistTransfers",
-    AllowAllWhitelistIssuances = "AllowAllWhitelistIssuances",
-    AllowAllBurnTransfers = "AllowAllBurnTransfers",
-    ChangeSigningAddress = "ChangeSigningAddress",
     ChangeDefaults = "ChangeDefaults",
-    ModifyWhitelist = "ModifyWhitelist",
+    ModifyKYCData = "ModifyKYCData",
+    ModifyInvestorFlag = "ModifyInvestorFlag",
+    ModifyTransferRequirements = "ModifyTransferRequirements",
     Pause = "Pause",
     Unpause = "Unpause"
 }
 export interface GeneralTransferManagerChangeIssuanceAddressEventArgs extends DecodedLogArgs {
     _issuanceAddress: string;
 }
-export interface GeneralTransferManagerAllowAllTransfersEventArgs extends DecodedLogArgs {
-    _allowAllTransfers: boolean;
-}
-export interface GeneralTransferManagerAllowAllWhitelistTransfersEventArgs extends DecodedLogArgs {
-    _allowAllWhitelistTransfers: boolean;
-}
-export interface GeneralTransferManagerAllowAllWhitelistIssuancesEventArgs extends DecodedLogArgs {
-    _allowAllWhitelistIssuances: boolean;
-}
-export interface GeneralTransferManagerAllowAllBurnTransfersEventArgs extends DecodedLogArgs {
-    _allowAllBurnTransfers: boolean;
-}
-export interface GeneralTransferManagerChangeSigningAddressEventArgs extends DecodedLogArgs {
-    _signingAddress: string;
-}
 export interface GeneralTransferManagerChangeDefaultsEventArgs extends DecodedLogArgs {
     _defaultCanSendAfter: BigNumber;
     _defaultCanReceiveAfter: BigNumber;
 }
-export interface GeneralTransferManagerModifyWhitelistEventArgs extends DecodedLogArgs {
+export interface GeneralTransferManagerModifyKYCDataEventArgs extends DecodedLogArgs {
     _investor: string;
-    _dateAdded: BigNumber;
     _addedBy: string;
     _canSendAfter: BigNumber;
     _canReceiveAfter: BigNumber;
     _expiryTime: BigNumber;
-    _canBuyFromSTO: boolean;
+}
+export interface GeneralTransferManagerModifyInvestorFlagEventArgs extends DecodedLogArgs {
+    _investor: string;
+    _flag: BigNumber;
+    _value: boolean;
+}
+export interface GeneralTransferManagerModifyTransferRequirementsEventArgs extends DecodedLogArgs {
+    _transferType: BigNumber;
+    _fromValidKYC: boolean;
+    _toValidKYC: boolean;
+    _fromRestricted: boolean;
+    _toRestricted: boolean;
 }
 export interface GeneralTransferManagerPauseEventArgs extends DecodedLogArgs {
-    _timestammp: BigNumber;
+    account: string;
 }
 export interface GeneralTransferManagerUnpauseEventArgs extends DecodedLogArgs {
-    _timestamp: BigNumber;
+    account: string;
 }
 export declare class GeneralTransferManagerContract extends BaseContract {
     private _defaultEstimateGasFactor;
-    allowAllBurnTransfers: {
-        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
+    reclaimETH: {
+        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(): string;
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     WHITELIST: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
-    allowAllWhitelistTransfers: {
-        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
+    ADMIN: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     unpause: {
         sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
@@ -69,17 +64,14 @@ export declare class GeneralTransferManagerContract extends BaseContract {
         getABIEncodedTransactionData(): string;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
-    investors: {
-        callAsync(index_0: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
-    };
     paused: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
-    takeFee: {
-        sendTransactionAsync(_amount: BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_amount: BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_amount: BigNumber): string;
-        callAsync(_amount: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
+    INVESTORFLAGS: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+    };
+    UNLOCKED: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     polyToken: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
@@ -90,19 +82,19 @@ export declare class GeneralTransferManagerContract extends BaseContract {
         getABIEncodedTransactionData(): string;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
-    FLAGS: {
-        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+    reclaimERC20: {
+        sendTransactionAsync(_tokenContract: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_tokenContract: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_tokenContract: string): string;
+        callAsync(_tokenContract: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
-    whitelist: {
-        callAsync(index_0: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]>;
+    OPERATOR: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     nonceMap: {
         callAsync(index_0: string, index_1: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
-    allowAllTransfers: {
-        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
-    };
-    signingAddress: {
+    LOCKED: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     issuanceAddress: {
@@ -111,17 +103,20 @@ export declare class GeneralTransferManagerContract extends BaseContract {
     securityToken: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
+    INVESTORSKEY: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+    };
+    transferRequirements: {
+        callAsync(index_0: number | BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[boolean, boolean, boolean, boolean]>;
+    };
     factory: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
-    FEE_ADMIN: {
-        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
-    };
-    allowAllWhitelistIssuances: {
-        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
-    };
     defaults: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, BigNumber]>;
+    };
+    getDataStore: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     getInitFunction: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
@@ -138,73 +133,94 @@ export declare class GeneralTransferManagerContract extends BaseContract {
         getABIEncodedTransactionData(_issuanceAddress: string): string;
         callAsync(_issuanceAddress: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
-    changeSigningAddress: {
-        sendTransactionAsync(_signingAddress: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_signingAddress: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_signingAddress: string): string;
-        callAsync(_signingAddress: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
-    };
-    changeAllowAllTransfers: {
-        sendTransactionAsync(_allowAllTransfers: boolean, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_allowAllTransfers: boolean, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_allowAllTransfers: boolean): string;
-        callAsync(_allowAllTransfers: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
-    };
-    changeAllowAllWhitelistTransfers: {
-        sendTransactionAsync(_allowAllWhitelistTransfers: boolean, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_allowAllWhitelistTransfers: boolean, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_allowAllWhitelistTransfers: boolean): string;
-        callAsync(_allowAllWhitelistTransfers: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
-    };
-    changeAllowAllWhitelistIssuances: {
-        sendTransactionAsync(_allowAllWhitelistIssuances: boolean, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_allowAllWhitelistIssuances: boolean, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_allowAllWhitelistIssuances: boolean): string;
-        callAsync(_allowAllWhitelistIssuances: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
-    };
-    changeAllowAllBurnTransfers: {
-        sendTransactionAsync(_allowAllBurnTransfers: boolean, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_allowAllBurnTransfers: boolean, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_allowAllBurnTransfers: boolean): string;
-        callAsync(_allowAllBurnTransfers: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    executeTransfer: {
+        sendTransactionAsync(_from: string, _to: string, index_2: BigNumber, _data: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_from: string, _to: string, index_2: BigNumber, _data: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_from: string, _to: string, index_2: BigNumber, _data: string): string;
+        callAsync(_from: string, _to: string, index_2: BigNumber, _data: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
     };
     verifyTransfer: {
-        sendTransactionAsync(_from: string, _to: string, index_2: BigNumber, index_3: string, index_4: boolean, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_from: string, _to: string, index_2: BigNumber, index_3: string, index_4: boolean, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_from: string, _to: string, index_2: BigNumber, index_3: string, index_4: boolean): string;
-        callAsync(_from: string, _to: string, index_2: BigNumber, index_3: string, index_4: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
+        callAsync(_from: string, _to: string, index_2: BigNumber, index_3: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, string]>;
     };
-    modifyWhitelist: {
-        sendTransactionAsync(_investor: string, _canSendAfter: BigNumber, _canReceiveAfter: BigNumber, _expiryTime: BigNumber, _canBuyFromSTO: boolean, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_investor: string, _canSendAfter: BigNumber, _canReceiveAfter: BigNumber, _expiryTime: BigNumber, _canBuyFromSTO: boolean, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_investor: string, _canSendAfter: BigNumber, _canReceiveAfter: BigNumber, _expiryTime: BigNumber, _canBuyFromSTO: boolean): string;
-        callAsync(_investor: string, _canSendAfter: BigNumber, _canReceiveAfter: BigNumber, _expiryTime: BigNumber, _canBuyFromSTO: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    modifyTransferRequirements: {
+        sendTransactionAsync(_transferType: number | BigNumber, _fromValidKYC: boolean, _toValidKYC: boolean, _fromRestricted: boolean, _toRestricted: boolean, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_transferType: number | BigNumber, _fromValidKYC: boolean, _toValidKYC: boolean, _fromRestricted: boolean, _toRestricted: boolean, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_transferType: number | BigNumber, _fromValidKYC: boolean, _toValidKYC: boolean, _fromRestricted: boolean, _toRestricted: boolean): string;
+        callAsync(_transferType: number | BigNumber, _fromValidKYC: boolean, _toValidKYC: boolean, _fromRestricted: boolean, _toRestricted: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
-    modifyWhitelistMulti: {
-        sendTransactionAsync(_investors: string[], _canSendAfters: BigNumber[], _canReceiveAfters: BigNumber[], _expiryTimes: BigNumber[], _canBuyFromSTO: boolean[], txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_investors: string[], _canSendAfters: BigNumber[], _canReceiveAfters: BigNumber[], _expiryTimes: BigNumber[], _canBuyFromSTO: boolean[], factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_investors: string[], _canSendAfters: BigNumber[], _canReceiveAfters: BigNumber[], _expiryTimes: BigNumber[], _canBuyFromSTO: boolean[]): string;
-        callAsync(_investors: string[], _canSendAfters: BigNumber[], _canReceiveAfters: BigNumber[], _expiryTimes: BigNumber[], _canBuyFromSTO: boolean[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    modifyTransferRequirementsMulti: {
+        sendTransactionAsync(_transferTypes: (number | BigNumber)[], _fromValidKYC: boolean[], _toValidKYC: boolean[], _fromRestricted: boolean[], _toRestricted: boolean[], txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_transferTypes: (number | BigNumber)[], _fromValidKYC: boolean[], _toValidKYC: boolean[], _fromRestricted: boolean[], _toRestricted: boolean[], factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_transferTypes: (number | BigNumber)[], _fromValidKYC: boolean[], _toValidKYC: boolean[], _fromRestricted: boolean[], _toRestricted: boolean[]): string;
+        callAsync(_transferTypes: (number | BigNumber)[], _fromValidKYC: boolean[], _toValidKYC: boolean[], _fromRestricted: boolean[], _toRestricted: boolean[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
-    modifyWhitelistSigned: {
-        sendTransactionAsync(_investor: string, _canSendAfter: BigNumber, _canReceiveAfter: BigNumber, _expiryTime: BigNumber, _canBuyFromSTO: boolean, _validFrom: BigNumber, _validTo: BigNumber, _nonce: BigNumber, _v: number | BigNumber, _r: string, _s: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_investor: string, _canSendAfter: BigNumber, _canReceiveAfter: BigNumber, _expiryTime: BigNumber, _canBuyFromSTO: boolean, _validFrom: BigNumber, _validTo: BigNumber, _nonce: BigNumber, _v: number | BigNumber, _r: string, _s: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_investor: string, _canSendAfter: BigNumber, _canReceiveAfter: BigNumber, _expiryTime: BigNumber, _canBuyFromSTO: boolean, _validFrom: BigNumber, _validTo: BigNumber, _nonce: BigNumber, _v: number | BigNumber, _r: string, _s: string): string;
-        callAsync(_investor: string, _canSendAfter: BigNumber, _canReceiveAfter: BigNumber, _expiryTime: BigNumber, _canBuyFromSTO: boolean, _validFrom: BigNumber, _validTo: BigNumber, _nonce: BigNumber, _v: number | BigNumber, _r: string, _s: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    modifyKYCData: {
+        sendTransactionAsync(_investor: string, _canSendAfter: BigNumber, _canReceiveAfter: BigNumber, _expiryTime: BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_investor: string, _canSendAfter: BigNumber, _canReceiveAfter: BigNumber, _expiryTime: BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_investor: string, _canSendAfter: BigNumber, _canReceiveAfter: BigNumber, _expiryTime: BigNumber): string;
+        callAsync(_investor: string, _canSendAfter: BigNumber, _canReceiveAfter: BigNumber, _expiryTime: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
-    getInvestors: {
+    modifyKYCDataMulti: {
+        sendTransactionAsync(_investors: string[], _canSendAfter: BigNumber[], _canReceiveAfter: BigNumber[], _expiryTime: BigNumber[], txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_investors: string[], _canSendAfter: BigNumber[], _canReceiveAfter: BigNumber[], _expiryTime: BigNumber[], factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_investors: string[], _canSendAfter: BigNumber[], _canReceiveAfter: BigNumber[], _expiryTime: BigNumber[]): string;
+        callAsync(_investors: string[], _canSendAfter: BigNumber[], _canReceiveAfter: BigNumber[], _expiryTime: BigNumber[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
+    modifyInvestorFlag: {
+        sendTransactionAsync(_investor: string, _flag: number | BigNumber, _value: boolean, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_investor: string, _flag: number | BigNumber, _value: boolean, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_investor: string, _flag: number | BigNumber, _value: boolean): string;
+        callAsync(_investor: string, _flag: number | BigNumber, _value: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
+    modifyInvestorFlagMulti: {
+        sendTransactionAsync(_investors: string[], _flag: (number | BigNumber)[], _value: boolean[], txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_investors: string[], _flag: (number | BigNumber)[], _value: boolean[], factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_investors: string[], _flag: (number | BigNumber)[], _value: boolean[]): string;
+        callAsync(_investors: string[], _flag: (number | BigNumber)[], _value: boolean[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
+    modifyKYCDataSigned: {
+        sendTransactionAsync(_investor: string, _canSendAfter: BigNumber, _canReceiveAfter: BigNumber, _expiryTime: BigNumber, _validFrom: BigNumber, _validTo: BigNumber, _nonce: BigNumber, _signature: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_investor: string, _canSendAfter: BigNumber, _canReceiveAfter: BigNumber, _expiryTime: BigNumber, _validFrom: BigNumber, _validTo: BigNumber, _nonce: BigNumber, _signature: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_investor: string, _canSendAfter: BigNumber, _canReceiveAfter: BigNumber, _expiryTime: BigNumber, _validFrom: BigNumber, _validTo: BigNumber, _nonce: BigNumber, _signature: string): string;
+        callAsync(_investor: string, _canSendAfter: BigNumber, _canReceiveAfter: BigNumber, _expiryTime: BigNumber, _validFrom: BigNumber, _validTo: BigNumber, _nonce: BigNumber, _signature: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
+    modifyKYCDataSignedMulti: {
+        sendTransactionAsync(_investor: string[], _canSendAfter: BigNumber[], _canReceiveAfter: BigNumber[], _expiryTime: BigNumber[], _validFrom: BigNumber, _validTo: BigNumber, _nonce: BigNumber, _signature: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_investor: string[], _canSendAfter: BigNumber[], _canReceiveAfter: BigNumber[], _expiryTime: BigNumber[], _validFrom: BigNumber, _validTo: BigNumber, _nonce: BigNumber, _signature: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_investor: string[], _canSendAfter: BigNumber[], _canReceiveAfter: BigNumber[], _expiryTime: BigNumber[], _validFrom: BigNumber, _validTo: BigNumber, _nonce: BigNumber, _signature: string): string;
+        callAsync(_investor: string[], _canSendAfter: BigNumber[], _canReceiveAfter: BigNumber[], _expiryTime: BigNumber[], _validFrom: BigNumber, _validTo: BigNumber, _nonce: BigNumber, _signature: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
+    getAllInvestors: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
     };
-    getAllInvestorsData: {
-        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[string[], BigNumber[], BigNumber[], BigNumber[], boolean[]]>;
+    getInvestors: {
+        callAsync(_fromIndex: BigNumber, _toIndex: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
     };
-    getInvestorsData: {
-        callAsync(_investors: string[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber[], BigNumber[], BigNumber[], boolean[]]>;
+    getAllInvestorFlags: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[string[], BigNumber[]]>;
+    };
+    getInvestorFlag: {
+        callAsync(_investor: string, _flag: number | BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
+    };
+    getInvestorFlags: {
+        callAsync(_investor: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
+    };
+    getAllKYCData: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[string[], BigNumber[], BigNumber[], BigNumber[]]>;
+    };
+    getKYCData: {
+        callAsync(_investors: string[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber[], BigNumber[], BigNumber[]]>;
     };
     getPermissions: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
     };
-    static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>, _securityToken: string, _polyAddress: string): Promise<GeneralTransferManagerContract>;
+    getTokensByPartition: {
+        callAsync(_partition: string, _tokenHolder: string, _additionalBalance: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
+    };
+    getAddressBytes32: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+    };
+    static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>, _securityToken: string, _polyToken: string): Promise<GeneralTransferManagerContract>;
     constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=general_transfer_manager.d.ts.map

@@ -12,12 +12,10 @@ import * as ethers from 'ethers';
 
 export type PolymathRegistryEventArgs =
     | PolymathRegistryChangeAddressEventArgs
-    | PolymathRegistryOwnershipRenouncedEventArgs
     | PolymathRegistryOwnershipTransferredEventArgs;
 
 export enum PolymathRegistryEvents {
     ChangeAddress = 'ChangeAddress',
-    OwnershipRenounced = 'OwnershipRenounced',
     OwnershipTransferred = 'OwnershipTransferred',
 }
 
@@ -25,10 +23,6 @@ export interface PolymathRegistryChangeAddressEventArgs extends DecodedLogArgs {
     _nameKey: string;
     _oldAddress: string;
     _newAddress: string;
-}
-
-export interface PolymathRegistryOwnershipRenouncedEventArgs extends DecodedLogArgs {
-    previousOwner: string;
 }
 
 export interface PolymathRegistryOwnershipTransferredEventArgs extends DecodedLogArgs {
@@ -277,14 +271,39 @@ export class PolymathRegistryContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
+    public isOwner = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<boolean
+        > {
+            const self = this as any as PolymathRegistryContract;
+            const encodedData = self._strictEncodeArguments('isOwner()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('isOwner()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<boolean
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public transferOwnership = {
         async sendTransactionAsync(
-            _newOwner: string,
+            newOwner: string,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as PolymathRegistryContract;
-            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [_newOwner
+            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [newOwner
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -300,7 +319,7 @@ export class PolymathRegistryContract extends BaseContract {
                 },
                 self.transferOwnership.estimateGasAsync.bind<PolymathRegistryContract, any, Promise<number>>(
                     self,
-                    _newOwner
+                    newOwner
     ,
                     estimateGasFactor,
                 ),
@@ -311,13 +330,13 @@ export class PolymathRegistryContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
-            _newOwner: string,
+            newOwner: string,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as PolymathRegistryContract;
             const encodedData = self._strictEncodeArguments('transferOwnership(address)',
-            [_newOwner
+            [newOwner
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -339,22 +358,22 @@ export class PolymathRegistryContract extends BaseContract {
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
-            _newOwner: string,
+            newOwner: string,
         ): string {
             const self = this as any as PolymathRegistryContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('transferOwnership(address)',
-            [_newOwner
+            [newOwner
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
-            _newOwner: string,
+            newOwner: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as PolymathRegistryContract;
-            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [_newOwner
+            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [newOwner
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {

@@ -2,21 +2,22 @@ import { BaseContract } from '@0x/base-contract';
 import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, TxDataPayable, SupportedProvider } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../polyResponse';
-export declare type ModuleRegistryEventArgs = ModuleRegistryPauseEventArgs | ModuleRegistryUnpauseEventArgs | ModuleRegistryModuleUsedEventArgs | ModuleRegistryModuleRegisteredEventArgs | ModuleRegistryModuleVerifiedEventArgs | ModuleRegistryModuleRemovedEventArgs | ModuleRegistryOwnershipTransferredEventArgs;
+export declare type ModuleRegistryEventArgs = ModuleRegistryPauseEventArgs | ModuleRegistryUnpauseEventArgs | ModuleRegistryModuleUsedEventArgs | ModuleRegistryModuleRegisteredEventArgs | ModuleRegistryModuleVerifiedEventArgs | ModuleRegistryModuleUnverifiedEventArgs | ModuleRegistryModuleRemovedEventArgs | ModuleRegistryOwnershipTransferredEventArgs;
 export declare enum ModuleRegistryEvents {
     Pause = "Pause",
     Unpause = "Unpause",
     ModuleUsed = "ModuleUsed",
     ModuleRegistered = "ModuleRegistered",
     ModuleVerified = "ModuleVerified",
+    ModuleUnverified = "ModuleUnverified",
     ModuleRemoved = "ModuleRemoved",
     OwnershipTransferred = "OwnershipTransferred"
 }
 export interface ModuleRegistryPauseEventArgs extends DecodedLogArgs {
-    _timestammp: BigNumber;
+    account: string;
 }
 export interface ModuleRegistryUnpauseEventArgs extends DecodedLogArgs {
-    _timestamp: BigNumber;
+    account: string;
 }
 export interface ModuleRegistryModuleUsedEventArgs extends DecodedLogArgs {
     _moduleFactory: string;
@@ -28,7 +29,9 @@ export interface ModuleRegistryModuleRegisteredEventArgs extends DecodedLogArgs 
 }
 export interface ModuleRegistryModuleVerifiedEventArgs extends DecodedLogArgs {
     _moduleFactory: string;
-    _verified: boolean;
+}
+export interface ModuleRegistryModuleUnverifiedEventArgs extends DecodedLogArgs {
+    _moduleFactory: string;
 }
 export interface ModuleRegistryModuleRemovedEventArgs extends DecodedLogArgs {
     _moduleFactory: string;
@@ -74,10 +77,13 @@ export declare class ModuleRegistryContract extends BaseContract {
         callAsync(_polymathRegistry: string, _owner: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     useModule: {
-        sendTransactionAsync(_moduleFactory: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_moduleFactory: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_moduleFactory: string): string;
-        callAsync(_moduleFactory: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        sendTransactionAsync(_moduleFactory: string, _isUpgrade: boolean, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_moduleFactory: string, _isUpgrade: boolean, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_moduleFactory: string, _isUpgrade: boolean): string;
+        callAsync(_moduleFactory: string, _isUpgrade: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
+    isCompatibleModule: {
+        callAsync(_moduleFactory: string, _securityToken: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
     registerModule: {
         sendTransactionAsync(_moduleFactory: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
@@ -92,10 +98,16 @@ export declare class ModuleRegistryContract extends BaseContract {
         callAsync(_moduleFactory: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     verifyModule: {
-        sendTransactionAsync(_moduleFactory: string, _verified: boolean, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_moduleFactory: string, _verified: boolean, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_moduleFactory: string, _verified: boolean): string;
-        callAsync(_moduleFactory: string, _verified: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        sendTransactionAsync(_moduleFactory: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_moduleFactory: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_moduleFactory: string): string;
+        callAsync(_moduleFactory: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
+    unverifyModule: {
+        sendTransactionAsync(_moduleFactory: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_moduleFactory: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_moduleFactory: string): string;
+        callAsync(_moduleFactory: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     getTagsByTypeAndToken: {
         callAsync(_moduleType: number | BigNumber, _securityToken: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[string[], string[]]>;
@@ -103,10 +115,13 @@ export declare class ModuleRegistryContract extends BaseContract {
     getTagsByType: {
         callAsync(_moduleType: number | BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[string[], string[]]>;
     };
-    getReputationByFactory: {
-        callAsync(_factoryAddress: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
+    getFactoryDetails: {
+        callAsync(_factoryAddress: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[boolean, string, string[]]>;
     };
     getModulesByType: {
+        callAsync(_moduleType: number | BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
+    };
+    getAllModulesByType: {
         callAsync(_moduleType: number | BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
     };
     getModulesByTypeAndToken: {
