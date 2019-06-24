@@ -12,25 +12,19 @@ import * as ethers from 'ethers';
 
 export type GeneralTransferManagerEventArgs =
     | GeneralTransferManagerChangeIssuanceAddressEventArgs
-    | GeneralTransferManagerAllowAllTransfersEventArgs
-    | GeneralTransferManagerAllowAllWhitelistTransfersEventArgs
-    | GeneralTransferManagerAllowAllWhitelistIssuancesEventArgs
-    | GeneralTransferManagerAllowAllBurnTransfersEventArgs
-    | GeneralTransferManagerChangeSigningAddressEventArgs
     | GeneralTransferManagerChangeDefaultsEventArgs
-    | GeneralTransferManagerModifyWhitelistEventArgs
+    | GeneralTransferManagerModifyKYCDataEventArgs
+    | GeneralTransferManagerModifyInvestorFlagEventArgs
+    | GeneralTransferManagerModifyTransferRequirementsEventArgs
     | GeneralTransferManagerPauseEventArgs
     | GeneralTransferManagerUnpauseEventArgs;
 
 export enum GeneralTransferManagerEvents {
     ChangeIssuanceAddress = 'ChangeIssuanceAddress',
-    AllowAllTransfers = 'AllowAllTransfers',
-    AllowAllWhitelistTransfers = 'AllowAllWhitelistTransfers',
-    AllowAllWhitelistIssuances = 'AllowAllWhitelistIssuances',
-    AllowAllBurnTransfers = 'AllowAllBurnTransfers',
-    ChangeSigningAddress = 'ChangeSigningAddress',
     ChangeDefaults = 'ChangeDefaults',
-    ModifyWhitelist = 'ModifyWhitelist',
+    ModifyKYCData = 'ModifyKYCData',
+    ModifyInvestorFlag = 'ModifyInvestorFlag',
+    ModifyTransferRequirements = 'ModifyTransferRequirements',
     Pause = 'Pause',
     Unpause = 'Unpause',
 }
@@ -39,47 +33,39 @@ export interface GeneralTransferManagerChangeIssuanceAddressEventArgs extends De
     _issuanceAddress: string;
 }
 
-export interface GeneralTransferManagerAllowAllTransfersEventArgs extends DecodedLogArgs {
-    _allowAllTransfers: boolean;
-}
-
-export interface GeneralTransferManagerAllowAllWhitelistTransfersEventArgs extends DecodedLogArgs {
-    _allowAllWhitelistTransfers: boolean;
-}
-
-export interface GeneralTransferManagerAllowAllWhitelistIssuancesEventArgs extends DecodedLogArgs {
-    _allowAllWhitelistIssuances: boolean;
-}
-
-export interface GeneralTransferManagerAllowAllBurnTransfersEventArgs extends DecodedLogArgs {
-    _allowAllBurnTransfers: boolean;
-}
-
-export interface GeneralTransferManagerChangeSigningAddressEventArgs extends DecodedLogArgs {
-    _signingAddress: string;
-}
-
 export interface GeneralTransferManagerChangeDefaultsEventArgs extends DecodedLogArgs {
     _defaultCanSendAfter: BigNumber;
     _defaultCanReceiveAfter: BigNumber;
 }
 
-export interface GeneralTransferManagerModifyWhitelistEventArgs extends DecodedLogArgs {
+export interface GeneralTransferManagerModifyKYCDataEventArgs extends DecodedLogArgs {
     _investor: string;
-    _dateAdded: BigNumber;
     _addedBy: string;
     _canSendAfter: BigNumber;
     _canReceiveAfter: BigNumber;
     _expiryTime: BigNumber;
-    _canBuyFromSTO: boolean;
+}
+
+export interface GeneralTransferManagerModifyInvestorFlagEventArgs extends DecodedLogArgs {
+    _investor: string;
+    _flag: BigNumber;
+    _value: boolean;
+}
+
+export interface GeneralTransferManagerModifyTransferRequirementsEventArgs extends DecodedLogArgs {
+    _transferType: BigNumber;
+    _fromValidKYC: boolean;
+    _toValidKYC: boolean;
+    _fromRestricted: boolean;
+    _toRestricted: boolean;
 }
 
 export interface GeneralTransferManagerPauseEventArgs extends DecodedLogArgs {
-    _timestammp: BigNumber;
+    account: string;
 }
 
 export interface GeneralTransferManagerUnpauseEventArgs extends DecodedLogArgs {
-    _timestamp: BigNumber;
+    account: string;
 }
 
 
@@ -88,14 +74,76 @@ export interface GeneralTransferManagerUnpauseEventArgs extends DecodedLogArgs {
 // tslint:disable-next-line:class-name
 export class GeneralTransferManagerContract extends BaseContract {
     private _defaultEstimateGasFactor: number;
-    public allowAllBurnTransfers = {
+    public reclaimETH = {
+        async sendTransactionAsync(
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('reclaimETH()', []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.reclaimETH.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
+                    self,
+                    
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('reclaimETH()',
+            []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+        ): string {
+            const self = this as any as GeneralTransferManagerContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('reclaimETH()',
+            []);
+            return abiEncodedTransactionData;
+        },
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<boolean
+        ): Promise<void
         > {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('allowAllBurnTransfers()', []);
+            const encodedData = self._strictEncodeArguments('reclaimETH()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -106,9 +154,9 @@ export class GeneralTransferManagerContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('allowAllBurnTransfers()');
+            const abiEncoder = self._lookupAbiEncoder('reclaimETH()');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<boolean
+            const result = abiEncoder.strictDecodeReturnValue<void
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -138,14 +186,14 @@ export class GeneralTransferManagerContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public allowAllWhitelistTransfers = {
+    public ADMIN = {
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<boolean
+        ): Promise<string
         > {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('allowAllWhitelistTransfers()', []);
+            const encodedData = self._strictEncodeArguments('ADMIN()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -156,9 +204,9 @@ export class GeneralTransferManagerContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('allowAllWhitelistTransfers()');
+            const abiEncoder = self._lookupAbiEncoder('ADMIN()');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<boolean
+            const result = abiEncoder.strictDecodeReturnValue<string
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -250,33 +298,6 @@ export class GeneralTransferManagerContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public investors = {
-        async callAsync(
-            index_0: BigNumber,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('investors(uint256)', [index_0
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('investors(uint256)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
     public paused = {
         async callAsync(
         callData: Partial<CallData> = {},
@@ -302,85 +323,14 @@ export class GeneralTransferManagerContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public takeFee = {
-        async sendTransactionAsync(
-            _amount: BigNumber,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('takeFee(uint256)', [_amount
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.takeFee.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
-                    self,
-                    _amount
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _amount: BigNumber,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('takeFee(uint256)',
-            [_amount
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _amount: BigNumber,
-        ): string {
-            const self = this as any as GeneralTransferManagerContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('takeFee(uint256)',
-            [_amount
-    ]);
-            return abiEncodedTransactionData;
-        },
+    public INVESTORFLAGS = {
         async callAsync(
-            _amount: BigNumber,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<boolean
+        ): Promise<string
         > {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('takeFee(uint256)', [_amount
-        ]);
+            const encodedData = self._strictEncodeArguments('INVESTORFLAGS()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -391,9 +341,34 @@ export class GeneralTransferManagerContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('takeFee(uint256)');
+            const abiEncoder = self._lookupAbiEncoder('INVESTORFLAGS()');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<boolean
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public UNLOCKED = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('UNLOCKED()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('UNLOCKED()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -510,40 +485,84 @@ export class GeneralTransferManagerContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public FLAGS = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
+    public reclaimERC20 = {
+        async sendTransactionAsync(
+            _tokenContract: string,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('FLAGS()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
+            const encodedData = self._strictEncodeArguments('reclaimERC20(address)', [_tokenContract
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.reclaimERC20.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
+                    self,
+                    _tokenContract
+    ,
+                    estimateGasFactor,
+                ),
             );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('FLAGS()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public whitelist = {
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _tokenContract: string,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('reclaimERC20(address)',
+            [_tokenContract
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _tokenContract: string,
+        ): string {
+            const self = this as any as GeneralTransferManagerContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('reclaimERC20(address)',
+            [_tokenContract
+    ]);
+            return abiEncodedTransactionData;
+        },
         async callAsync(
-            index_0: string,
+            _tokenContract: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
+        ): Promise<void
         > {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('whitelist(address)', [index_0
+            const encodedData = self._strictEncodeArguments('reclaimERC20(address)', [_tokenContract
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -555,9 +574,34 @@ export class GeneralTransferManagerContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('whitelist(address)');
+            const abiEncoder = self._lookupAbiEncoder('reclaimERC20(address)');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public OPERATOR = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('OPERATOR()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('OPERATOR()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -591,39 +635,14 @@ export class GeneralTransferManagerContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public allowAllTransfers = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<boolean
-        > {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('allowAllTransfers()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('allowAllTransfers()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<boolean
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public signingAddress = {
+    public LOCKED = {
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('signingAddress()', []);
+            const encodedData = self._strictEncodeArguments('LOCKED()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -634,7 +653,7 @@ export class GeneralTransferManagerContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('signingAddress()');
+            const abiEncoder = self._lookupAbiEncoder('LOCKED()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<string
         >(rawCallResult);
@@ -691,6 +710,58 @@ export class GeneralTransferManagerContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
+    public INVESTORSKEY = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('INVESTORSKEY()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('INVESTORSKEY()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public transferRequirements = {
+        async callAsync(
+            index_0: number|BigNumber,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<[boolean, boolean, boolean, boolean]
+        > {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('transferRequirements(uint8)', [index_0
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('transferRequirements(uint8)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[boolean, boolean, boolean, boolean]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public factory = {
         async callAsync(
         callData: Partial<CallData> = {},
@@ -716,56 +787,6 @@ export class GeneralTransferManagerContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public FEE_ADMIN = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('FEE_ADMIN()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('FEE_ADMIN()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public allowAllWhitelistIssuances = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<boolean
-        > {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('allowAllWhitelistIssuances()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('allowAllWhitelistIssuances()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<boolean
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
     public defaults = {
         async callAsync(
         callData: Partial<CallData> = {},
@@ -787,6 +808,31 @@ export class GeneralTransferManagerContract extends BaseContract {
             const abiEncoder = self._lookupAbiEncoder('defaults()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getDataStore = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('getDataStore()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getDataStore()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -1017,502 +1063,20 @@ export class GeneralTransferManagerContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public changeSigningAddress = {
-        async sendTransactionAsync(
-            _signingAddress: string,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('changeSigningAddress(address)', [_signingAddress
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.changeSigningAddress.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
-                    self,
-                    _signingAddress
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _signingAddress: string,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('changeSigningAddress(address)',
-            [_signingAddress
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _signingAddress: string,
-        ): string {
-            const self = this as any as GeneralTransferManagerContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changeSigningAddress(address)',
-            [_signingAddress
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _signingAddress: string,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<void
-        > {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('changeSigningAddress(address)', [_signingAddress
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('changeSigningAddress(address)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public changeAllowAllTransfers = {
-        async sendTransactionAsync(
-            _allowAllTransfers: boolean,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('changeAllowAllTransfers(bool)', [_allowAllTransfers
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.changeAllowAllTransfers.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
-                    self,
-                    _allowAllTransfers
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _allowAllTransfers: boolean,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('changeAllowAllTransfers(bool)',
-            [_allowAllTransfers
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _allowAllTransfers: boolean,
-        ): string {
-            const self = this as any as GeneralTransferManagerContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changeAllowAllTransfers(bool)',
-            [_allowAllTransfers
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _allowAllTransfers: boolean,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<void
-        > {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('changeAllowAllTransfers(bool)', [_allowAllTransfers
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('changeAllowAllTransfers(bool)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public changeAllowAllWhitelistTransfers = {
-        async sendTransactionAsync(
-            _allowAllWhitelistTransfers: boolean,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('changeAllowAllWhitelistTransfers(bool)', [_allowAllWhitelistTransfers
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.changeAllowAllWhitelistTransfers.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
-                    self,
-                    _allowAllWhitelistTransfers
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _allowAllWhitelistTransfers: boolean,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('changeAllowAllWhitelistTransfers(bool)',
-            [_allowAllWhitelistTransfers
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _allowAllWhitelistTransfers: boolean,
-        ): string {
-            const self = this as any as GeneralTransferManagerContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changeAllowAllWhitelistTransfers(bool)',
-            [_allowAllWhitelistTransfers
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _allowAllWhitelistTransfers: boolean,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<void
-        > {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('changeAllowAllWhitelistTransfers(bool)', [_allowAllWhitelistTransfers
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('changeAllowAllWhitelistTransfers(bool)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public changeAllowAllWhitelistIssuances = {
-        async sendTransactionAsync(
-            _allowAllWhitelistIssuances: boolean,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('changeAllowAllWhitelistIssuances(bool)', [_allowAllWhitelistIssuances
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.changeAllowAllWhitelistIssuances.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
-                    self,
-                    _allowAllWhitelistIssuances
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _allowAllWhitelistIssuances: boolean,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('changeAllowAllWhitelistIssuances(bool)',
-            [_allowAllWhitelistIssuances
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _allowAllWhitelistIssuances: boolean,
-        ): string {
-            const self = this as any as GeneralTransferManagerContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changeAllowAllWhitelistIssuances(bool)',
-            [_allowAllWhitelistIssuances
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _allowAllWhitelistIssuances: boolean,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<void
-        > {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('changeAllowAllWhitelistIssuances(bool)', [_allowAllWhitelistIssuances
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('changeAllowAllWhitelistIssuances(bool)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public changeAllowAllBurnTransfers = {
-        async sendTransactionAsync(
-            _allowAllBurnTransfers: boolean,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('changeAllowAllBurnTransfers(bool)', [_allowAllBurnTransfers
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.changeAllowAllBurnTransfers.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
-                    self,
-                    _allowAllBurnTransfers
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _allowAllBurnTransfers: boolean,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('changeAllowAllBurnTransfers(bool)',
-            [_allowAllBurnTransfers
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _allowAllBurnTransfers: boolean,
-        ): string {
-            const self = this as any as GeneralTransferManagerContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changeAllowAllBurnTransfers(bool)',
-            [_allowAllBurnTransfers
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _allowAllBurnTransfers: boolean,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<void
-        > {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('changeAllowAllBurnTransfers(bool)', [_allowAllBurnTransfers
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('changeAllowAllBurnTransfers(bool)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public verifyTransfer = {
+    public executeTransfer = {
         async sendTransactionAsync(
             _from: string,
             _to: string,
             index_2: BigNumber,
-            index_3: string,
-            index_4: boolean,
+            _data: string,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('verifyTransfer(address,address,uint256,bytes,bool)', [_from,
+            const encodedData = self._strictEncodeArguments('executeTransfer(address,address,uint256,bytes)', [_from,
     _to,
     index_2,
-    index_3,
-    index_4
+    _data
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -1526,13 +1090,12 @@ export class GeneralTransferManagerContract extends BaseContract {
                     from: defaultFromAddress,
                     ...contractDefaults
                 },
-                self.verifyTransfer.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
+                self.executeTransfer.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _from,
     _to,
     index_2,
-    index_3,
-    index_4
+    _data
     ,
                     estimateGasFactor,
                 ),
@@ -1546,18 +1109,16 @@ export class GeneralTransferManagerContract extends BaseContract {
             _from: string,
             _to: string,
             index_2: BigNumber,
-            index_3: string,
-            index_4: boolean,
+            _data: string,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('verifyTransfer(address,address,uint256,bytes,bool)',
+            const encodedData = self._strictEncodeArguments('executeTransfer(address,address,uint256,bytes)',
             [_from,
     _to,
     index_2,
-    index_3,
-    index_4
+    _data
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -1582,16 +1143,14 @@ export class GeneralTransferManagerContract extends BaseContract {
             _from: string,
             _to: string,
             index_2: BigNumber,
-            index_3: string,
-            index_4: boolean,
+            _data: string,
         ): string {
             const self = this as any as GeneralTransferManagerContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('verifyTransfer(address,address,uint256,bytes,bool)',
+            const abiEncodedTransactionData = self._strictEncodeArguments('executeTransfer(address,address,uint256,bytes)',
             [_from,
     _to,
     index_2,
-    index_3,
-    index_4
+    _data
     ]);
             return abiEncodedTransactionData;
         },
@@ -1599,18 +1158,16 @@ export class GeneralTransferManagerContract extends BaseContract {
             _from: string,
             _to: string,
             index_2: BigNumber,
-            index_3: string,
-            index_4: boolean,
+            _data: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<BigNumber
         > {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('verifyTransfer(address,address,uint256,bytes,bool)', [_from,
+            const encodedData = self._strictEncodeArguments('executeTransfer(address,address,uint256,bytes)', [_from,
         _to,
         index_2,
-        index_3,
-        index_4
+        _data
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -1622,29 +1179,62 @@ export class GeneralTransferManagerContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('verifyTransfer(address,address,uint256,bytes,bool)');
+            const abiEncoder = self._lookupAbiEncoder('executeTransfer(address,address,uint256,bytes)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<BigNumber
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public modifyWhitelist = {
+    public verifyTransfer = {
+        async callAsync(
+            _from: string,
+            _to: string,
+            index_2: BigNumber,
+            index_3: string,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<[BigNumber, string]
+        > {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('verifyTransfer(address,address,uint256,bytes)', [_from,
+        _to,
+        index_2,
+        index_3
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('verifyTransfer(address,address,uint256,bytes)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, string]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public modifyTransferRequirements = {
         async sendTransactionAsync(
-            _investor: string,
-            _canSendAfter: BigNumber,
-            _canReceiveAfter: BigNumber,
-            _expiryTime: BigNumber,
-            _canBuyFromSTO: boolean,
+            _transferType: number|BigNumber,
+            _fromValidKYC: boolean,
+            _toValidKYC: boolean,
+            _fromRestricted: boolean,
+            _toRestricted: boolean,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('modifyWhitelist(address,uint256,uint256,uint256,bool)', [_investor,
-    _canSendAfter,
-    _canReceiveAfter,
-    _expiryTime,
-    _canBuyFromSTO
+            const encodedData = self._strictEncodeArguments('modifyTransferRequirements(uint8,bool,bool,bool,bool)', [_transferType,
+    _fromValidKYC,
+    _toValidKYC,
+    _fromRestricted,
+    _toRestricted
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -1658,13 +1248,274 @@ export class GeneralTransferManagerContract extends BaseContract {
                     from: defaultFromAddress,
                     ...contractDefaults
                 },
-                self.modifyWhitelist.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
+                self.modifyTransferRequirements.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
+                    self,
+                    _transferType,
+    _fromValidKYC,
+    _toValidKYC,
+    _fromRestricted,
+    _toRestricted
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _transferType: number|BigNumber,
+            _fromValidKYC: boolean,
+            _toValidKYC: boolean,
+            _fromRestricted: boolean,
+            _toRestricted: boolean,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('modifyTransferRequirements(uint8,bool,bool,bool,bool)',
+            [_transferType,
+    _fromValidKYC,
+    _toValidKYC,
+    _fromRestricted,
+    _toRestricted
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _transferType: number|BigNumber,
+            _fromValidKYC: boolean,
+            _toValidKYC: boolean,
+            _fromRestricted: boolean,
+            _toRestricted: boolean,
+        ): string {
+            const self = this as any as GeneralTransferManagerContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('modifyTransferRequirements(uint8,bool,bool,bool,bool)',
+            [_transferType,
+    _fromValidKYC,
+    _toValidKYC,
+    _fromRestricted,
+    _toRestricted
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _transferType: number|BigNumber,
+            _fromValidKYC: boolean,
+            _toValidKYC: boolean,
+            _fromRestricted: boolean,
+            _toRestricted: boolean,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('modifyTransferRequirements(uint8,bool,bool,bool,bool)', [_transferType,
+        _fromValidKYC,
+        _toValidKYC,
+        _fromRestricted,
+        _toRestricted
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('modifyTransferRequirements(uint8,bool,bool,bool,bool)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public modifyTransferRequirementsMulti = {
+        async sendTransactionAsync(
+            _transferTypes: Array<number|BigNumber>,
+            _fromValidKYC: boolean[],
+            _toValidKYC: boolean[],
+            _fromRestricted: boolean[],
+            _toRestricted: boolean[],
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('modifyTransferRequirementsMulti(uint8[],bool[],bool[],bool[],bool[])', [_transferTypes,
+    _fromValidKYC,
+    _toValidKYC,
+    _fromRestricted,
+    _toRestricted
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.modifyTransferRequirementsMulti.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
+                    self,
+                    _transferTypes,
+    _fromValidKYC,
+    _toValidKYC,
+    _fromRestricted,
+    _toRestricted
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _transferTypes: Array<number|BigNumber>,
+            _fromValidKYC: boolean[],
+            _toValidKYC: boolean[],
+            _fromRestricted: boolean[],
+            _toRestricted: boolean[],
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('modifyTransferRequirementsMulti(uint8[],bool[],bool[],bool[],bool[])',
+            [_transferTypes,
+    _fromValidKYC,
+    _toValidKYC,
+    _fromRestricted,
+    _toRestricted
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _transferTypes: Array<number|BigNumber>,
+            _fromValidKYC: boolean[],
+            _toValidKYC: boolean[],
+            _fromRestricted: boolean[],
+            _toRestricted: boolean[],
+        ): string {
+            const self = this as any as GeneralTransferManagerContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('modifyTransferRequirementsMulti(uint8[],bool[],bool[],bool[],bool[])',
+            [_transferTypes,
+    _fromValidKYC,
+    _toValidKYC,
+    _fromRestricted,
+    _toRestricted
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _transferTypes: Array<number|BigNumber>,
+            _fromValidKYC: boolean[],
+            _toValidKYC: boolean[],
+            _fromRestricted: boolean[],
+            _toRestricted: boolean[],
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('modifyTransferRequirementsMulti(uint8[],bool[],bool[],bool[],bool[])', [_transferTypes,
+        _fromValidKYC,
+        _toValidKYC,
+        _fromRestricted,
+        _toRestricted
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('modifyTransferRequirementsMulti(uint8[],bool[],bool[],bool[],bool[])');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public modifyKYCData = {
+        async sendTransactionAsync(
+            _investor: string,
+            _canSendAfter: BigNumber,
+            _canReceiveAfter: BigNumber,
+            _expiryTime: BigNumber,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('modifyKYCData(address,uint64,uint64,uint64)', [_investor,
+    _canSendAfter,
+    _canReceiveAfter,
+    _expiryTime
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.modifyKYCData.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _investor,
     _canSendAfter,
     _canReceiveAfter,
-    _expiryTime,
-    _canBuyFromSTO
+    _expiryTime
     ,
                     estimateGasFactor,
                 ),
@@ -1679,17 +1530,15 @@ export class GeneralTransferManagerContract extends BaseContract {
             _canSendAfter: BigNumber,
             _canReceiveAfter: BigNumber,
             _expiryTime: BigNumber,
-            _canBuyFromSTO: boolean,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('modifyWhitelist(address,uint256,uint256,uint256,bool)',
+            const encodedData = self._strictEncodeArguments('modifyKYCData(address,uint64,uint64,uint64)',
             [_investor,
     _canSendAfter,
     _canReceiveAfter,
-    _expiryTime,
-    _canBuyFromSTO
+    _expiryTime
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -1715,15 +1564,13 @@ export class GeneralTransferManagerContract extends BaseContract {
             _canSendAfter: BigNumber,
             _canReceiveAfter: BigNumber,
             _expiryTime: BigNumber,
-            _canBuyFromSTO: boolean,
         ): string {
             const self = this as any as GeneralTransferManagerContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('modifyWhitelist(address,uint256,uint256,uint256,bool)',
+            const abiEncodedTransactionData = self._strictEncodeArguments('modifyKYCData(address,uint64,uint64,uint64)',
             [_investor,
     _canSendAfter,
     _canReceiveAfter,
-    _expiryTime,
-    _canBuyFromSTO
+    _expiryTime
     ]);
             return abiEncodedTransactionData;
         },
@@ -1732,17 +1579,15 @@ export class GeneralTransferManagerContract extends BaseContract {
             _canSendAfter: BigNumber,
             _canReceiveAfter: BigNumber,
             _expiryTime: BigNumber,
-            _canBuyFromSTO: boolean,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('modifyWhitelist(address,uint256,uint256,uint256,bool)', [_investor,
+            const encodedData = self._strictEncodeArguments('modifyKYCData(address,uint64,uint64,uint64)', [_investor,
         _canSendAfter,
         _canReceiveAfter,
-        _expiryTime,
-        _canBuyFromSTO
+        _expiryTime
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -1754,29 +1599,27 @@ export class GeneralTransferManagerContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('modifyWhitelist(address,uint256,uint256,uint256,bool)');
+            const abiEncoder = self._lookupAbiEncoder('modifyKYCData(address,uint64,uint64,uint64)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<void
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public modifyWhitelistMulti = {
+    public modifyKYCDataMulti = {
         async sendTransactionAsync(
             _investors: string[],
-            _canSendAfters: BigNumber[],
-            _canReceiveAfters: BigNumber[],
-            _expiryTimes: BigNumber[],
-            _canBuyFromSTO: boolean[],
+            _canSendAfter: BigNumber[],
+            _canReceiveAfter: BigNumber[],
+            _expiryTime: BigNumber[],
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('modifyWhitelistMulti(address[],uint256[],uint256[],uint256[],bool[])', [_investors,
-    _canSendAfters,
-    _canReceiveAfters,
-    _expiryTimes,
-    _canBuyFromSTO
+            const encodedData = self._strictEncodeArguments('modifyKYCDataMulti(address[],uint64[],uint64[],uint64[])', [_investors,
+    _canSendAfter,
+    _canReceiveAfter,
+    _expiryTime
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -1790,13 +1633,12 @@ export class GeneralTransferManagerContract extends BaseContract {
                     from: defaultFromAddress,
                     ...contractDefaults
                 },
-                self.modifyWhitelistMulti.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
+                self.modifyKYCDataMulti.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _investors,
-    _canSendAfters,
-    _canReceiveAfters,
-    _expiryTimes,
-    _canBuyFromSTO
+    _canSendAfter,
+    _canReceiveAfter,
+    _expiryTime
     ,
                     estimateGasFactor,
                 ),
@@ -1808,20 +1650,18 @@ export class GeneralTransferManagerContract extends BaseContract {
         },
         async estimateGasAsync(
             _investors: string[],
-            _canSendAfters: BigNumber[],
-            _canReceiveAfters: BigNumber[],
-            _expiryTimes: BigNumber[],
-            _canBuyFromSTO: boolean[],
+            _canSendAfter: BigNumber[],
+            _canReceiveAfter: BigNumber[],
+            _expiryTime: BigNumber[],
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('modifyWhitelistMulti(address[],uint256[],uint256[],uint256[],bool[])',
+            const encodedData = self._strictEncodeArguments('modifyKYCDataMulti(address[],uint64[],uint64[],uint64[])',
             [_investors,
-    _canSendAfters,
-    _canReceiveAfters,
-    _expiryTimes,
-    _canBuyFromSTO
+    _canSendAfter,
+    _canReceiveAfter,
+    _expiryTime
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -1844,37 +1684,33 @@ export class GeneralTransferManagerContract extends BaseContract {
         },
         getABIEncodedTransactionData(
             _investors: string[],
-            _canSendAfters: BigNumber[],
-            _canReceiveAfters: BigNumber[],
-            _expiryTimes: BigNumber[],
-            _canBuyFromSTO: boolean[],
+            _canSendAfter: BigNumber[],
+            _canReceiveAfter: BigNumber[],
+            _expiryTime: BigNumber[],
         ): string {
             const self = this as any as GeneralTransferManagerContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('modifyWhitelistMulti(address[],uint256[],uint256[],uint256[],bool[])',
+            const abiEncodedTransactionData = self._strictEncodeArguments('modifyKYCDataMulti(address[],uint64[],uint64[],uint64[])',
             [_investors,
-    _canSendAfters,
-    _canReceiveAfters,
-    _expiryTimes,
-    _canBuyFromSTO
+    _canSendAfter,
+    _canReceiveAfter,
+    _expiryTime
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _investors: string[],
-            _canSendAfters: BigNumber[],
-            _canReceiveAfters: BigNumber[],
-            _expiryTimes: BigNumber[],
-            _canBuyFromSTO: boolean[],
+            _canSendAfter: BigNumber[],
+            _canReceiveAfter: BigNumber[],
+            _expiryTime: BigNumber[],
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('modifyWhitelistMulti(address[],uint256[],uint256[],uint256[],bool[])', [_investors,
-        _canSendAfters,
-        _canReceiveAfters,
-        _expiryTimes,
-        _canBuyFromSTO
+            const encodedData = self._strictEncodeArguments('modifyKYCDataMulti(address[],uint64[],uint64[],uint64[])', [_investors,
+        _canSendAfter,
+        _canReceiveAfter,
+        _expiryTime
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -1886,41 +1722,25 @@ export class GeneralTransferManagerContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('modifyWhitelistMulti(address[],uint256[],uint256[],uint256[],bool[])');
+            const abiEncoder = self._lookupAbiEncoder('modifyKYCDataMulti(address[],uint64[],uint64[],uint64[])');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<void
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public modifyWhitelistSigned = {
+    public modifyInvestorFlag = {
         async sendTransactionAsync(
             _investor: string,
-            _canSendAfter: BigNumber,
-            _canReceiveAfter: BigNumber,
-            _expiryTime: BigNumber,
-            _canBuyFromSTO: boolean,
-            _validFrom: BigNumber,
-            _validTo: BigNumber,
-            _nonce: BigNumber,
-            _v: number|BigNumber,
-            _r: string,
-            _s: string,
+            _flag: number|BigNumber,
+            _value: boolean,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('modifyWhitelistSigned(address,uint256,uint256,uint256,bool,uint256,uint256,uint256,uint8,bytes32,bytes32)', [_investor,
-    _canSendAfter,
-    _canReceiveAfter,
-    _expiryTime,
-    _canBuyFromSTO,
-    _validFrom,
-    _validTo,
-    _nonce,
-    _v,
-    _r,
-    _s
+            const encodedData = self._strictEncodeArguments('modifyInvestorFlag(address,uint8,bool)', [_investor,
+    _flag,
+    _value
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -1934,19 +1754,254 @@ export class GeneralTransferManagerContract extends BaseContract {
                     from: defaultFromAddress,
                     ...contractDefaults
                 },
-                self.modifyWhitelistSigned.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
+                self.modifyInvestorFlag.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
+                    self,
+                    _investor,
+    _flag,
+    _value
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _investor: string,
+            _flag: number|BigNumber,
+            _value: boolean,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('modifyInvestorFlag(address,uint8,bool)',
+            [_investor,
+    _flag,
+    _value
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _investor: string,
+            _flag: number|BigNumber,
+            _value: boolean,
+        ): string {
+            const self = this as any as GeneralTransferManagerContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('modifyInvestorFlag(address,uint8,bool)',
+            [_investor,
+    _flag,
+    _value
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _investor: string,
+            _flag: number|BigNumber,
+            _value: boolean,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('modifyInvestorFlag(address,uint8,bool)', [_investor,
+        _flag,
+        _value
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('modifyInvestorFlag(address,uint8,bool)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public modifyInvestorFlagMulti = {
+        async sendTransactionAsync(
+            _investors: string[],
+            _flag: Array<number|BigNumber>,
+            _value: boolean[],
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('modifyInvestorFlagMulti(address[],uint8[],bool[])', [_investors,
+    _flag,
+    _value
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.modifyInvestorFlagMulti.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
+                    self,
+                    _investors,
+    _flag,
+    _value
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _investors: string[],
+            _flag: Array<number|BigNumber>,
+            _value: boolean[],
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('modifyInvestorFlagMulti(address[],uint8[],bool[])',
+            [_investors,
+    _flag,
+    _value
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _investors: string[],
+            _flag: Array<number|BigNumber>,
+            _value: boolean[],
+        ): string {
+            const self = this as any as GeneralTransferManagerContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('modifyInvestorFlagMulti(address[],uint8[],bool[])',
+            [_investors,
+    _flag,
+    _value
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _investors: string[],
+            _flag: Array<number|BigNumber>,
+            _value: boolean[],
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('modifyInvestorFlagMulti(address[],uint8[],bool[])', [_investors,
+        _flag,
+        _value
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('modifyInvestorFlagMulti(address[],uint8[],bool[])');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public modifyKYCDataSigned = {
+        async sendTransactionAsync(
+            _investor: string,
+            _canSendAfter: BigNumber,
+            _canReceiveAfter: BigNumber,
+            _expiryTime: BigNumber,
+            _validFrom: BigNumber,
+            _validTo: BigNumber,
+            _nonce: BigNumber,
+            _signature: string,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('modifyKYCDataSigned(address,uint256,uint256,uint256,uint256,uint256,uint256,bytes)', [_investor,
+    _canSendAfter,
+    _canReceiveAfter,
+    _expiryTime,
+    _validFrom,
+    _validTo,
+    _nonce,
+    _signature
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.modifyKYCDataSigned.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
                     self,
                     _investor,
     _canSendAfter,
     _canReceiveAfter,
     _expiryTime,
-    _canBuyFromSTO,
     _validFrom,
     _validTo,
     _nonce,
-    _v,
-    _r,
-    _s
+    _signature
     ,
                     estimateGasFactor,
                 ),
@@ -1961,29 +2016,23 @@ export class GeneralTransferManagerContract extends BaseContract {
             _canSendAfter: BigNumber,
             _canReceiveAfter: BigNumber,
             _expiryTime: BigNumber,
-            _canBuyFromSTO: boolean,
             _validFrom: BigNumber,
             _validTo: BigNumber,
             _nonce: BigNumber,
-            _v: number|BigNumber,
-            _r: string,
-            _s: string,
+            _signature: string,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('modifyWhitelistSigned(address,uint256,uint256,uint256,bool,uint256,uint256,uint256,uint8,bytes32,bytes32)',
+            const encodedData = self._strictEncodeArguments('modifyKYCDataSigned(address,uint256,uint256,uint256,uint256,uint256,uint256,bytes)',
             [_investor,
     _canSendAfter,
     _canReceiveAfter,
     _expiryTime,
-    _canBuyFromSTO,
     _validFrom,
     _validTo,
     _nonce,
-    _v,
-    _r,
-    _s
+    _signature
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -2009,27 +2058,21 @@ export class GeneralTransferManagerContract extends BaseContract {
             _canSendAfter: BigNumber,
             _canReceiveAfter: BigNumber,
             _expiryTime: BigNumber,
-            _canBuyFromSTO: boolean,
             _validFrom: BigNumber,
             _validTo: BigNumber,
             _nonce: BigNumber,
-            _v: number|BigNumber,
-            _r: string,
-            _s: string,
+            _signature: string,
         ): string {
             const self = this as any as GeneralTransferManagerContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('modifyWhitelistSigned(address,uint256,uint256,uint256,bool,uint256,uint256,uint256,uint8,bytes32,bytes32)',
+            const abiEncodedTransactionData = self._strictEncodeArguments('modifyKYCDataSigned(address,uint256,uint256,uint256,uint256,uint256,uint256,bytes)',
             [_investor,
     _canSendAfter,
     _canReceiveAfter,
     _expiryTime,
-    _canBuyFromSTO,
     _validFrom,
     _validTo,
     _nonce,
-    _v,
-    _r,
-    _s
+    _signature
     ]);
             return abiEncodedTransactionData;
         },
@@ -2038,29 +2081,23 @@ export class GeneralTransferManagerContract extends BaseContract {
             _canSendAfter: BigNumber,
             _canReceiveAfter: BigNumber,
             _expiryTime: BigNumber,
-            _canBuyFromSTO: boolean,
             _validFrom: BigNumber,
             _validTo: BigNumber,
             _nonce: BigNumber,
-            _v: number|BigNumber,
-            _r: string,
-            _s: string,
+            _signature: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('modifyWhitelistSigned(address,uint256,uint256,uint256,bool,uint256,uint256,uint256,uint8,bytes32,bytes32)', [_investor,
+            const encodedData = self._strictEncodeArguments('modifyKYCDataSigned(address,uint256,uint256,uint256,uint256,uint256,uint256,bytes)', [_investor,
         _canSendAfter,
         _canReceiveAfter,
         _expiryTime,
-        _canBuyFromSTO,
         _validFrom,
         _validTo,
         _nonce,
-        _v,
-        _r,
-        _s
+        _signature
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -2072,21 +2109,180 @@ export class GeneralTransferManagerContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('modifyWhitelistSigned(address,uint256,uint256,uint256,bool,uint256,uint256,uint256,uint8,bytes32,bytes32)');
+            const abiEncoder = self._lookupAbiEncoder('modifyKYCDataSigned(address,uint256,uint256,uint256,uint256,uint256,uint256,bytes)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<void
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public getInvestors = {
+    public modifyKYCDataSignedMulti = {
+        async sendTransactionAsync(
+            _investor: string[],
+            _canSendAfter: BigNumber[],
+            _canReceiveAfter: BigNumber[],
+            _expiryTime: BigNumber[],
+            _validFrom: BigNumber,
+            _validTo: BigNumber,
+            _nonce: BigNumber,
+            _signature: string,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('modifyKYCDataSignedMulti(address[],uint256[],uint256[],uint256[],uint256,uint256,uint256,bytes)', [_investor,
+    _canSendAfter,
+    _canReceiveAfter,
+    _expiryTime,
+    _validFrom,
+    _validTo,
+    _nonce,
+    _signature
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.modifyKYCDataSignedMulti.estimateGasAsync.bind<GeneralTransferManagerContract, any, Promise<number>>(
+                    self,
+                    _investor,
+    _canSendAfter,
+    _canReceiveAfter,
+    _expiryTime,
+    _validFrom,
+    _validTo,
+    _nonce,
+    _signature
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _investor: string[],
+            _canSendAfter: BigNumber[],
+            _canReceiveAfter: BigNumber[],
+            _expiryTime: BigNumber[],
+            _validFrom: BigNumber,
+            _validTo: BigNumber,
+            _nonce: BigNumber,
+            _signature: string,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('modifyKYCDataSignedMulti(address[],uint256[],uint256[],uint256[],uint256,uint256,uint256,bytes)',
+            [_investor,
+    _canSendAfter,
+    _canReceiveAfter,
+    _expiryTime,
+    _validFrom,
+    _validTo,
+    _nonce,
+    _signature
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _investor: string[],
+            _canSendAfter: BigNumber[],
+            _canReceiveAfter: BigNumber[],
+            _expiryTime: BigNumber[],
+            _validFrom: BigNumber,
+            _validTo: BigNumber,
+            _nonce: BigNumber,
+            _signature: string,
+        ): string {
+            const self = this as any as GeneralTransferManagerContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('modifyKYCDataSignedMulti(address[],uint256[],uint256[],uint256[],uint256,uint256,uint256,bytes)',
+            [_investor,
+    _canSendAfter,
+    _canReceiveAfter,
+    _expiryTime,
+    _validFrom,
+    _validTo,
+    _nonce,
+    _signature
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _investor: string[],
+            _canSendAfter: BigNumber[],
+            _canReceiveAfter: BigNumber[],
+            _expiryTime: BigNumber[],
+            _validFrom: BigNumber,
+            _validTo: BigNumber,
+            _nonce: BigNumber,
+            _signature: string,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('modifyKYCDataSignedMulti(address[],uint256[],uint256[],uint256[],uint256,uint256,uint256,bytes)', [_investor,
+        _canSendAfter,
+        _canReceiveAfter,
+        _expiryTime,
+        _validFrom,
+        _validTo,
+        _nonce,
+        _signature
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('modifyKYCDataSignedMulti(address[],uint256[],uint256[],uint256[],uint256,uint256,uint256,bytes)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getAllInvestors = {
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string[]
         > {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('getInvestors()', []);
+            const encodedData = self._strictEncodeArguments('getAllInvestors()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -2097,47 +2293,24 @@ export class GeneralTransferManagerContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('getInvestors()');
+            const abiEncoder = self._lookupAbiEncoder('getAllInvestors()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<string[]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public getAllInvestorsData = {
+    public getInvestors = {
         async callAsync(
+            _fromIndex: BigNumber,
+            _toIndex: BigNumber,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<[string[], BigNumber[], BigNumber[], BigNumber[], boolean[]]
+        ): Promise<string[]
         > {
             const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('getAllInvestorsData()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('getAllInvestorsData()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<[string[], BigNumber[], BigNumber[], BigNumber[], boolean[]]
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public getInvestorsData = {
-        async callAsync(
-            _investors: string[],
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<[BigNumber[], BigNumber[], BigNumber[], boolean[]]
-        > {
-            const self = this as any as GeneralTransferManagerContract;
-            const encodedData = self._strictEncodeArguments('getInvestorsData(address[])', [_investors
+            const encodedData = self._strictEncodeArguments('getInvestors(uint256,uint256)', [_fromIndex,
+        _toIndex
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -2149,9 +2322,142 @@ export class GeneralTransferManagerContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('getInvestorsData(address[])');
+            const abiEncoder = self._lookupAbiEncoder('getInvestors(uint256,uint256)');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<[BigNumber[], BigNumber[], BigNumber[], boolean[]]
+            const result = abiEncoder.strictDecodeReturnValue<string[]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getAllInvestorFlags = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<[string[], BigNumber[]]
+        > {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('getAllInvestorFlags()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getAllInvestorFlags()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[string[], BigNumber[]]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getInvestorFlag = {
+        async callAsync(
+            _investor: string,
+            _flag: number|BigNumber,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<boolean
+        > {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('getInvestorFlag(address,uint8)', [_investor,
+        _flag
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getInvestorFlag(address,uint8)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<boolean
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getInvestorFlags = {
+        async callAsync(
+            _investor: string,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<BigNumber
+        > {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('getInvestorFlags(address)', [_investor
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getInvestorFlags(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getAllKYCData = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<[string[], BigNumber[], BigNumber[], BigNumber[]]
+        > {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('getAllKYCData()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getAllKYCData()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[string[], BigNumber[], BigNumber[], BigNumber[]]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getKYCData = {
+        async callAsync(
+            _investors: string[],
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<[BigNumber[], BigNumber[], BigNumber[]]
+        > {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('getKYCData(address[])', [_investors
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getKYCData(address[])');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber[], BigNumber[], BigNumber[]]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -2181,29 +2487,85 @@ export class GeneralTransferManagerContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
+    public getTokensByPartition = {
+        async callAsync(
+            _partition: string,
+            _tokenHolder: string,
+            _additionalBalance: BigNumber,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<BigNumber
+        > {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('getTokensByPartition(bytes32,address,uint256)', [_partition,
+        _tokenHolder,
+        _additionalBalance
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getTokensByPartition(bytes32,address,uint256)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getAddressBytes32 = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as GeneralTransferManagerContract;
+            const encodedData = self._strictEncodeArguments('getAddressBytes32()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getAddressBytes32()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public static async deployAsync(
         bytecode: string,
         abi: ContractAbi,
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
             _securityToken: string,
-            _polyAddress: string,
+            _polyToken: string,
     ): Promise<GeneralTransferManagerContract> {
         const provider = providerUtils.standardizeOrThrow(supportedProvider);
         const constructorAbi = BaseContract._lookupConstructorAbi(abi);
         [_securityToken,
-_polyAddress
+_polyToken
 ] = BaseContract._formatABIDataItemList(
             constructorAbi.inputs,
             [_securityToken,
-_polyAddress
+_polyToken
 ],
             BaseContract._bigNumberToString,
         );
         const iface = new ethers.utils.Interface(abi);
         const deployInfo = iface.deployFunction;
         const txData = deployInfo.encode(bytecode, [_securityToken,
-_polyAddress
+_polyToken
 ]);
         const web3Wrapper = new Web3Wrapper(provider);
         const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
@@ -2217,7 +2579,7 @@ _polyAddress
         logUtils.log(`GeneralTransferManager successfully deployed at ${txReceipt.contractAddress}`);
         const contractInstance = new GeneralTransferManagerContract(abi, txReceipt.contractAddress as string, provider, txDefaults);
         contractInstance.constructorArgs = [_securityToken,
-_polyAddress
+_polyToken
 ];
         return contractInstance;
     }

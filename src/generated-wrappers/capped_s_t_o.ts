@@ -13,16 +13,16 @@ import * as ethers from 'ethers';
 export type CappedSTOEventArgs =
     | CappedSTOTokenPurchaseEventArgs
     | CappedSTOSetAllowBeneficialInvestmentsEventArgs
-    | CappedSTOSetFundRaiseTypesEventArgs
     | CappedSTOPauseEventArgs
-    | CappedSTOUnpauseEventArgs;
+    | CappedSTOUnpauseEventArgs
+    | CappedSTOSetFundRaiseTypesEventArgs;
 
 export enum CappedSTOEvents {
     TokenPurchase = 'TokenPurchase',
     SetAllowBeneficialInvestments = 'SetAllowBeneficialInvestments',
-    SetFundRaiseTypes = 'SetFundRaiseTypes',
     Pause = 'Pause',
     Unpause = 'Unpause',
+    SetFundRaiseTypes = 'SetFundRaiseTypes',
 }
 
 export interface CappedSTOTokenPurchaseEventArgs extends DecodedLogArgs {
@@ -36,16 +36,16 @@ export interface CappedSTOSetAllowBeneficialInvestmentsEventArgs extends Decoded
     _allowed: boolean;
 }
 
-export interface CappedSTOSetFundRaiseTypesEventArgs extends DecodedLogArgs {
-    _fundRaiseTypes: BigNumber[];
-}
-
 export interface CappedSTOPauseEventArgs extends DecodedLogArgs {
-    _timestammp: BigNumber;
+    account: string;
 }
 
 export interface CappedSTOUnpauseEventArgs extends DecodedLogArgs {
-    _timestamp: BigNumber;
+    account: string;
+}
+
+export interface CappedSTOSetFundRaiseTypesEventArgs extends DecodedLogArgs {
+    _fundRaiseTypes: BigNumber[];
 }
 
 
@@ -137,6 +137,31 @@ export class CappedSTOContract extends BaseContract {
             const abiEncoder = self._lookupAbiEncoder('reclaimETH()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public ADMIN = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as CappedSTOContract;
+            const encodedData = self._strictEncodeArguments('ADMIN()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('ADMIN()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -372,102 +397,6 @@ export class CappedSTOContract extends BaseContract {
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             const abiEncoder = self._lookupAbiEncoder('paused()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<boolean
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public takeFee = {
-        async sendTransactionAsync(
-            _amount: BigNumber,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as CappedSTOContract;
-            const encodedData = self._strictEncodeArguments('takeFee(uint256)', [_amount
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.takeFee.estimateGasAsync.bind<CappedSTOContract, any, Promise<number>>(
-                    self,
-                    _amount
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _amount: BigNumber,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as CappedSTOContract;
-            const encodedData = self._strictEncodeArguments('takeFee(uint256)',
-            [_amount
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _amount: BigNumber,
-        ): string {
-            const self = this as any as CappedSTOContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('takeFee(uint256)',
-            [_amount
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _amount: BigNumber,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<boolean
-        > {
-            const self = this as any as CappedSTOContract;
-            const encodedData = self._strictEncodeArguments('takeFee(uint256)', [_amount
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('takeFee(uint256)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<boolean
         >(rawCallResult);
@@ -759,6 +688,31 @@ export class CappedSTOContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
+    public OPERATOR = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as CappedSTOContract;
+            const encodedData = self._strictEncodeArguments('OPERATOR()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('OPERATOR()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getRaised = {
         async callAsync(
             _fundRaiseType: number|BigNumber,
@@ -915,31 +869,6 @@ export class CappedSTOContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public FEE_ADMIN = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as CappedSTOContract;
-            const encodedData = self._strictEncodeArguments('FEE_ADMIN()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('FEE_ADMIN()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
     public investorCount = {
         async callAsync(
         callData: Partial<CallData> = {},
@@ -961,6 +890,31 @@ export class CappedSTOContract extends BaseContract {
             const abiEncoder = self._lookupAbiEncoder('investorCount()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<BigNumber
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getDataStore = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as CappedSTOContract;
+            const encodedData = self._strictEncodeArguments('getDataStore()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getDataStore()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -1525,23 +1479,23 @@ export class CappedSTOContract extends BaseContract {
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
             _securityToken: string,
-            _polyAddress: string,
+            _polyToken: string,
     ): Promise<CappedSTOContract> {
         const provider = providerUtils.standardizeOrThrow(supportedProvider);
         const constructorAbi = BaseContract._lookupConstructorAbi(abi);
         [_securityToken,
-_polyAddress
+_polyToken
 ] = BaseContract._formatABIDataItemList(
             constructorAbi.inputs,
             [_securityToken,
-_polyAddress
+_polyToken
 ],
             BaseContract._bigNumberToString,
         );
         const iface = new ethers.utils.Interface(abi);
         const deployInfo = iface.deployFunction;
         const txData = deployInfo.encode(bytecode, [_securityToken,
-_polyAddress
+_polyToken
 ]);
         const web3Wrapper = new Web3Wrapper(provider);
         const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
@@ -1555,7 +1509,7 @@ _polyAddress
         logUtils.log(`CappedSTO successfully deployed at ${txReceipt.contractAddress}`);
         const contractInstance = new CappedSTOContract(abi, txReceipt.contractAddress as string, provider, txDefaults);
         contractInstance.constructorArgs = [_securityToken,
-_polyAddress
+_polyToken
 ];
         return contractInstance;
     }

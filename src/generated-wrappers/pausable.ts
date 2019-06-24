@@ -20,11 +20,11 @@ export enum PausableEvents {
 }
 
 export interface PausablePauseEventArgs extends DecodedLogArgs {
-    _timestammp: BigNumber;
+    account: string;
 }
 
 export interface PausableUnpauseEventArgs extends DecodedLogArgs {
-    _timestamp: BigNumber;
+    account: string;
 }
 
 

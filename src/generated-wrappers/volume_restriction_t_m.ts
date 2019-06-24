@@ -47,7 +47,7 @@ export enum VolumeRestrictionTMEvents {
 
 export interface VolumeRestrictionTMChangedExemptWalletListEventArgs extends DecodedLogArgs {
     _wallet: string;
-    _change: boolean;
+    _exempted: boolean;
 }
 
 export interface VolumeRestrictionTMAddIndividualRestrictionEventArgs extends DecodedLogArgs {
@@ -133,11 +133,11 @@ export interface VolumeRestrictionTMDefaultDailyRestrictionRemovedEventArgs exte
 }
 
 export interface VolumeRestrictionTMPauseEventArgs extends DecodedLogArgs {
-    _timestammp: BigNumber;
+    account: string;
 }
 
 export interface VolumeRestrictionTMUnpauseEventArgs extends DecodedLogArgs {
-    _timestamp: BigNumber;
+    account: string;
 }
 
 
@@ -146,6 +146,118 @@ export interface VolumeRestrictionTMUnpauseEventArgs extends DecodedLogArgs {
 // tslint:disable-next-line:class-name
 export class VolumeRestrictionTMContract extends BaseContract {
     private _defaultEstimateGasFactor: number;
+    public reclaimETH = {
+        async sendTransactionAsync(
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as VolumeRestrictionTMContract;
+            const encodedData = self._strictEncodeArguments('reclaimETH()', []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.reclaimETH.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
+                    self,
+                    
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as VolumeRestrictionTMContract;
+            const encodedData = self._strictEncodeArguments('reclaimETH()',
+            []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+        ): string {
+            const self = this as any as VolumeRestrictionTMContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('reclaimETH()',
+            []);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as VolumeRestrictionTMContract;
+            const encodedData = self._strictEncodeArguments('reclaimETH()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('reclaimETH()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public ADMIN = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as VolumeRestrictionTMContract;
+            const encodedData = self._strictEncodeArguments('ADMIN()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('ADMIN()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public unpause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
@@ -233,33 +345,6 @@ export class VolumeRestrictionTMContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public individualRestriction = {
-        async callAsync(
-            index_0: string,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
-        > {
-            const self = this as any as VolumeRestrictionTMContract;
-            const encodedData = self._strictEncodeArguments('individualRestriction(address)', [index_0
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('individualRestriction(address)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
     public paused = {
         async callAsync(
         callData: Partial<CallData> = {},
@@ -285,85 +370,14 @@ export class VolumeRestrictionTMContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public takeFee = {
-        async sendTransactionAsync(
-            _amount: BigNumber,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as VolumeRestrictionTMContract;
-            const encodedData = self._strictEncodeArguments('takeFee(uint256)', [_amount
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.takeFee.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
-                    self,
-                    _amount
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _amount: BigNumber,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as VolumeRestrictionTMContract;
-            const encodedData = self._strictEncodeArguments('takeFee(uint256)',
-            [_amount
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _amount: BigNumber,
-        ): string {
-            const self = this as any as VolumeRestrictionTMContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('takeFee(uint256)',
-            [_amount
-    ]);
-            return abiEncodedTransactionData;
-        },
+    public UNLOCKED = {
         async callAsync(
-            _amount: BigNumber,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<boolean
+        ): Promise<string
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const encodedData = self._strictEncodeArguments('takeFee(uint256)', [_amount
-        ]);
+            const encodedData = self._strictEncodeArguments('UNLOCKED()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -374,9 +388,9 @@ export class VolumeRestrictionTMContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('takeFee(uint256)');
+            const abiEncoder = self._lookupAbiEncoder('UNLOCKED()');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<boolean
+            const result = abiEncoder.strictDecodeReturnValue<string
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -493,14 +507,85 @@ export class VolumeRestrictionTMContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public defaultRestriction = {
+    public reclaimERC20 = {
+        async sendTransactionAsync(
+            _tokenContract: string,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as VolumeRestrictionTMContract;
+            const encodedData = self._strictEncodeArguments('reclaimERC20(address)', [_tokenContract
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.reclaimERC20.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
+                    self,
+                    _tokenContract
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _tokenContract: string,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as VolumeRestrictionTMContract;
+            const encodedData = self._strictEncodeArguments('reclaimERC20(address)',
+            [_tokenContract
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _tokenContract: string,
+        ): string {
+            const self = this as any as VolumeRestrictionTMContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('reclaimERC20(address)',
+            [_tokenContract
+    ]);
+            return abiEncodedTransactionData;
+        },
         async callAsync(
+            _tokenContract: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
+        ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const encodedData = self._strictEncodeArguments('defaultRestriction()', []);
+            const encodedData = self._strictEncodeArguments('reclaimERC20(address)', [_tokenContract
+        ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -511,9 +596,59 @@ export class VolumeRestrictionTMContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('defaultRestriction()');
+            const abiEncoder = self._lookupAbiEncoder('reclaimERC20(address)');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public OPERATOR = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as VolumeRestrictionTMContract;
+            const encodedData = self._strictEncodeArguments('OPERATOR()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('OPERATOR()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public LOCKED = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as VolumeRestrictionTMContract;
+            const encodedData = self._strictEncodeArguments('LOCKED()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('LOCKED()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -568,14 +703,14 @@ export class VolumeRestrictionTMContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public FEE_ADMIN = {
+    public getDataStore = {
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const encodedData = self._strictEncodeArguments('FEE_ADMIN()', []);
+            const encodedData = self._strictEncodeArguments('getDataStore()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -586,108 +721,27 @@ export class VolumeRestrictionTMContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('FEE_ADMIN()');
+            const abiEncoder = self._lookupAbiEncoder('getDataStore()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<string
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public defaultDailyRestriction = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
-        > {
-            const self = this as any as VolumeRestrictionTMContract;
-            const encodedData = self._strictEncodeArguments('defaultDailyRestriction()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('defaultDailyRestriction()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public exemptAddresses = {
-        async callAsync(
-            index_0: BigNumber,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as VolumeRestrictionTMContract;
-            const encodedData = self._strictEncodeArguments('exemptAddresses(uint256)', [index_0
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('exemptAddresses(uint256)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public individualDailyRestriction = {
-        async callAsync(
-            index_0: string,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
-        > {
-            const self = this as any as VolumeRestrictionTMContract;
-            const encodedData = self._strictEncodeArguments('individualDailyRestriction(address)', [index_0
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('individualDailyRestriction(address)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public verifyTransfer = {
+    public executeTransfer = {
         async sendTransactionAsync(
             _from: string,
             index_1: string,
             _amount: BigNumber,
             index_3: string,
-            _isTransfer: boolean,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
-            const encodedData = self._strictEncodeArguments('verifyTransfer(address,address,uint256,bytes,bool)', [_from,
+            const encodedData = self._strictEncodeArguments('executeTransfer(address,address,uint256,bytes)', [_from,
     index_1,
     _amount,
-    index_3,
-    _isTransfer
+    index_3
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -701,13 +755,12 @@ export class VolumeRestrictionTMContract extends BaseContract {
                     from: defaultFromAddress,
                     ...contractDefaults
                 },
-                self.verifyTransfer.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
+                self.executeTransfer.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _from,
     index_1,
     _amount,
-    index_3,
-    _isTransfer
+    index_3
     ,
                     estimateGasFactor,
                 ),
@@ -722,17 +775,15 @@ export class VolumeRestrictionTMContract extends BaseContract {
             index_1: string,
             _amount: BigNumber,
             index_3: string,
-            _isTransfer: boolean,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
-            const encodedData = self._strictEncodeArguments('verifyTransfer(address,address,uint256,bytes,bool)',
+            const encodedData = self._strictEncodeArguments('executeTransfer(address,address,uint256,bytes)',
             [_from,
     index_1,
     _amount,
-    index_3,
-    _isTransfer
+    index_3
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -758,15 +809,13 @@ export class VolumeRestrictionTMContract extends BaseContract {
             index_1: string,
             _amount: BigNumber,
             index_3: string,
-            _isTransfer: boolean,
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('verifyTransfer(address,address,uint256,bytes,bool)',
+            const abiEncodedTransactionData = self._strictEncodeArguments('executeTransfer(address,address,uint256,bytes)',
             [_from,
     index_1,
     _amount,
-    index_3,
-    _isTransfer
+    index_3
     ]);
             return abiEncodedTransactionData;
         },
@@ -775,17 +824,15 @@ export class VolumeRestrictionTMContract extends BaseContract {
             index_1: string,
             _amount: BigNumber,
             index_3: string,
-            _isTransfer: boolean,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<BigNumber
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const encodedData = self._strictEncodeArguments('verifyTransfer(address,address,uint256,bytes,bool)', [_from,
+            const encodedData = self._strictEncodeArguments('executeTransfer(address,address,uint256,bytes)', [_from,
         index_1,
         _amount,
-        index_3,
-        _isTransfer
+        index_3
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -797,9 +844,42 @@ export class VolumeRestrictionTMContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('verifyTransfer(address,address,uint256,bytes,bool)');
+            const abiEncoder = self._lookupAbiEncoder('executeTransfer(address,address,uint256,bytes)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<BigNumber
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public verifyTransfer = {
+        async callAsync(
+            _from: string,
+            index_1: string,
+            _amount: BigNumber,
+            index_3: string,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<[BigNumber, string]
+        > {
+            const self = this as any as VolumeRestrictionTMContract;
+            const encodedData = self._strictEncodeArguments('verifyTransfer(address,address,uint256,bytes)', [_from,
+        index_1,
+        _amount,
+        index_3
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('verifyTransfer(address,address,uint256,bytes)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, string]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -807,13 +887,13 @@ export class VolumeRestrictionTMContract extends BaseContract {
     public changeExemptWalletList = {
         async sendTransactionAsync(
             _wallet: string,
-            _change: boolean,
+            _exempted: boolean,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as VolumeRestrictionTMContract;
             const encodedData = self._strictEncodeArguments('changeExemptWalletList(address,bool)', [_wallet,
-    _change
+    _exempted
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -830,7 +910,7 @@ export class VolumeRestrictionTMContract extends BaseContract {
                 self.changeExemptWalletList.estimateGasAsync.bind<VolumeRestrictionTMContract, any, Promise<number>>(
                     self,
                     _wallet,
-    _change
+    _exempted
     ,
                     estimateGasFactor,
                 ),
@@ -842,14 +922,14 @@ export class VolumeRestrictionTMContract extends BaseContract {
         },
         async estimateGasAsync(
             _wallet: string,
-            _change: boolean,
+            _exempted: boolean,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as VolumeRestrictionTMContract;
             const encodedData = self._strictEncodeArguments('changeExemptWalletList(address,bool)',
             [_wallet,
-    _change
+    _exempted
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -872,25 +952,25 @@ export class VolumeRestrictionTMContract extends BaseContract {
         },
         getABIEncodedTransactionData(
             _wallet: string,
-            _change: boolean,
+            _exempted: boolean,
         ): string {
             const self = this as any as VolumeRestrictionTMContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('changeExemptWalletList(address,bool)',
             [_wallet,
-    _change
+    _exempted
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _wallet: string,
-            _change: boolean,
+            _exempted: boolean,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as VolumeRestrictionTMContract;
             const encodedData = self._strictEncodeArguments('changeExemptWalletList(address,bool)', [_wallet,
-        _change
+        _exempted
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -3069,6 +3149,37 @@ export class VolumeRestrictionTMContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
+    public getTokensByPartition = {
+        async callAsync(
+            _partition: string,
+            _tokenHolder: string,
+            _additionalBalance: BigNumber,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<BigNumber
+        > {
+            const self = this as any as VolumeRestrictionTMContract;
+            const encodedData = self._strictEncodeArguments('getTokensByPartition(bytes32,address,uint256)', [_partition,
+        _tokenHolder,
+        _additionalBalance
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getTokensByPartition(bytes32,address,uint256)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public getIndividualBucketDetailsToUser = {
         async callAsync(
             _user: string,
@@ -3202,14 +3313,16 @@ export class VolumeRestrictionTMContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public getRestrictedData = {
+    public getIndividualRestriction = {
         async callAsync(
+            _investor: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<[string[], BigNumber[], BigNumber[], BigNumber[], BigNumber[], BigNumber[]]
+        ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
         > {
             const self = this as any as VolumeRestrictionTMContract;
-            const encodedData = self._strictEncodeArguments('getRestrictedData()', []);
+            const encodedData = self._strictEncodeArguments('getIndividualRestriction(address)', [_investor
+        ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -3220,7 +3333,109 @@ export class VolumeRestrictionTMContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('getRestrictedData()');
+            const abiEncoder = self._lookupAbiEncoder('getIndividualRestriction(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getIndividualDailyRestriction = {
+        async callAsync(
+            _investor: string,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
+        > {
+            const self = this as any as VolumeRestrictionTMContract;
+            const encodedData = self._strictEncodeArguments('getIndividualDailyRestriction(address)', [_investor
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getIndividualDailyRestriction(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getDefaultRestriction = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
+        > {
+            const self = this as any as VolumeRestrictionTMContract;
+            const encodedData = self._strictEncodeArguments('getDefaultRestriction()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getDefaultRestriction()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getDefaultDailyRestriction = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
+        > {
+            const self = this as any as VolumeRestrictionTMContract;
+            const encodedData = self._strictEncodeArguments('getDefaultDailyRestriction()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getDefaultDailyRestriction()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getRestrictionData = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<[string[], BigNumber[], BigNumber[], BigNumber[], BigNumber[], BigNumber[]]
+        > {
+            const self = this as any as VolumeRestrictionTMContract;
+            const encodedData = self._strictEncodeArguments('getRestrictionData()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getRestrictionData()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<[string[], BigNumber[], BigNumber[], BigNumber[], BigNumber[], BigNumber[]]
         >(rawCallResult);

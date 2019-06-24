@@ -1,19 +1,15 @@
 import { BaseContract } from '@0x/base-contract';
 import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider } from 'ethereum-types';
 import { PolyResponse } from '../polyResponse';
-export declare type PolymathRegistryEventArgs = PolymathRegistryChangeAddressEventArgs | PolymathRegistryOwnershipRenouncedEventArgs | PolymathRegistryOwnershipTransferredEventArgs;
+export declare type PolymathRegistryEventArgs = PolymathRegistryChangeAddressEventArgs | PolymathRegistryOwnershipTransferredEventArgs;
 export declare enum PolymathRegistryEvents {
     ChangeAddress = "ChangeAddress",
-    OwnershipRenounced = "OwnershipRenounced",
     OwnershipTransferred = "OwnershipTransferred"
 }
 export interface PolymathRegistryChangeAddressEventArgs extends DecodedLogArgs {
     _nameKey: string;
     _oldAddress: string;
     _newAddress: string;
-}
-export interface PolymathRegistryOwnershipRenouncedEventArgs extends DecodedLogArgs {
-    previousOwner: string;
 }
 export interface PolymathRegistryOwnershipTransferredEventArgs extends DecodedLogArgs {
     previousOwner: string;
@@ -39,11 +35,14 @@ export declare class PolymathRegistryContract extends BaseContract {
     owner: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
+    isOwner: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
+    };
     transferOwnership: {
-        sendTransactionAsync(_newOwner: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_newOwner: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_newOwner: string): string;
-        callAsync(_newOwner: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        sendTransactionAsync(newOwner: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(newOwner: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(newOwner: string): string;
+        callAsync(newOwner: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     getAddress: {
         callAsync(_nameKey: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;

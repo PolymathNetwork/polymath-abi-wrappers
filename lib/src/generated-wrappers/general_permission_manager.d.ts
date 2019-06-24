@@ -2,42 +2,72 @@ import { BaseContract } from '@0x/base-contract';
 import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../polyResponse';
-export declare type GeneralPermissionManagerEventArgs = GeneralPermissionManagerChangePermissionEventArgs | GeneralPermissionManagerAddDelegateEventArgs;
+export declare type GeneralPermissionManagerEventArgs = GeneralPermissionManagerChangePermissionEventArgs | GeneralPermissionManagerAddDelegateEventArgs | GeneralPermissionManagerPauseEventArgs | GeneralPermissionManagerUnpauseEventArgs;
 export declare enum GeneralPermissionManagerEvents {
     ChangePermission = "ChangePermission",
-    AddDelegate = "AddDelegate"
+    AddDelegate = "AddDelegate",
+    Pause = "Pause",
+    Unpause = "Unpause"
 }
 export interface GeneralPermissionManagerChangePermissionEventArgs extends DecodedLogArgs {
     _delegate: string;
     _module: string;
     _perm: string;
     _valid: boolean;
-    _timestamp: BigNumber;
 }
 export interface GeneralPermissionManagerAddDelegateEventArgs extends DecodedLogArgs {
     _delegate: string;
     _details: string;
-    _timestamp: BigNumber;
+}
+export interface GeneralPermissionManagerPauseEventArgs extends DecodedLogArgs {
+    account: string;
+}
+export interface GeneralPermissionManagerUnpauseEventArgs extends DecodedLogArgs {
+    account: string;
 }
 export declare class GeneralPermissionManagerContract extends BaseContract {
     private _defaultEstimateGasFactor;
+    reclaimETH: {
+        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(): string;
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
+    ADMIN: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+    };
+    unpause: {
+        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(): string;
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
     perms: {
         callAsync(index_0: string, index_1: string, index_2: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
-    takeFee: {
-        sendTransactionAsync(_amount: BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_amount: BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_amount: BigNumber): string;
-        callAsync(_amount: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
+    paused: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
     polyToken: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
-    CHANGE_PERMISSION: {
-        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+    pause: {
+        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(): string;
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
+    reclaimERC20: {
+        sendTransactionAsync(_tokenContract: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_tokenContract: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_tokenContract: string): string;
+        callAsync(_tokenContract: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     allDelegates: {
         callAsync(index_0: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+    };
+    OPERATOR: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     securityToken: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
@@ -45,11 +75,11 @@ export declare class GeneralPermissionManagerContract extends BaseContract {
     factory: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
-    FEE_ADMIN: {
-        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
-    };
     delegateDetails: {
         callAsync(index_0: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+    };
+    getDataStore: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     getInitFunction: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
@@ -96,7 +126,7 @@ export declare class GeneralPermissionManagerContract extends BaseContract {
     getPermissions: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
     };
-    static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>, _securityToken: string, _polyAddress: string): Promise<GeneralPermissionManagerContract>;
+    static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>, _securityToken: string, _polyToken: string): Promise<GeneralPermissionManagerContract>;
     constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=general_permission_manager.d.ts.map

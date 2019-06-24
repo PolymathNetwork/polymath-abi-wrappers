@@ -13,7 +13,6 @@ import * as ethers from 'ethers';
 export type USDTieredSTOEventArgs =
     | USDTieredSTOSetAllowBeneficialInvestmentsEventArgs
     | USDTieredSTOSetNonAccreditedLimitEventArgs
-    | USDTieredSTOSetAccreditedEventArgs
     | USDTieredSTOTokenPurchaseEventArgs
     | USDTieredSTOFundsReceivedEventArgs
     | USDTieredSTOReserveTokenMintEventArgs
@@ -21,14 +20,14 @@ export type USDTieredSTOEventArgs =
     | USDTieredSTOSetLimitsEventArgs
     | USDTieredSTOSetTimesEventArgs
     | USDTieredSTOSetTiersEventArgs
-    | USDTieredSTOSetFundRaiseTypesEventArgs
+    | USDTieredSTOSetTreasuryWalletEventArgs
     | USDTieredSTOPauseEventArgs
-    | USDTieredSTOUnpauseEventArgs;
+    | USDTieredSTOUnpauseEventArgs
+    | USDTieredSTOSetFundRaiseTypesEventArgs;
 
 export enum USDTieredSTOEvents {
     SetAllowBeneficialInvestments = 'SetAllowBeneficialInvestments',
     SetNonAccreditedLimit = 'SetNonAccreditedLimit',
-    SetAccredited = 'SetAccredited',
     TokenPurchase = 'TokenPurchase',
     FundsReceived = 'FundsReceived',
     ReserveTokenMint = 'ReserveTokenMint',
@@ -36,9 +35,10 @@ export enum USDTieredSTOEvents {
     SetLimits = 'SetLimits',
     SetTimes = 'SetTimes',
     SetTiers = 'SetTiers',
-    SetFundRaiseTypes = 'SetFundRaiseTypes',
+    SetTreasuryWallet = 'SetTreasuryWallet',
     Pause = 'Pause',
     Unpause = 'Unpause',
+    SetFundRaiseTypes = 'SetFundRaiseTypes',
 }
 
 export interface USDTieredSTOSetAllowBeneficialInvestmentsEventArgs extends DecodedLogArgs {
@@ -48,11 +48,6 @@ export interface USDTieredSTOSetAllowBeneficialInvestmentsEventArgs extends Deco
 export interface USDTieredSTOSetNonAccreditedLimitEventArgs extends DecodedLogArgs {
     _investor: string;
     _limit: BigNumber;
-}
-
-export interface USDTieredSTOSetAccreditedEventArgs extends DecodedLogArgs {
-    _investor: string;
-    _accredited: boolean;
 }
 
 export interface USDTieredSTOTokenPurchaseEventArgs extends DecodedLogArgs {
@@ -83,7 +78,6 @@ export interface USDTieredSTOReserveTokenMintEventArgs extends DecodedLogArgs {
 
 export interface USDTieredSTOSetAddressesEventArgs extends DecodedLogArgs {
     _wallet: string;
-    _reserveWallet: string;
     _usdTokens: string[];
 }
 
@@ -104,16 +98,21 @@ export interface USDTieredSTOSetTiersEventArgs extends DecodedLogArgs {
     _tokensPerTierDiscountPoly: BigNumber[];
 }
 
-export interface USDTieredSTOSetFundRaiseTypesEventArgs extends DecodedLogArgs {
-    _fundRaiseTypes: BigNumber[];
+export interface USDTieredSTOSetTreasuryWalletEventArgs extends DecodedLogArgs {
+    _oldWallet: string;
+    _newWallet: string;
 }
 
 export interface USDTieredSTOPauseEventArgs extends DecodedLogArgs {
-    _timestammp: BigNumber;
+    account: string;
 }
 
 export interface USDTieredSTOUnpauseEventArgs extends DecodedLogArgs {
-    _timestamp: BigNumber;
+    account: string;
+}
+
+export interface USDTieredSTOSetFundRaiseTypesEventArgs extends DecodedLogArgs {
+    _fundRaiseTypes: BigNumber[];
 }
 
 
@@ -236,16 +235,14 @@ export class USDTieredSTOContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public investorsList = {
+    public ADMIN = {
         async callAsync(
-            index_0: BigNumber,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
             const self = this as any as USDTieredSTOContract;
-            const encodedData = self._strictEncodeArguments('investorsList(uint256)', [index_0
-        ]);
+            const encodedData = self._strictEncodeArguments('ADMIN()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -256,7 +253,7 @@ export class USDTieredSTOContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('investorsList(uint256)');
+            const abiEncoder = self._lookupAbiEncoder('ADMIN()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<string
         >(rawCallResult);
@@ -400,6 +397,31 @@ export class USDTieredSTOContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
+    public treasuryWallet = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as USDTieredSTOContract;
+            const encodedData = self._strictEncodeArguments('treasuryWallet()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('treasuryWallet()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
     public nonAccreditedLimitUSD = {
         async callAsync(
         callData: Partial<CallData> = {},
@@ -475,102 +497,6 @@ export class USDTieredSTOContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public takeFee = {
-        async sendTransactionAsync(
-            _amount: BigNumber,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as USDTieredSTOContract;
-            const encodedData = self._strictEncodeArguments('takeFee(uint256)', [_amount
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.takeFee.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
-                    self,
-                    _amount
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _amount: BigNumber,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as USDTieredSTOContract;
-            const encodedData = self._strictEncodeArguments('takeFee(uint256)',
-            [_amount
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _amount: BigNumber,
-        ): string {
-            const self = this as any as USDTieredSTOContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('takeFee(uint256)',
-            [_amount
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _amount: BigNumber,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<boolean
-        > {
-            const self = this as any as USDTieredSTOContract;
-            const encodedData = self._strictEncodeArguments('takeFee(uint256)', [_amount
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('takeFee(uint256)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<boolean
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
     public totalTokensSold = {
         async callAsync(
         callData: Partial<CallData> = {},
@@ -617,33 +543,6 @@ export class USDTieredSTOContract extends BaseContract {
             const abiEncoder = self._lookupAbiEncoder('finalAmountReturned()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<BigNumber
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public investors = {
-        async callAsync(
-            index_0: string,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<[BigNumber, BigNumber, BigNumber]
-        > {
-            const self = this as any as USDTieredSTOContract;
-            const encodedData = self._strictEncodeArguments('investors(address)', [index_0
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('investors(address)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -937,33 +836,6 @@ export class USDTieredSTOContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public usdTokenEnabled = {
-        async callAsync(
-            index_0: string,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<boolean
-        > {
-            const self = this as any as USDTieredSTOContract;
-            const encodedData = self._strictEncodeArguments('usdTokenEnabled(address)', [index_0
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('usdTokenEnabled(address)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<boolean
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
     public isFinalized = {
         async callAsync(
         callData: Partial<CallData> = {},
@@ -989,14 +861,14 @@ export class USDTieredSTOContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public ETH_ORACLE = {
+    public OPERATOR = {
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
             const self = this as any as USDTieredSTOContract;
-            const encodedData = self._strictEncodeArguments('ETH_ORACLE()', []);
+            const encodedData = self._strictEncodeArguments('OPERATOR()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -1007,7 +879,7 @@ export class USDTieredSTOContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('ETH_ORACLE()');
+            const abiEncoder = self._lookupAbiEncoder('OPERATOR()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<string
         >(rawCallResult);
@@ -1037,31 +909,6 @@ export class USDTieredSTOContract extends BaseContract {
             const abiEncoder = self._lookupAbiEncoder('getRaised(uint8)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<BigNumber
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public POLY_ORACLE = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as USDTieredSTOContract;
-            const encodedData = self._strictEncodeArguments('POLY_ORACLE()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('POLY_ORACLE()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -1110,33 +957,6 @@ export class USDTieredSTOContract extends BaseContract {
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             const abiEncoder = self._lookupAbiEncoder('securityToken()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public usdTokens = {
-        async callAsync(
-            index_0: BigNumber,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as USDTieredSTOContract;
-            const encodedData = self._strictEncodeArguments('usdTokens(uint256)', [index_0
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('usdTokens(uint256)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<string
         >(rawCallResult);
@@ -1274,56 +1094,6 @@ export class USDTieredSTOContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public FEE_ADMIN = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as USDTieredSTOContract;
-            const encodedData = self._strictEncodeArguments('FEE_ADMIN()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('FEE_ADMIN()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public reserveWallet = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as USDTieredSTOContract;
-            const encodedData = self._strictEncodeArguments('reserveWallet()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('reserveWallet()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
     public investorCount = {
         async callAsync(
         callData: Partial<CallData> = {},
@@ -1343,6 +1113,33 @@ export class USDTieredSTOContract extends BaseContract {
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             const abiEncoder = self._lookupAbiEncoder('investorCount()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public nonAccreditedLimitUSDOverride = {
+        async callAsync(
+            index_0: string,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<BigNumber
+        > {
+            const self = this as any as USDTieredSTOContract;
+            const encodedData = self._strictEncodeArguments('nonAccreditedLimitUSDOverride(address)', [index_0
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('nonAccreditedLimitUSDOverride(address)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<BigNumber
         >(rawCallResult);
@@ -1370,6 +1167,31 @@ export class USDTieredSTOContract extends BaseContract {
             const abiEncoder = self._lookupAbiEncoder('minimumInvestmentUSD()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<BigNumber
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getDataStore = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as USDTieredSTOContract;
+            const encodedData = self._strictEncodeArguments('getDataStore()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getDataStore()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -1411,7 +1233,7 @@ export class USDTieredSTOContract extends BaseContract {
             _minimumInvestmentUSD: BigNumber,
             _fundRaiseTypes: Array<number|BigNumber>,
             _wallet: string,
-            _reserveWallet: string,
+            _treasuryWallet: string,
             _usdTokens: string[],
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
@@ -1427,7 +1249,7 @@ export class USDTieredSTOContract extends BaseContract {
     _minimumInvestmentUSD,
     _fundRaiseTypes,
     _wallet,
-    _reserveWallet,
+    _treasuryWallet,
     _usdTokens
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
@@ -1454,7 +1276,7 @@ export class USDTieredSTOContract extends BaseContract {
     _minimumInvestmentUSD,
     _fundRaiseTypes,
     _wallet,
-    _reserveWallet,
+    _treasuryWallet,
     _usdTokens
     ,
                     estimateGasFactor,
@@ -1476,7 +1298,7 @@ export class USDTieredSTOContract extends BaseContract {
             _minimumInvestmentUSD: BigNumber,
             _fundRaiseTypes: Array<number|BigNumber>,
             _wallet: string,
-            _reserveWallet: string,
+            _treasuryWallet: string,
             _usdTokens: string[],
             factor?: number,
             txData: Partial<TxData> = {},
@@ -1493,7 +1315,7 @@ export class USDTieredSTOContract extends BaseContract {
     _minimumInvestmentUSD,
     _fundRaiseTypes,
     _wallet,
-    _reserveWallet,
+    _treasuryWallet,
     _usdTokens
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
@@ -1526,7 +1348,7 @@ export class USDTieredSTOContract extends BaseContract {
             _minimumInvestmentUSD: BigNumber,
             _fundRaiseTypes: Array<number|BigNumber>,
             _wallet: string,
-            _reserveWallet: string,
+            _treasuryWallet: string,
             _usdTokens: string[],
         ): string {
             const self = this as any as USDTieredSTOContract;
@@ -1541,7 +1363,7 @@ export class USDTieredSTOContract extends BaseContract {
     _minimumInvestmentUSD,
     _fundRaiseTypes,
     _wallet,
-    _reserveWallet,
+    _treasuryWallet,
     _usdTokens
     ]);
             return abiEncodedTransactionData;
@@ -1557,7 +1379,7 @@ export class USDTieredSTOContract extends BaseContract {
             _minimumInvestmentUSD: BigNumber,
             _fundRaiseTypes: Array<number|BigNumber>,
             _wallet: string,
-            _reserveWallet: string,
+            _treasuryWallet: string,
             _usdTokens: string[],
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
@@ -1574,7 +1396,7 @@ export class USDTieredSTOContract extends BaseContract {
         _minimumInvestmentUSD,
         _fundRaiseTypes,
         _wallet,
-        _reserveWallet,
+        _treasuryWallet,
         _usdTokens
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
@@ -2026,14 +1848,14 @@ export class USDTieredSTOContract extends BaseContract {
     public modifyAddresses = {
         async sendTransactionAsync(
             _wallet: string,
-            _reserveWallet: string,
+            _treasuryWallet: string,
             _usdTokens: string[],
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as USDTieredSTOContract;
             const encodedData = self._strictEncodeArguments('modifyAddresses(address,address,address[])', [_wallet,
-    _reserveWallet,
+    _treasuryWallet,
     _usdTokens
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
@@ -2051,7 +1873,7 @@ export class USDTieredSTOContract extends BaseContract {
                 self.modifyAddresses.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
                     self,
                     _wallet,
-    _reserveWallet,
+    _treasuryWallet,
     _usdTokens
     ,
                     estimateGasFactor,
@@ -2064,7 +1886,7 @@ export class USDTieredSTOContract extends BaseContract {
         },
         async estimateGasAsync(
             _wallet: string,
-            _reserveWallet: string,
+            _treasuryWallet: string,
             _usdTokens: string[],
             factor?: number,
             txData: Partial<TxData> = {},
@@ -2072,7 +1894,7 @@ export class USDTieredSTOContract extends BaseContract {
             const self = this as any as USDTieredSTOContract;
             const encodedData = self._strictEncodeArguments('modifyAddresses(address,address,address[])',
             [_wallet,
-    _reserveWallet,
+    _treasuryWallet,
     _usdTokens
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
@@ -2096,20 +1918,20 @@ export class USDTieredSTOContract extends BaseContract {
         },
         getABIEncodedTransactionData(
             _wallet: string,
-            _reserveWallet: string,
+            _treasuryWallet: string,
             _usdTokens: string[],
         ): string {
             const self = this as any as USDTieredSTOContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('modifyAddresses(address,address,address[])',
             [_wallet,
-    _reserveWallet,
+    _treasuryWallet,
     _usdTokens
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _wallet: string,
-            _reserveWallet: string,
+            _treasuryWallet: string,
             _usdTokens: string[],
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
@@ -2117,7 +1939,7 @@ export class USDTieredSTOContract extends BaseContract {
         > {
             const self = this as any as USDTieredSTOContract;
             const encodedData = self._strictEncodeArguments('modifyAddresses(address,address,address[])', [_wallet,
-        _reserveWallet,
+        _treasuryWallet,
         _usdTokens
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
@@ -2131,6 +1953,111 @@ export class USDTieredSTOContract extends BaseContract {
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             const abiEncoder = self._lookupAbiEncoder('modifyAddresses(address,address,address[])');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public modifyOracle = {
+        async sendTransactionAsync(
+            _fundRaiseType: number|BigNumber,
+            _oracleAddress: string,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as USDTieredSTOContract;
+            const encodedData = self._strictEncodeArguments('modifyOracle(uint8,address)', [_fundRaiseType,
+    _oracleAddress
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.modifyOracle.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
+                    self,
+                    _fundRaiseType,
+    _oracleAddress
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _fundRaiseType: number|BigNumber,
+            _oracleAddress: string,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as USDTieredSTOContract;
+            const encodedData = self._strictEncodeArguments('modifyOracle(uint8,address)',
+            [_fundRaiseType,
+    _oracleAddress
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _fundRaiseType: number|BigNumber,
+            _oracleAddress: string,
+        ): string {
+            const self = this as any as USDTieredSTOContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('modifyOracle(uint8,address)',
+            [_fundRaiseType,
+    _oracleAddress
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _fundRaiseType: number|BigNumber,
+            _oracleAddress: string,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as USDTieredSTOContract;
+            const encodedData = self._strictEncodeArguments('modifyOracle(uint8,address)', [_fundRaiseType,
+        _oracleAddress
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('modifyOracle(uint8,address)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<void
         >(rawCallResult);
@@ -2218,111 +2145,6 @@ export class USDTieredSTOContract extends BaseContract {
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             const abiEncoder = self._lookupAbiEncoder('finalize()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public changeAccredited = {
-        async sendTransactionAsync(
-            _investors: string[],
-            _accredited: boolean[],
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as USDTieredSTOContract;
-            const encodedData = self._strictEncodeArguments('changeAccredited(address[],bool[])', [_investors,
-    _accredited
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.changeAccredited.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
-                    self,
-                    _investors,
-    _accredited
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _investors: string[],
-            _accredited: boolean[],
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as USDTieredSTOContract;
-            const encodedData = self._strictEncodeArguments('changeAccredited(address[],bool[])',
-            [_investors,
-    _accredited
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _investors: string[],
-            _accredited: boolean[],
-        ): string {
-            const self = this as any as USDTieredSTOContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changeAccredited(address[],bool[])',
-            [_investors,
-    _accredited
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _investors: string[],
-            _accredited: boolean[],
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<void
-        > {
-            const self = this as any as USDTieredSTOContract;
-            const encodedData = self._strictEncodeArguments('changeAccredited(address[],bool[])', [_investors,
-        _accredited
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('changeAccredited(address[],bool[])');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<void
         >(rawCallResult);
@@ -2629,7 +2451,7 @@ export class USDTieredSTOContract extends BaseContract {
             _beneficiary: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<void
+        ): Promise<[BigNumber, BigNumber, BigNumber]
         > {
             const self = this as any as USDTieredSTOContract;
             const encodedData = self._strictEncodeArguments('buyWithETH(address)', [_beneficiary
@@ -2646,7 +2468,7 @@ export class USDTieredSTOContract extends BaseContract {
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             const abiEncoder = self._lookupAbiEncoder('buyWithETH(address)');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -2733,7 +2555,7 @@ export class USDTieredSTOContract extends BaseContract {
             _investedPOLY: BigNumber,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<void
+        ): Promise<[BigNumber, BigNumber, BigNumber]
         > {
             const self = this as any as USDTieredSTOContract;
             const encodedData = self._strictEncodeArguments('buyWithPOLY(address,uint256)', [_beneficiary,
@@ -2751,7 +2573,7 @@ export class USDTieredSTOContract extends BaseContract {
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             const abiEncoder = self._lookupAbiEncoder('buyWithPOLY(address,uint256)');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -2846,7 +2668,7 @@ export class USDTieredSTOContract extends BaseContract {
             _usdToken: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<void
+        ): Promise<[BigNumber, BigNumber, BigNumber]
         > {
             const self = this as any as USDTieredSTOContract;
             const encodedData = self._strictEncodeArguments('buyWithUSD(address,uint256,address)', [_beneficiary,
@@ -2865,7 +2687,7 @@ export class USDTieredSTOContract extends BaseContract {
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             const abiEncoder = self._lookupAbiEncoder('buyWithUSD(address,uint256,address)');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -2952,7 +2774,7 @@ export class USDTieredSTOContract extends BaseContract {
             _minTokens: BigNumber,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<void
+        ): Promise<[BigNumber, BigNumber, BigNumber]
         > {
             const self = this as any as USDTieredSTOContract;
             const encodedData = self._strictEncodeArguments('buyWithETHRateLimited(address,uint256)', [_beneficiary,
@@ -2970,7 +2792,7 @@ export class USDTieredSTOContract extends BaseContract {
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             const abiEncoder = self._lookupAbiEncoder('buyWithETHRateLimited(address,uint256)');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -3065,7 +2887,7 @@ export class USDTieredSTOContract extends BaseContract {
             _minTokens: BigNumber,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<void
+        ): Promise<[BigNumber, BigNumber, BigNumber]
         > {
             const self = this as any as USDTieredSTOContract;
             const encodedData = self._strictEncodeArguments('buyWithPOLYRateLimited(address,uint256,uint256)', [_beneficiary,
@@ -3084,7 +2906,7 @@ export class USDTieredSTOContract extends BaseContract {
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             const abiEncoder = self._lookupAbiEncoder('buyWithPOLYRateLimited(address,uint256,uint256)');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -3187,7 +3009,7 @@ export class USDTieredSTOContract extends BaseContract {
             _usdToken: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<void
+        ): Promise<[BigNumber, BigNumber, BigNumber]
         > {
             const self = this as any as USDTieredSTOContract;
             const encodedData = self._strictEncodeArguments('buyWithUSDRateLimited(address,uint256,uint256,address)', [_beneficiary,
@@ -3206,37 +3028,6 @@ export class USDTieredSTOContract extends BaseContract {
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             const abiEncoder = self._lookupAbiEncoder('buyWithUSDRateLimited(address,uint256,uint256,address)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public buyTokensView = {
-        async callAsync(
-            _beneficiary: string,
-            _investmentValue: BigNumber,
-            _fundRaiseType: number|BigNumber,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<[BigNumber, BigNumber, BigNumber]
-        > {
-            const self = this as any as USDTieredSTOContract;
-            const encodedData = self._strictEncodeArguments('buyTokensView(address,uint256,uint8)', [_beneficiary,
-        _investmentValue,
-        _fundRaiseType
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('buyTokensView(address,uint256,uint8)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber]
         >(rawCallResult);
@@ -3294,6 +3085,75 @@ export class USDTieredSTOContract extends BaseContract {
             return result;
         },};
     public getRate = {
+        async sendTransactionAsync(
+            _fundRaiseType: number|BigNumber,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as USDTieredSTOContract;
+            const encodedData = self._strictEncodeArguments('getRate(uint8)', [_fundRaiseType
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.getRate.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
+                    self,
+                    _fundRaiseType
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _fundRaiseType: number|BigNumber,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as USDTieredSTOContract;
+            const encodedData = self._strictEncodeArguments('getRate(uint8)',
+            [_fundRaiseType
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _fundRaiseType: number|BigNumber,
+        ): string {
+            const self = this as any as USDTieredSTOContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('getRate(uint8)',
+            [_fundRaiseType
+    ]);
+            return abiEncodedTransactionData;
+        },
         async callAsync(
             _fundRaiseType: number|BigNumber,
         callData: Partial<CallData> = {},
@@ -3321,6 +3181,82 @@ export class USDTieredSTOContract extends BaseContract {
             return result;
         },};
     public convertToUSD = {
+        async sendTransactionAsync(
+            _fundRaiseType: number|BigNumber,
+            _amount: BigNumber,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as USDTieredSTOContract;
+            const encodedData = self._strictEncodeArguments('convertToUSD(uint8,uint256)', [_fundRaiseType,
+    _amount
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.convertToUSD.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
+                    self,
+                    _fundRaiseType,
+    _amount
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _fundRaiseType: number|BigNumber,
+            _amount: BigNumber,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as USDTieredSTOContract;
+            const encodedData = self._strictEncodeArguments('convertToUSD(uint8,uint256)',
+            [_fundRaiseType,
+    _amount
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _fundRaiseType: number|BigNumber,
+            _amount: BigNumber,
+        ): string {
+            const self = this as any as USDTieredSTOContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('convertToUSD(uint8,uint256)',
+            [_fundRaiseType,
+    _amount
+    ]);
+            return abiEncodedTransactionData;
+        },
         async callAsync(
             _fundRaiseType: number|BigNumber,
             _amount: BigNumber,
@@ -3350,6 +3286,82 @@ export class USDTieredSTOContract extends BaseContract {
             return result;
         },};
     public convertFromUSD = {
+        async sendTransactionAsync(
+            _fundRaiseType: number|BigNumber,
+            _amount: BigNumber,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as USDTieredSTOContract;
+            const encodedData = self._strictEncodeArguments('convertFromUSD(uint8,uint256)', [_fundRaiseType,
+    _amount
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.convertFromUSD.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
+                    self,
+                    _fundRaiseType,
+    _amount
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _fundRaiseType: number|BigNumber,
+            _amount: BigNumber,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as USDTieredSTOContract;
+            const encodedData = self._strictEncodeArguments('convertFromUSD(uint8,uint256)',
+            [_fundRaiseType,
+    _amount
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _fundRaiseType: number|BigNumber,
+            _amount: BigNumber,
+        ): string {
+            const self = this as any as USDTieredSTOContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('convertFromUSD(uint8,uint256)',
+            [_fundRaiseType,
+    _amount
+    ]);
+            return abiEncodedTransactionData;
+        },
         async callAsync(
             _fundRaiseType: number|BigNumber,
             _amount: BigNumber,

@@ -16,6 +16,7 @@ export type ModuleRegistryEventArgs =
     | ModuleRegistryModuleUsedEventArgs
     | ModuleRegistryModuleRegisteredEventArgs
     | ModuleRegistryModuleVerifiedEventArgs
+    | ModuleRegistryModuleUnverifiedEventArgs
     | ModuleRegistryModuleRemovedEventArgs
     | ModuleRegistryOwnershipTransferredEventArgs;
 
@@ -25,16 +26,17 @@ export enum ModuleRegistryEvents {
     ModuleUsed = 'ModuleUsed',
     ModuleRegistered = 'ModuleRegistered',
     ModuleVerified = 'ModuleVerified',
+    ModuleUnverified = 'ModuleUnverified',
     ModuleRemoved = 'ModuleRemoved',
     OwnershipTransferred = 'OwnershipTransferred',
 }
 
 export interface ModuleRegistryPauseEventArgs extends DecodedLogArgs {
-    _timestammp: BigNumber;
+    account: string;
 }
 
 export interface ModuleRegistryUnpauseEventArgs extends DecodedLogArgs {
-    _timestamp: BigNumber;
+    account: string;
 }
 
 export interface ModuleRegistryModuleUsedEventArgs extends DecodedLogArgs {
@@ -49,7 +51,10 @@ export interface ModuleRegistryModuleRegisteredEventArgs extends DecodedLogArgs 
 
 export interface ModuleRegistryModuleVerifiedEventArgs extends DecodedLogArgs {
     _moduleFactory: string;
-    _verified: boolean;
+}
+
+export interface ModuleRegistryModuleUnverifiedEventArgs extends DecodedLogArgs {
+    _moduleFactory: string;
 }
 
 export interface ModuleRegistryModuleRemovedEventArgs extends DecodedLogArgs {
@@ -419,11 +424,13 @@ export class ModuleRegistryContract extends BaseContract {
     public useModule = {
         async sendTransactionAsync(
             _moduleFactory: string,
+            _isUpgrade: boolean,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ModuleRegistryContract;
-            const encodedData = self._strictEncodeArguments('useModule(address)', [_moduleFactory
+            const encodedData = self._strictEncodeArguments('useModule(address,bool)', [_moduleFactory,
+    _isUpgrade
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -439,7 +446,8 @@ export class ModuleRegistryContract extends BaseContract {
                 },
                 self.useModule.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
-                    _moduleFactory
+                    _moduleFactory,
+    _isUpgrade
     ,
                     estimateGasFactor,
                 ),
@@ -451,12 +459,14 @@ export class ModuleRegistryContract extends BaseContract {
         },
         async estimateGasAsync(
             _moduleFactory: string,
+            _isUpgrade: boolean,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ModuleRegistryContract;
-            const encodedData = self._strictEncodeArguments('useModule(address)',
-            [_moduleFactory
+            const encodedData = self._strictEncodeArguments('useModule(address,bool)',
+            [_moduleFactory,
+    _isUpgrade
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -479,21 +489,25 @@ export class ModuleRegistryContract extends BaseContract {
         },
         getABIEncodedTransactionData(
             _moduleFactory: string,
+            _isUpgrade: boolean,
         ): string {
             const self = this as any as ModuleRegistryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('useModule(address)',
-            [_moduleFactory
+            const abiEncodedTransactionData = self._strictEncodeArguments('useModule(address,bool)',
+            [_moduleFactory,
+    _isUpgrade
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _moduleFactory: string,
+            _isUpgrade: boolean,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as ModuleRegistryContract;
-            const encodedData = self._strictEncodeArguments('useModule(address)', [_moduleFactory
+            const encodedData = self._strictEncodeArguments('useModule(address,bool)', [_moduleFactory,
+        _isUpgrade
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -505,9 +519,38 @@ export class ModuleRegistryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('useModule(address)');
+            const abiEncoder = self._lookupAbiEncoder('useModule(address,bool)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public isCompatibleModule = {
+        async callAsync(
+            _moduleFactory: string,
+            _securityToken: string,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<boolean
+        > {
+            const self = this as any as ModuleRegistryContract;
+            const encodedData = self._strictEncodeArguments('isCompatibleModule(address,address)', [_moduleFactory,
+        _securityToken
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('isCompatibleModule(address,address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<boolean
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -707,13 +750,11 @@ export class ModuleRegistryContract extends BaseContract {
     public verifyModule = {
         async sendTransactionAsync(
             _moduleFactory: string,
-            _verified: boolean,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as ModuleRegistryContract;
-            const encodedData = self._strictEncodeArguments('verifyModule(address,bool)', [_moduleFactory,
-    _verified
+            const encodedData = self._strictEncodeArguments('verifyModule(address)', [_moduleFactory
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -729,8 +770,7 @@ export class ModuleRegistryContract extends BaseContract {
                 },
                 self.verifyModule.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
                     self,
-                    _moduleFactory,
-    _verified
+                    _moduleFactory
     ,
                     estimateGasFactor,
                 ),
@@ -742,14 +782,12 @@ export class ModuleRegistryContract extends BaseContract {
         },
         async estimateGasAsync(
             _moduleFactory: string,
-            _verified: boolean,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as ModuleRegistryContract;
-            const encodedData = self._strictEncodeArguments('verifyModule(address,bool)',
-            [_moduleFactory,
-    _verified
+            const encodedData = self._strictEncodeArguments('verifyModule(address)',
+            [_moduleFactory
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -772,25 +810,21 @@ export class ModuleRegistryContract extends BaseContract {
         },
         getABIEncodedTransactionData(
             _moduleFactory: string,
-            _verified: boolean,
         ): string {
             const self = this as any as ModuleRegistryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('verifyModule(address,bool)',
-            [_moduleFactory,
-    _verified
+            const abiEncodedTransactionData = self._strictEncodeArguments('verifyModule(address)',
+            [_moduleFactory
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
             _moduleFactory: string,
-            _verified: boolean,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as ModuleRegistryContract;
-            const encodedData = self._strictEncodeArguments('verifyModule(address,bool)', [_moduleFactory,
-        _verified
+            const encodedData = self._strictEncodeArguments('verifyModule(address)', [_moduleFactory
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -802,7 +836,103 @@ export class ModuleRegistryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('verifyModule(address,bool)');
+            const abiEncoder = self._lookupAbiEncoder('verifyModule(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public unverifyModule = {
+        async sendTransactionAsync(
+            _moduleFactory: string,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as ModuleRegistryContract;
+            const encodedData = self._strictEncodeArguments('unverifyModule(address)', [_moduleFactory
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.unverifyModule.estimateGasAsync.bind<ModuleRegistryContract, any, Promise<number>>(
+                    self,
+                    _moduleFactory
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _moduleFactory: string,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as ModuleRegistryContract;
+            const encodedData = self._strictEncodeArguments('unverifyModule(address)',
+            [_moduleFactory
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _moduleFactory: string,
+        ): string {
+            const self = this as any as ModuleRegistryContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('unverifyModule(address)',
+            [_moduleFactory
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _moduleFactory: string,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as ModuleRegistryContract;
+            const encodedData = self._strictEncodeArguments('unverifyModule(address)', [_moduleFactory
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('unverifyModule(address)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<void
         >(rawCallResult);
@@ -865,15 +995,15 @@ export class ModuleRegistryContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public getReputationByFactory = {
+    public getFactoryDetails = {
         async callAsync(
             _factoryAddress: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<string[]
+        ): Promise<[boolean, string, string[]]
         > {
             const self = this as any as ModuleRegistryContract;
-            const encodedData = self._strictEncodeArguments('getReputationByFactory(address)', [_factoryAddress
+            const encodedData = self._strictEncodeArguments('getFactoryDetails(address)', [_factoryAddress
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -885,9 +1015,9 @@ export class ModuleRegistryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('getReputationByFactory(address)');
+            const abiEncoder = self._lookupAbiEncoder('getFactoryDetails(address)');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string[]
+            const result = abiEncoder.strictDecodeReturnValue<[boolean, string, string[]]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -913,6 +1043,33 @@ export class ModuleRegistryContract extends BaseContract {
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             const abiEncoder = self._lookupAbiEncoder('getModulesByType(uint8)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string[]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getAllModulesByType = {
+        async callAsync(
+            _moduleType: number|BigNumber,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string[]
+        > {
+            const self = this as any as ModuleRegistryContract;
+            const encodedData = self._strictEncodeArguments('getAllModulesByType(uint8)', [_moduleType
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getAllModulesByType(uint8)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<string[]
         >(rawCallResult);

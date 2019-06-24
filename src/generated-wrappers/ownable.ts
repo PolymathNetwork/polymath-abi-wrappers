@@ -11,16 +11,10 @@ import * as ethers from 'ethers';
 // tslint:enable:no-unused-variable
 
 export type OwnableEventArgs =
-    | OwnableOwnershipRenouncedEventArgs
     | OwnableOwnershipTransferredEventArgs;
 
 export enum OwnableEvents {
-    OwnershipRenounced = 'OwnershipRenounced',
     OwnershipTransferred = 'OwnershipTransferred',
-}
-
-export interface OwnableOwnershipRenouncedEventArgs extends DecodedLogArgs {
-    previousOwner: string;
 }
 
 export interface OwnableOwnershipTransferredEventArgs extends DecodedLogArgs {
@@ -55,6 +49,31 @@ export class OwnableContract extends BaseContract {
             const abiEncoder = self._lookupAbiEncoder('owner()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public isOwner = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<boolean
+        > {
+            const self = this as any as OwnableContract;
+            const encodedData = self._strictEncodeArguments('isOwner()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('isOwner()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<boolean
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -148,12 +167,12 @@ export class OwnableContract extends BaseContract {
         },};
     public transferOwnership = {
         async sendTransactionAsync(
-            _newOwner: string,
+            newOwner: string,
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
             const self = this as any as OwnableContract;
-            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [_newOwner
+            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [newOwner
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -169,7 +188,7 @@ export class OwnableContract extends BaseContract {
                 },
                 self.transferOwnership.estimateGasAsync.bind<OwnableContract, any, Promise<number>>(
                     self,
-                    _newOwner
+                    newOwner
     ,
                     estimateGasFactor,
                 ),
@@ -180,13 +199,13 @@ export class OwnableContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
-            _newOwner: string,
+            newOwner: string,
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
             const self = this as any as OwnableContract;
             const encodedData = self._strictEncodeArguments('transferOwnership(address)',
-            [_newOwner
+            [newOwner
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -208,22 +227,22 @@ export class OwnableContract extends BaseContract {
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
-            _newOwner: string,
+            newOwner: string,
         ): string {
             const self = this as any as OwnableContract;
             const abiEncodedTransactionData = self._strictEncodeArguments('transferOwnership(address)',
-            [_newOwner
+            [newOwner
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
-            _newOwner: string,
+            newOwner: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
             const self = this as any as OwnableContract;
-            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [_newOwner
+            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [newOwner
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
