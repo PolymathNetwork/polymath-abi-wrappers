@@ -4,6 +4,9 @@
   "engines": {
     "node": ">=6.12"
   },
+  "files": [
+    "lib/**/*"
+  ],
   "description": "Low-level Polymath smart contract wrappers generated using @0x/abi-gen",
   "main": "lib/src/index.js",
   "scripts": {

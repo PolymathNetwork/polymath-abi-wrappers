@@ -1,9 +1,0 @@
-/node_modules
-/partials
-/scripts
-/src
-.gitignore
-contract.handlebars
-tsconfig.json
-tslint.json
-yarn.lock
