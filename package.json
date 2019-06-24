@@ -6,9 +6,6 @@
   },
   "description": "Low-level Polymath smart contract wrappers generated using @0x/abi-gen",
   "main": "lib/src/index.js",
-  "files": [
-    "lib/**/*"
-  ],
   "scripts": {
     "build": "tsc -b && yarn uglify",
     "build:ci": "yarn build",
