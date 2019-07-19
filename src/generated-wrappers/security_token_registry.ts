@@ -20,9 +20,7 @@ export type SecurityTokenRegistryEventArgs =
     | SecurityTokenRegistryChangeFeeCurrencyEventArgs
     | SecurityTokenRegistryOwnershipTransferredEventArgs
     | SecurityTokenRegistryChangeTickerOwnershipEventArgs
-    | SecurityTokenRegistryNewSecurityTokenCreatedEventArgs
     | SecurityTokenRegistryNewSecurityTokenEventArgs
-    | SecurityTokenRegistryRegisterTickerEventArgs
     | SecurityTokenRegistryRegisterTickerEventArgs
     | SecurityTokenRegistrySecurityTokenRefreshedEventArgs
     | SecurityTokenRegistryProtocolFactorySetEventArgs
@@ -39,7 +37,6 @@ export enum SecurityTokenRegistryEvents {
     ChangeFeeCurrency = 'ChangeFeeCurrency',
     OwnershipTransferred = 'OwnershipTransferred',
     ChangeTickerOwnership = 'ChangeTickerOwnership',
-    NewSecurityTokenCreated = 'NewSecurityTokenCreated',
     NewSecurityToken = 'NewSecurityToken',
     RegisterTicker = 'RegisterTicker',
     SecurityTokenRefreshed = 'SecurityTokenRefreshed',
@@ -91,7 +88,7 @@ export interface SecurityTokenRegistryChangeTickerOwnershipEventArgs extends Dec
     _newOwner: string;
 }
 
-export interface SecurityTokenRegistryNewSecurityTokenCreatedEventArgs extends DecodedLogArgs {
+export interface SecurityTokenRegistryNewSecurityTokenEventArgs extends DecodedLogArgs {
     _ticker: string;
     _name: string;
     _securityTokenAddress: string;

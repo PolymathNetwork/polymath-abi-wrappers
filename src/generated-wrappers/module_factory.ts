@@ -541,14 +541,14 @@ export class ModuleFactoryContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public types = {
+    public getTypes = {
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<BigNumber[]
         > {
             const self = this as any as ModuleFactoryContract;
-            const encodedData = self._strictEncodeArguments('types()', []);
+            const encodedData = self._strictEncodeArguments('getTypes()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -559,21 +559,21 @@ export class ModuleFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('types()');
+            const abiEncoder = self._lookupAbiEncoder('getTypes()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<BigNumber[]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public tags = {
+    public getTags = {
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string[]
         > {
             const self = this as any as ModuleFactoryContract;
-            const encodedData = self._strictEncodeArguments('tags()', []);
+            const encodedData = self._strictEncodeArguments('getTags()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -584,7 +584,7 @@ export class ModuleFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('tags()');
+            const abiEncoder = self._lookupAbiEncoder('getTags()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<string[]
         >(rawCallResult);
@@ -1306,14 +1306,14 @@ export class ModuleFactoryContract extends BaseContract {
             // tslint:enable boolean-naming
             return result;
         },};
-    public lowerSTVersionBounds = {
+    public getLowerSTVersionBounds = {
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<BigNumber[]
         > {
             const self = this as any as ModuleFactoryContract;
-            const encodedData = self._strictEncodeArguments('lowerSTVersionBounds()', []);
+            const encodedData = self._strictEncodeArguments('getLowerSTVersionBounds()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -1324,21 +1324,21 @@ export class ModuleFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('lowerSTVersionBounds()');
+            const abiEncoder = self._lookupAbiEncoder('getLowerSTVersionBounds()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<BigNumber[]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public upperSTVersionBounds = {
+    public getUpperSTVersionBounds = {
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<BigNumber[]
         > {
             const self = this as any as ModuleFactoryContract;
-            const encodedData = self._strictEncodeArguments('upperSTVersionBounds()', []);
+            const encodedData = self._strictEncodeArguments('getUpperSTVersionBounds()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -1349,7 +1349,7 @@ export class ModuleFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('upperSTVersionBounds()');
+            const abiEncoder = self._lookupAbiEncoder('getUpperSTVersionBounds()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<BigNumber[]
         >(rawCallResult);
