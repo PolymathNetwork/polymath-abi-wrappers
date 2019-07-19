@@ -31,13 +31,13 @@
   },
   "homepage": "https://github.com/PolymathNetwork/polymath-abi-wrappers/blob/master/README.md",
   "devDependencies": {
-    "@0x/abi-gen": "2.0.9",
-    "@0x/types": "2.2.2",
+    "@0x/abi-gen": "2.1.1",
+    "@0x/types": "2.4.0",
     "@polymathnetwork/contract-artifacts": "2.1.1",
     "@types/lodash": "^4.14.119",
-    "@types/node": "^10.12.18",
-    "shx": "^0.2.2",
-    "tslint": "5.11.0",
+    "@types/node": "^12.6.8",
+    "shx": "^0.3.2",
+    "tslint": "5.18.0",
     "uglifyjs-folder": "^1.5.1"
   },
   "dependencies": {
@@ -47,7 +47,7 @@
     "ethereum-types": "^2.1.2",
     "ethers": "^4.0.27",
     "lodash": "^4.17.11",
-    "typescript": "3.2.2"
+    "typescript": "3.5.3"
   },
   "publishConfig": {
     "access": "public"
