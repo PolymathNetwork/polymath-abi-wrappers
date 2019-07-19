@@ -1,5 +1,10 @@
 export { PolyResponse } from "./polyResponse";
-export { BaseContract } from "@0x/base-contract";
+export * from "@polymathnetwork/contract-artifacts";
+export * from "@0x/base-contract";
+export * from "@0x/utils";
+export * from "@0x/web3-wrapper";
+export * from "ethereum-types";
+export * from "ethers";
 export * from "./generated-wrappers/blacklist_transfer_manager";
 export * from "./generated-wrappers/capped_s_t_o";
 export * from "./generated-wrappers/capped_s_t_o_factory";

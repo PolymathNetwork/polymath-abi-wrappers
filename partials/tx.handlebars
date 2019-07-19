@@ -1,73 +1,74 @@
-public {{this.tsName}} = {
+public {{languageSpecificName}} = {
     async sendTransactionAsync(
     {{> typed_params inputs=inputs}}
-    {{#this.payable}}
-        txData: Partial<TxDataPayable> = {},
-    {{/this.payable}}
-    {{^this.payable}}
-        txData: Partial<TxData> = {},
-    {{/this.payable}}
-        estimateGasFactor?: number,
+    txData?: Partial<TxData> | undefined,
+    estimateGasFactor?: number,
     ): Promise<PolyResponse> {
-        const self = this as any as {{contractName}}Contract;
-        const encodedData = self._strictEncodeArguments('{{this.functionSignature}}', [{{> params inputs=inputs}}]);
-        const contractDefaults = self._web3Wrapper.getContractDefaults();
-        const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-        const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-                to: self.address,
-                ...txData,
-                data: encodedData,
-            },
-            {
-                from: defaultFromAddress,
-                ...contractDefaults
-            },
-            self.{{this.tsName}}.estimateGasAsync.bind<{{contractName}}Contract, any, Promise<number>>(
-                self,
-                {{> params inputs=inputs}}{{#if inputs.length}},{{/if}}
-                estimateGasFactor,
-            ),
-        );
-        const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-        const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    {{#each inputs}}
+    {{#assertionType name type}}{{/assertionType}}
+    {{/each}}
+    const self = this as any as {{contractName}}Contract;
+    const encodedData = self._strictEncodeArguments('{{this.functionSignature}}', [{{> params inputs=inputs}}]);
+    const contractDefaults = self._web3Wrapper.getContractDefaults();
+    const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+    const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+            to: self.address,
+            ...txData,
+            data: encodedData,
+        },
+        {
+            from: defaultFromAddress,
+            ...contractDefaults
+        },
+        self.{{languageSpecificName}}.estimateGasAsync.bind<{{contractName}}Contract, any, Promise<number>>(
+            self,
+            {{> params inputs=inputs}}{{#if inputs.length}},{{/if}}
+            estimateGasFactor,
+        ),
+    );
+    if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+    }
 
-        return new PolyResponse(txHash, receipt);
+    const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+    const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+
+    return new PolyResponse(txHash, receipt);
     },
     async estimateGasAsync(
     {{> typed_params inputs=inputs}}
         factor?: number,
-        txData: Partial<TxData> = {},
+        txData?: Partial<TxData> | undefined,
     ): Promise<number> {
-        const self = this as any as {{contractName}}Contract;
-        const encodedData = self._strictEncodeArguments('{{this.functionSignature}}',
-        [{{> params inputs=inputs}}]);
-        const contractDefaults = self._web3Wrapper.getContractDefaults();
-        const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-        const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-                to: self.address,
-                ...txData,
-                data: encodedData,
-            },
-            {
-                from: defaultFromAddress,
-                ...contractDefaults
-            },
-        );
-        const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-        const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+    {{#each inputs}}
+    {{#assertionType name type}}{{/assertionType}}
+    {{/each}}
+    const self = this as any as {{contractName}}Contract;
+    const encodedData = self._strictEncodeArguments('{{this.functionSignature}}',
+    [{{> params inputs=inputs}}]);
+    const contractDefaults = self._web3Wrapper.getContractDefaults();
+    const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+    const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+            to: self.address,
+            ...txData,
+            data: encodedData,
+        },
+        {
+            from: defaultFromAddress,
+            ...contractDefaults
+        },
+    );
+    if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+    }
+    
+    const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+    const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
         const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
         const _safetyGasEstimation = Math.round(_factor * gas);
         return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-    },
-    getABIEncodedTransactionData(
-    {{> typed_params inputs=inputs}}
-    ): string {
-        const self = this as any as {{contractName}}Contract;
-        const abiEncodedTransactionData = self._strictEncodeArguments('{{this.functionSignature}}',
-        [{{> params inputs=inputs}}]);
-        return abiEncodedTransactionData;
     },
     {{> callAsync}}
 };
