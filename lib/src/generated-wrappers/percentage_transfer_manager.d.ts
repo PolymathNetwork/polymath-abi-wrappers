@@ -31,114 +31,134 @@ export interface PercentageTransferManagerUnpauseEventArgs extends DecodedLogArg
 export declare class PercentageTransferManagerContract extends BaseContract {
     private _defaultEstimateGasFactor;
     reclaimETH: {
-        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(): string;
+        sendTransactionAsync(txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(): string;
     };
     allowPrimaryIssuance: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
+        getABIEncodedTransactionData(): string;
     };
     getTokensByPartition: {
         callAsync(_partition: string, _tokenHolder: string, index_2: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
+        getABIEncodedTransactionData(_partition: string, _tokenHolder: string, index_2: BigNumber): string;
     };
     ADMIN: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
     };
     maxHolderPercentage: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
+        getABIEncodedTransactionData(): string;
     };
     unpause: {
-        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(): string;
+        sendTransactionAsync(txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(): string;
     };
     paused: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
+        getABIEncodedTransactionData(): string;
     };
     UNLOCKED: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
     };
     polyToken: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
     };
     pause: {
-        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(): string;
+        sendTransactionAsync(txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(): string;
     };
     reclaimERC20: {
-        sendTransactionAsync(_tokenContract: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_tokenContract: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_tokenContract: string): string;
+        sendTransactionAsync(_tokenContract: string, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_tokenContract: string, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_tokenContract: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_tokenContract: string): string;
     };
     OPERATOR: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
     };
     whitelist: {
         callAsync(index_0: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
+        getABIEncodedTransactionData(index_0: string): string;
     };
     LOCKED: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
     };
     securityToken: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
     };
     factory: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
     };
     getDataStore: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
     };
     executeTransfer: {
-        sendTransactionAsync(_from: string, _to: string, _amount: BigNumber, index_3: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_from: string, _to: string, _amount: BigNumber, index_3: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_from: string, _to: string, _amount: BigNumber, index_3: string): string;
+        sendTransactionAsync(_from: string, _to: string, _amount: BigNumber, index_3: string, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_from: string, _to: string, _amount: BigNumber, index_3: string, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_from: string, _to: string, _amount: BigNumber, index_3: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
+        getABIEncodedTransactionData(_from: string, _to: string, _amount: BigNumber, index_3: string): string;
     };
     verifyTransfer: {
         callAsync(_from: string, _to: string, _amount: BigNumber, index_3: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, string]>;
+        getABIEncodedTransactionData(_from: string, _to: string, _amount: BigNumber, index_3: string): string;
     };
     configure: {
-        sendTransactionAsync(_maxHolderPercentage: BigNumber, _allowPrimaryIssuance: boolean, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_maxHolderPercentage: BigNumber, _allowPrimaryIssuance: boolean, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_maxHolderPercentage: BigNumber, _allowPrimaryIssuance: boolean): string;
+        sendTransactionAsync(_maxHolderPercentage: BigNumber, _allowPrimaryIssuance: boolean, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_maxHolderPercentage: BigNumber, _allowPrimaryIssuance: boolean, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_maxHolderPercentage: BigNumber, _allowPrimaryIssuance: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_maxHolderPercentage: BigNumber, _allowPrimaryIssuance: boolean): string;
     };
     getInitFunction: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
     };
     changeHolderPercentage: {
-        sendTransactionAsync(_maxHolderPercentage: BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_maxHolderPercentage: BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_maxHolderPercentage: BigNumber): string;
+        sendTransactionAsync(_maxHolderPercentage: BigNumber, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_maxHolderPercentage: BigNumber, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_maxHolderPercentage: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_maxHolderPercentage: BigNumber): string;
     };
     modifyWhitelist: {
-        sendTransactionAsync(_investor: string, _valid: boolean, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_investor: string, _valid: boolean, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_investor: string, _valid: boolean): string;
+        sendTransactionAsync(_investor: string, _valid: boolean, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_investor: string, _valid: boolean, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_investor: string, _valid: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_investor: string, _valid: boolean): string;
     };
     modifyWhitelistMulti: {
-        sendTransactionAsync(_investors: string[], _valids: boolean[], txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_investors: string[], _valids: boolean[], factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_investors: string[], _valids: boolean[]): string;
+        sendTransactionAsync(_investors: string[], _valids: boolean[], txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_investors: string[], _valids: boolean[], factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_investors: string[], _valids: boolean[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_investors: string[], _valids: boolean[]): string;
     };
     setAllowPrimaryIssuance: {
-        sendTransactionAsync(_allowPrimaryIssuance: boolean, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_allowPrimaryIssuance: boolean, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_allowPrimaryIssuance: boolean): string;
+        sendTransactionAsync(_allowPrimaryIssuance: boolean, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_allowPrimaryIssuance: boolean, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_allowPrimaryIssuance: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_allowPrimaryIssuance: boolean): string;
     };
     getPermissions: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
+        getABIEncodedTransactionData(): string;
     };
     static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>, _securityToken: string, _polyToken: string): Promise<PercentageTransferManagerContract>;
-    constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
+    /**
+     * @returns The contract ABI
+     */
+    static ABI(): ContractAbi;
+    constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=percentage_transfer_manager.d.ts.map

@@ -13,17 +13,23 @@ export declare class ISTOContract extends BaseContract {
     private _defaultEstimateGasFactor;
     getTokensSold: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
+        getABIEncodedTransactionData(): string;
     };
     getRaised: {
         callAsync(_fundRaiseType: number | BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
+        getABIEncodedTransactionData(_fundRaiseType: number | BigNumber): string;
     };
     pause: {
-        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(): string;
+        sendTransactionAsync(txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(): string;
     };
     static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>): Promise<ISTOContract>;
-    constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
+    /**
+     * @returns The contract ABI
+     */
+    static ABI(): ContractAbi;
+    constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=isto.d.ts.map

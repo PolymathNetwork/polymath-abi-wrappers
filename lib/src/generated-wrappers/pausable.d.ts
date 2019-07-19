@@ -15,8 +15,13 @@ export declare class PausableContract extends BaseContract {
     private _defaultEstimateGasFactor;
     paused: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
+        getABIEncodedTransactionData(): string;
     };
     static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>): Promise<PausableContract>;
-    constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
+    /**
+     * @returns The contract ABI
+     */
+    static ABI(): ContractAbi;
+    constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=pausable.d.ts.map

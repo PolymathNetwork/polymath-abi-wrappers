@@ -103,216 +103,242 @@ export interface VolumeRestrictionTMUnpauseEventArgs extends DecodedLogArgs {
 export declare class VolumeRestrictionTMContract extends BaseContract {
     private _defaultEstimateGasFactor;
     reclaimETH: {
-        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(): string;
+        sendTransactionAsync(txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(): string;
     };
     ADMIN: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
     };
     unpause: {
-        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(): string;
+        sendTransactionAsync(txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(): string;
     };
     paused: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
+        getABIEncodedTransactionData(): string;
     };
     UNLOCKED: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
     };
     polyToken: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
     };
     pause: {
-        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(): string;
+        sendTransactionAsync(txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(): string;
     };
     reclaimERC20: {
-        sendTransactionAsync(_tokenContract: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_tokenContract: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_tokenContract: string): string;
+        sendTransactionAsync(_tokenContract: string, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_tokenContract: string, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_tokenContract: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_tokenContract: string): string;
     };
     OPERATOR: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
     };
     LOCKED: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
     };
     securityToken: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
     };
     factory: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
     };
     getDataStore: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
     };
     executeTransfer: {
-        sendTransactionAsync(_from: string, index_1: string, _amount: BigNumber, index_3: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_from: string, index_1: string, _amount: BigNumber, index_3: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_from: string, index_1: string, _amount: BigNumber, index_3: string): string;
+        sendTransactionAsync(_from: string, index_1: string, _amount: BigNumber, index_3: string, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_from: string, index_1: string, _amount: BigNumber, index_3: string, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_from: string, index_1: string, _amount: BigNumber, index_3: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
+        getABIEncodedTransactionData(_from: string, index_1: string, _amount: BigNumber, index_3: string): string;
     };
     verifyTransfer: {
         callAsync(_from: string, index_1: string, _amount: BigNumber, index_3: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, string]>;
+        getABIEncodedTransactionData(_from: string, index_1: string, _amount: BigNumber, index_3: string): string;
     };
     changeExemptWalletList: {
-        sendTransactionAsync(_wallet: string, _exempted: boolean, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_wallet: string, _exempted: boolean, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_wallet: string, _exempted: boolean): string;
+        sendTransactionAsync(_wallet: string, _exempted: boolean, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_wallet: string, _exempted: boolean, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_wallet: string, _exempted: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_wallet: string, _exempted: boolean): string;
     };
     addIndividualRestriction: {
-        sendTransactionAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber): string;
+        sendTransactionAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber): string;
     };
     addIndividualDailyRestriction: {
-        sendTransactionAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber): string;
+        sendTransactionAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber): string;
     };
     addIndividualDailyRestrictionMulti: {
-        sendTransactionAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[]): string;
+        sendTransactionAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[]): string;
     };
     addIndividualRestrictionMulti: {
-        sendTransactionAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _rollingPeriodInDays: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _rollingPeriodInDays: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _rollingPeriodInDays: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[]): string;
+        sendTransactionAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _rollingPeriodInDays: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _rollingPeriodInDays: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _rollingPeriodInDays: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _rollingPeriodInDays: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[]): string;
     };
     addDefaultRestriction: {
-        sendTransactionAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber): string;
+        sendTransactionAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber): string;
     };
     addDefaultDailyRestriction: {
-        sendTransactionAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber): string;
+        sendTransactionAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber): string;
     };
     removeIndividualRestriction: {
-        sendTransactionAsync(_holder: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_holder: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_holder: string): string;
+        sendTransactionAsync(_holder: string, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_holder: string, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_holder: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_holder: string): string;
     };
     removeIndividualRestrictionMulti: {
-        sendTransactionAsync(_holders: string[], txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_holders: string[], factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_holders: string[]): string;
+        sendTransactionAsync(_holders: string[], txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_holders: string[], factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_holders: string[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_holders: string[]): string;
     };
     removeIndividualDailyRestriction: {
-        sendTransactionAsync(_holder: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_holder: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_holder: string): string;
+        sendTransactionAsync(_holder: string, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_holder: string, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_holder: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_holder: string): string;
     };
     removeIndividualDailyRestrictionMulti: {
-        sendTransactionAsync(_holders: string[], txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_holders: string[], factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_holders: string[]): string;
+        sendTransactionAsync(_holders: string[], txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_holders: string[], factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_holders: string[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_holders: string[]): string;
     };
     removeDefaultRestriction: {
-        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(): string;
+        sendTransactionAsync(txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(): string;
     };
     removeDefaultDailyRestriction: {
-        sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(): string;
+        sendTransactionAsync(txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(): string;
     };
     modifyIndividualRestriction: {
-        sendTransactionAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber): string;
+        sendTransactionAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber): string;
     };
     modifyIndividualDailyRestriction: {
-        sendTransactionAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber): string;
+        sendTransactionAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_holder: string, _allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber): string;
     };
     modifyIndividualDailyRestrictionMulti: {
-        sendTransactionAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[]): string;
+        sendTransactionAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[]): string;
     };
     modifyIndividualRestrictionMulti: {
-        sendTransactionAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _rollingPeriodInDays: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _rollingPeriodInDays: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _rollingPeriodInDays: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[]): string;
+        sendTransactionAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _rollingPeriodInDays: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _rollingPeriodInDays: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _rollingPeriodInDays: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_holders: string[], _allowedTokens: BigNumber[], _startTimes: BigNumber[], _rollingPeriodInDays: BigNumber[], _endTimes: BigNumber[], _restrictionTypes: (number | BigNumber)[]): string;
     };
     modifyDefaultRestriction: {
-        sendTransactionAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber): string;
+        sendTransactionAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_allowedTokens: BigNumber, _startTime: BigNumber, _rollingPeriodInDays: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber): string;
     };
     modifyDefaultDailyRestriction: {
-        sendTransactionAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber): string;
+        sendTransactionAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_allowedTokens: BigNumber, _startTime: BigNumber, _endTime: BigNumber, _restrictionType: number | BigNumber): string;
     };
     getTokensByPartition: {
         callAsync(_partition: string, _tokenHolder: string, _additionalBalance: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
+        getABIEncodedTransactionData(_partition: string, _tokenHolder: string, _additionalBalance: BigNumber): string;
     };
     getIndividualBucketDetailsToUser: {
         callAsync(_user: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]>;
+        getABIEncodedTransactionData(_user: string): string;
     };
     getDefaultBucketDetailsToUser: {
         callAsync(_user: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]>;
+        getABIEncodedTransactionData(_user: string): string;
     };
     getTotalTradedByUser: {
         callAsync(_user: string, _at: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
+        getABIEncodedTransactionData(_user: string, _at: BigNumber): string;
     };
     getInitFunction: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
     };
     getExemptAddress: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
+        getABIEncodedTransactionData(): string;
     };
     getIndividualRestriction: {
         callAsync(_investor: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]>;
+        getABIEncodedTransactionData(_investor: string): string;
     };
     getIndividualDailyRestriction: {
         callAsync(_investor: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]>;
+        getABIEncodedTransactionData(_investor: string): string;
     };
     getDefaultRestriction: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]>;
+        getABIEncodedTransactionData(): string;
     };
     getDefaultDailyRestriction: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber]>;
+        getABIEncodedTransactionData(): string;
     };
     getRestrictionData: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[string[], BigNumber[], BigNumber[], BigNumber[], BigNumber[], BigNumber[]]>;
+        getABIEncodedTransactionData(): string;
     };
     getPermissions: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
+        getABIEncodedTransactionData(): string;
     };
     static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>, _securityToken: string, _polyAddress: string): Promise<VolumeRestrictionTMContract>;
-    constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
+    /**
+     * @returns The contract ABI
+     */
+    static ABI(): ContractAbi;
+    constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=volume_restriction_t_m.d.ts.map
