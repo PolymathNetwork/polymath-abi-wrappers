@@ -105,9 +105,6 @@ export declare class USDTieredSTOFactoryContract extends BaseContract {
     logicContracts: {
         callAsync(index_0: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[string, string, string]>;
     };
-    lowerSTVersionBounds: {
-        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber[]>;
-    };
     renounceOwnership: {
         sendTransactionAsync(txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
         estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
@@ -123,6 +120,9 @@ export declare class USDTieredSTOFactoryContract extends BaseContract {
     setupCost: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
     };
+    getLowerSTVersionBounds: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber[]>;
+    };
     changeName: {
         sendTransactionAsync(_name: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
         estimateGasAsync(_name: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
@@ -135,13 +135,16 @@ export declare class USDTieredSTOFactoryContract extends BaseContract {
     isOwner: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
     };
+    getTags: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
+    };
     modules: {
         callAsync(index_0: string, index_1: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
     };
     moduleToSecurityToken: {
         callAsync(index_0: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
-    upperSTVersionBounds: {
+    getTypes: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber[]>;
     };
     changeCostAndType: {
@@ -150,17 +153,11 @@ export declare class USDTieredSTOFactoryContract extends BaseContract {
         getABIEncodedTransactionData(_setupCost: BigNumber, _isCostInPoly: boolean): string;
         callAsync(_setupCost: BigNumber, _isCostInPoly: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
-    types: {
-        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber[]>;
-    };
     updateLogicContract: {
         sendTransactionAsync(_upgrade: BigNumber, _version: string, _logicContract: string, _upgradeData: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
         estimateGasAsync(_upgrade: BigNumber, _version: string, _logicContract: string, _upgradeData: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_upgrade: BigNumber, _version: string, _logicContract: string, _upgradeData: string): string;
         callAsync(_upgrade: BigNumber, _version: string, _logicContract: string, _upgradeData: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
-    };
-    tags: {
-        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
     };
     changeDescription: {
         sendTransactionAsync(_description: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
@@ -173,6 +170,9 @@ export declare class USDTieredSTOFactoryContract extends BaseContract {
         estimateGasAsync(newOwner: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(newOwner: string): string;
         callAsync(newOwner: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
+    getUpperSTVersionBounds: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber[]>;
     };
     changeSTVersionBounds: {
         sendTransactionAsync(_boundType: string, _newVersion: (number | BigNumber)[], txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;

@@ -2,7 +2,7 @@ import { BaseContract } from '@0x/base-contract';
 import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../polyResponse';
-export declare type ISecurityTokenRegistryEventArgs = ISecurityTokenRegistryPauseEventArgs | ISecurityTokenRegistryUnpauseEventArgs | ISecurityTokenRegistryTickerRemovedEventArgs | ISecurityTokenRegistryChangeExpiryLimitEventArgs | ISecurityTokenRegistryChangeSecurityLaunchFeeEventArgs | ISecurityTokenRegistryChangeTickerRegistrationFeeEventArgs | ISecurityTokenRegistryChangeFeeCurrencyEventArgs | ISecurityTokenRegistryOwnershipTransferredEventArgs | ISecurityTokenRegistryChangeTickerOwnershipEventArgs | ISecurityTokenRegistryNewSecurityTokenCreatedEventArgs | ISecurityTokenRegistryNewSecurityTokenEventArgs | ISecurityTokenRegistryRegisterTickerEventArgs | ISecurityTokenRegistryRegisterTickerEventArgs | ISecurityTokenRegistrySecurityTokenRefreshedEventArgs | ISecurityTokenRegistryProtocolFactorySetEventArgs | ISecurityTokenRegistryLatestVersionSetEventArgs | ISecurityTokenRegistryProtocolFactoryRemovedEventArgs;
+export declare type ISecurityTokenRegistryEventArgs = ISecurityTokenRegistryPauseEventArgs | ISecurityTokenRegistryUnpauseEventArgs | ISecurityTokenRegistryTickerRemovedEventArgs | ISecurityTokenRegistryChangeExpiryLimitEventArgs | ISecurityTokenRegistryChangeSecurityLaunchFeeEventArgs | ISecurityTokenRegistryChangeTickerRegistrationFeeEventArgs | ISecurityTokenRegistryChangeFeeCurrencyEventArgs | ISecurityTokenRegistryOwnershipTransferredEventArgs | ISecurityTokenRegistryChangeTickerOwnershipEventArgs | ISecurityTokenRegistryNewSecurityTokenEventArgs | ISecurityTokenRegistryRegisterTickerEventArgs | ISecurityTokenRegistrySecurityTokenRefreshedEventArgs | ISecurityTokenRegistryProtocolFactorySetEventArgs | ISecurityTokenRegistryLatestVersionSetEventArgs | ISecurityTokenRegistryProtocolFactoryRemovedEventArgs;
 export declare enum ISecurityTokenRegistryEvents {
     Pause = "Pause",
     Unpause = "Unpause",
@@ -13,7 +13,6 @@ export declare enum ISecurityTokenRegistryEvents {
     ChangeFeeCurrency = "ChangeFeeCurrency",
     OwnershipTransferred = "OwnershipTransferred",
     ChangeTickerOwnership = "ChangeTickerOwnership",
-    NewSecurityTokenCreated = "NewSecurityTokenCreated",
     NewSecurityToken = "NewSecurityToken",
     RegisterTicker = "RegisterTicker",
     SecurityTokenRefreshed = "SecurityTokenRefreshed",
@@ -55,7 +54,7 @@ export interface ISecurityTokenRegistryChangeTickerOwnershipEventArgs extends De
     _oldOwner: string;
     _newOwner: string;
 }
-export interface ISecurityTokenRegistryNewSecurityTokenCreatedEventArgs extends DecodedLogArgs {
+export interface ISecurityTokenRegistryNewSecurityTokenEventArgs extends DecodedLogArgs {
     _ticker: string;
     _name: string;
     _securityTokenAddress: string;
@@ -184,7 +183,7 @@ export declare class ISecurityTokenRegistryContract extends BaseContract {
         callAsync(_ticker: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
     };
     getSecurityTokenData: {
-        callAsync(_securityToken: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[string, string, string, BigNumber, BigNumber[]]>;
+        callAsync(_securityToken: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[string, string, string, BigNumber]>;
     };
     getSTFactoryAddress: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;

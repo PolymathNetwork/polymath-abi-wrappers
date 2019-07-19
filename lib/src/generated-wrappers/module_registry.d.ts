@@ -76,11 +76,17 @@ export declare class ModuleRegistryContract extends BaseContract {
         getABIEncodedTransactionData(_polymathRegistry: string, _owner: string): string;
         callAsync(_polymathRegistry: string, _owner: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
-    useModule: {
+    useModule2: {
         sendTransactionAsync(_moduleFactory: string, _isUpgrade: boolean, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
         estimateGasAsync(_moduleFactory: string, _isUpgrade: boolean, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
         getABIEncodedTransactionData(_moduleFactory: string, _isUpgrade: boolean): string;
         callAsync(_moduleFactory: string, _isUpgrade: boolean, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+    };
+    useModule1: {
+        sendTransactionAsync(_moduleFactory: string, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_moduleFactory: string, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
+        getABIEncodedTransactionData(_moduleFactory: string): string;
+        callAsync(_moduleFactory: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
     isCompatibleModule: {
         callAsync(_moduleFactory: string, _securityToken: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;

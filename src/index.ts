@@ -35,3 +35,4 @@ export * from "./generated-wrappers/u_s_d_tiered_s_t_o_factory";
 export * from "./generated-wrappers/vesting_escrow_wallet";
 export * from "./generated-wrappers/volume_restriction_t_m";
 export * from "./generated-wrappers/weighted_vote_checkpoint";
+export * from "./generated-wrappers/p_l_c_r_voting_checkpoint";

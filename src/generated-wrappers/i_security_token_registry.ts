@@ -20,9 +20,7 @@ export type ISecurityTokenRegistryEventArgs =
     | ISecurityTokenRegistryChangeFeeCurrencyEventArgs
     | ISecurityTokenRegistryOwnershipTransferredEventArgs
     | ISecurityTokenRegistryChangeTickerOwnershipEventArgs
-    | ISecurityTokenRegistryNewSecurityTokenCreatedEventArgs
     | ISecurityTokenRegistryNewSecurityTokenEventArgs
-    | ISecurityTokenRegistryRegisterTickerEventArgs
     | ISecurityTokenRegistryRegisterTickerEventArgs
     | ISecurityTokenRegistrySecurityTokenRefreshedEventArgs
     | ISecurityTokenRegistryProtocolFactorySetEventArgs
@@ -39,7 +37,6 @@ export enum ISecurityTokenRegistryEvents {
     ChangeFeeCurrency = 'ChangeFeeCurrency',
     OwnershipTransferred = 'OwnershipTransferred',
     ChangeTickerOwnership = 'ChangeTickerOwnership',
-    NewSecurityTokenCreated = 'NewSecurityTokenCreated',
     NewSecurityToken = 'NewSecurityToken',
     RegisterTicker = 'RegisterTicker',
     SecurityTokenRefreshed = 'SecurityTokenRefreshed',
@@ -91,7 +88,7 @@ export interface ISecurityTokenRegistryChangeTickerOwnershipEventArgs extends De
     _newOwner: string;
 }
 
-export interface ISecurityTokenRegistryNewSecurityTokenCreatedEventArgs extends DecodedLogArgs {
+export interface ISecurityTokenRegistryNewSecurityTokenEventArgs extends DecodedLogArgs {
     _ticker: string;
     _name: string;
     _securityTokenAddress: string;
@@ -1346,7 +1343,7 @@ export class ISecurityTokenRegistryContract extends BaseContract {
             _securityToken: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<[string, string, string, BigNumber, BigNumber[]]
+        ): Promise<[string, string, string, BigNumber]
         > {
             const self = this as any as ISecurityTokenRegistryContract;
             const encodedData = self._strictEncodeArguments('getSecurityTokenData(address)', [_securityToken
@@ -1363,7 +1360,7 @@ export class ISecurityTokenRegistryContract extends BaseContract {
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
             const abiEncoder = self._lookupAbiEncoder('getSecurityTokenData(address)');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<[string, string, string, BigNumber, BigNumber[]]
+            const result = abiEncoder.strictDecodeReturnValue<[string, string, string, BigNumber]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;

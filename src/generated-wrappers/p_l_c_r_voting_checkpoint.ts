@@ -10,395 +10,90 @@ import { PolyResponse } from '../polyResponse';
 import * as ethers from 'ethers';
 // tslint:enable:no-unused-variable
 
-export type CappedSTOFactoryEventArgs =
-    | CappedSTOFactoryLogicContractSetEventArgs
-    | CappedSTOFactoryModuleUpgradedEventArgs
-    | CappedSTOFactoryOwnershipTransferredEventArgs
-    | CappedSTOFactoryChangeSetupCostEventArgs
-    | CappedSTOFactoryChangeCostTypeEventArgs
-    | CappedSTOFactoryGenerateModuleFromFactoryEventArgs
-    | CappedSTOFactoryChangeSTVersionBoundEventArgs;
+export type PLCRVotingCheckpointEventArgs =
+    | PLCRVotingCheckpointVoteCommitEventArgs
+    | PLCRVotingCheckpointVoteRevealedEventArgs
+    | PLCRVotingCheckpointBallotCreatedEventArgs
+    | PLCRVotingCheckpointBallotStatusChangedEventArgs
+    | PLCRVotingCheckpointChangedBallotExemptedVotersListEventArgs
+    | PLCRVotingCheckpointChangedDefaultExemptedVotersListEventArgs
+    | PLCRVotingCheckpointPauseEventArgs
+    | PLCRVotingCheckpointUnpauseEventArgs;
 
-export enum CappedSTOFactoryEvents {
-    LogicContractSet = 'LogicContractSet',
-    ModuleUpgraded = 'ModuleUpgraded',
-    OwnershipTransferred = 'OwnershipTransferred',
-    ChangeSetupCost = 'ChangeSetupCost',
-    ChangeCostType = 'ChangeCostType',
-    GenerateModuleFromFactory = 'GenerateModuleFromFactory',
-    ChangeSTVersionBound = 'ChangeSTVersionBound',
+export enum PLCRVotingCheckpointEvents {
+    VoteCommit = 'VoteCommit',
+    VoteRevealed = 'VoteRevealed',
+    BallotCreated = 'BallotCreated',
+    BallotStatusChanged = 'BallotStatusChanged',
+    ChangedBallotExemptedVotersList = 'ChangedBallotExemptedVotersList',
+    ChangedDefaultExemptedVotersList = 'ChangedDefaultExemptedVotersList',
+    Pause = 'Pause',
+    Unpause = 'Unpause',
 }
 
-export interface CappedSTOFactoryLogicContractSetEventArgs extends DecodedLogArgs {
-    _version: string;
-    _upgrade: BigNumber;
-    _logicContract: string;
-    _upgradeData: string;
+export interface PLCRVotingCheckpointVoteCommitEventArgs extends DecodedLogArgs {
+    _voter: string;
+    _weight: BigNumber;
+    _ballotId: BigNumber;
+    _secretVote: string;
 }
 
-export interface CappedSTOFactoryModuleUpgradedEventArgs extends DecodedLogArgs {
-    _module: string;
-    _securityToken: string;
-    _version: BigNumber;
+export interface PLCRVotingCheckpointVoteRevealedEventArgs extends DecodedLogArgs {
+    _voter: string;
+    _weight: BigNumber;
+    _ballotId: BigNumber;
+    _choiceOfProposal: BigNumber;
+    _salt: BigNumber;
+    _secretVote: string;
 }
 
-export interface CappedSTOFactoryOwnershipTransferredEventArgs extends DecodedLogArgs {
-    previousOwner: string;
-    newOwner: string;
+export interface PLCRVotingCheckpointBallotCreatedEventArgs extends DecodedLogArgs {
+    _ballotId: BigNumber;
+    _checkpointId: BigNumber;
+    _startTime: BigNumber;
+    _commitDuration: BigNumber;
+    _revealDuration: BigNumber;
+    _noOfProposals: BigNumber;
+    _quorumPercentage: BigNumber;
 }
 
-export interface CappedSTOFactoryChangeSetupCostEventArgs extends DecodedLogArgs {
-    _oldSetupCost: BigNumber;
-    _newSetupCost: BigNumber;
+export interface PLCRVotingCheckpointBallotStatusChangedEventArgs extends DecodedLogArgs {
+    _ballotId: BigNumber;
+    _newStatus: boolean;
 }
 
-export interface CappedSTOFactoryChangeCostTypeEventArgs extends DecodedLogArgs {
-    _isOldCostInPoly: boolean;
-    _isNewCostInPoly: boolean;
+export interface PLCRVotingCheckpointChangedBallotExemptedVotersListEventArgs extends DecodedLogArgs {
+    _ballotId: BigNumber;
+    _voter: string;
+    _exempt: boolean;
 }
 
-export interface CappedSTOFactoryGenerateModuleFromFactoryEventArgs extends DecodedLogArgs {
-    _module: string;
-    _moduleName: string;
-    _moduleFactory: string;
-    _creator: string;
-    _setupCost: BigNumber;
-    _setupCostInPoly: BigNumber;
+export interface PLCRVotingCheckpointChangedDefaultExemptedVotersListEventArgs extends DecodedLogArgs {
+    _voter: string;
+    _exempt: boolean;
 }
 
-export interface CappedSTOFactoryChangeSTVersionBoundEventArgs extends DecodedLogArgs {
-    _boundType: string;
-    _major: BigNumber;
-    _minor: BigNumber;
-    _patch: BigNumber;
+export interface PLCRVotingCheckpointPauseEventArgs extends DecodedLogArgs {
+    account: string;
+}
+
+export interface PLCRVotingCheckpointUnpauseEventArgs extends DecodedLogArgs {
+    account: string;
 }
 
 
 /* istanbul ignore next */
 // tslint:disable:no-parameter-reassignment
 // tslint:disable-next-line:class-name
-export class CappedSTOFactoryContract extends BaseContract {
+export class PLCRVotingCheckpointContract extends BaseContract {
     private _defaultEstimateGasFactor: number;
-    public name = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('name()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('name()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public upgrade = {
-        async sendTransactionAsync(
-            _module: string,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('upgrade(address)', [_module
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.upgrade.estimateGasAsync.bind<CappedSTOFactoryContract, any, Promise<number>>(
-                    self,
-                    _module
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _module: string,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('upgrade(address)',
-            [_module
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _module: string,
-        ): string {
-            const self = this as any as CappedSTOFactoryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('upgrade(address)',
-            [_module
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _module: string,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<void
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('upgrade(address)', [_module
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('upgrade(address)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public changeSetupCost = {
-        async sendTransactionAsync(
-            _setupCost: BigNumber,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeSetupCost(uint256)', [_setupCost
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.changeSetupCost.estimateGasAsync.bind<CappedSTOFactoryContract, any, Promise<number>>(
-                    self,
-                    _setupCost
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _setupCost: BigNumber,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeSetupCost(uint256)',
-            [_setupCost
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _setupCost: BigNumber,
-        ): string {
-            const self = this as any as CappedSTOFactoryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changeSetupCost(uint256)',
-            [_setupCost
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _setupCost: BigNumber,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<void
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeSetupCost(uint256)', [_setupCost
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('changeSetupCost(uint256)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public changeTags = {
-        async sendTransactionAsync(
-            _tagsData: string[],
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeTags(bytes32[])', [_tagsData
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.changeTags.estimateGasAsync.bind<CappedSTOFactoryContract, any, Promise<number>>(
-                    self,
-                    _tagsData
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _tagsData: string[],
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeTags(bytes32[])',
-            [_tagsData
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _tagsData: string[],
-        ): string {
-            const self = this as any as CappedSTOFactoryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changeTags(bytes32[])',
-            [_tagsData
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _tagsData: string[],
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<void
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeTags(bytes32[])', [_tagsData
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('changeTags(bytes32[])');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public setupCostInPoly = {
+    public reclaimETH = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('setupCostInPoly()', []);
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('reclaimETH()', []);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
@@ -411,7 +106,7 @@ export class CappedSTOFactoryContract extends BaseContract {
                     from: defaultFromAddress,
                     ...contractDefaults
                 },
-                self.setupCostInPoly.estimateGasAsync.bind<CappedSTOFactoryContract, any, Promise<number>>(
+                self.reclaimETH.estimateGasAsync.bind<PLCRVotingCheckpointContract, any, Promise<number>>(
                     self,
                     
                     estimateGasFactor,
@@ -426,8 +121,8 @@ export class CappedSTOFactoryContract extends BaseContract {
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('setupCostInPoly()',
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('reclaimETH()',
             []);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -450,18 +145,18 @@ export class CappedSTOFactoryContract extends BaseContract {
         },
         getABIEncodedTransactionData(
         ): string {
-            const self = this as any as CappedSTOFactoryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('setupCostInPoly()',
+            const self = this as any as PLCRVotingCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('reclaimETH()',
             []);
             return abiEncodedTransactionData;
         },
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<BigNumber
+        ): Promise<void
         > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('setupCostInPoly()', []);
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('reclaimETH()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -472,21 +167,23 @@ export class CappedSTOFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('setupCostInPoly()');
+            const abiEncoder = self._lookupAbiEncoder('reclaimETH()');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<BigNumber
+            const result = abiEncoder.strictDecodeReturnValue<void
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public changeTitle = {
+    public changeDefaultExemptedVotersListMulti = {
         async sendTransactionAsync(
-            _title: string,
+            _voters: string[],
+            _exempts: boolean[],
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeTitle(string)', [_title
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeDefaultExemptedVotersListMulti(address[],bool[])', [_voters,
+    _exempts
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -500,9 +197,10 @@ export class CappedSTOFactoryContract extends BaseContract {
                     from: defaultFromAddress,
                     ...contractDefaults
                 },
-                self.changeTitle.estimateGasAsync.bind<CappedSTOFactoryContract, any, Promise<number>>(
+                self.changeDefaultExemptedVotersListMulti.estimateGasAsync.bind<PLCRVotingCheckpointContract, any, Promise<number>>(
                     self,
-                    _title
+                    _voters,
+    _exempts
     ,
                     estimateGasFactor,
                 ),
@@ -513,13 +211,15 @@ export class CappedSTOFactoryContract extends BaseContract {
             return new PolyResponse(txHash, receipt);
         },
         async estimateGasAsync(
-            _title: string,
+            _voters: string[],
+            _exempts: boolean[],
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeTitle(string)',
-            [_title
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeDefaultExemptedVotersListMulti(address[],bool[])',
+            [_voters,
+    _exempts
     ]);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -541,22 +241,26 @@ export class CappedSTOFactoryContract extends BaseContract {
             return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
         },
         getABIEncodedTransactionData(
-            _title: string,
+            _voters: string[],
+            _exempts: boolean[],
         ): string {
-            const self = this as any as CappedSTOFactoryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changeTitle(string)',
-            [_title
+            const self = this as any as PLCRVotingCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('changeDefaultExemptedVotersListMulti(address[],bool[])',
+            [_voters,
+    _exempts
     ]);
             return abiEncodedTransactionData;
         },
         async callAsync(
-            _title: string,
+            _voters: string[],
+            _exempts: boolean[],
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeTitle(string)', [_title
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeDefaultExemptedVotersListMulti(address[],bool[])', [_voters,
+        _exempts
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -568,160 +272,21 @@ export class CappedSTOFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('changeTitle(string)');
+            const abiEncoder = self._lookupAbiEncoder('changeDefaultExemptedVotersListMulti(address[],bool[])');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<void
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public setLogicContract = {
-        async sendTransactionAsync(
-            _version: string,
-            _logicContract: string,
-            _upgradeData: string,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('setLogicContract(string,address,bytes)', [_version,
-    _logicContract,
-    _upgradeData
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.setLogicContract.estimateGasAsync.bind<CappedSTOFactoryContract, any, Promise<number>>(
-                    self,
-                    _version,
-    _logicContract,
-    _upgradeData
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _version: string,
-            _logicContract: string,
-            _upgradeData: string,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('setLogicContract(string,address,bytes)',
-            [_version,
-    _logicContract,
-    _upgradeData
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _version: string,
-            _logicContract: string,
-            _upgradeData: string,
-        ): string {
-            const self = this as any as CappedSTOFactoryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('setLogicContract(string,address,bytes)',
-            [_version,
-    _logicContract,
-    _upgradeData
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _version: string,
-            _logicContract: string,
-            _upgradeData: string,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<void
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('setLogicContract(string,address,bytes)', [_version,
-        _logicContract,
-        _upgradeData
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('setLogicContract(string,address,bytes)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public isCostInPoly = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<boolean
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('isCostInPoly()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('isCostInPoly()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<boolean
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public title = {
+    public ADMIN = {
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string
         > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('title()', []);
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('ADMIN()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -732,97 +297,20 @@ export class CappedSTOFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('title()');
+            const abiEncoder = self._lookupAbiEncoder('ADMIN()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<string
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public version = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('version()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('version()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public latestUpgrade = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<BigNumber
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('latestUpgrade()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('latestUpgrade()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<BigNumber
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public logicContracts = {
-        async callAsync(
-            index_0: BigNumber,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<[string, string, string]
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('logicContracts(uint256)', [index_0
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('logicContracts(uint256)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<[string, string, string]
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public renounceOwnership = {
+    public unpause = {
         async sendTransactionAsync(
             txData: Partial<TxData> = {},
             estimateGasFactor?: number,
         ): Promise<PolyResponse> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('renounceOwnership()', []);
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('unpause()', []);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
             const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
@@ -835,7 +323,7 @@ export class CappedSTOFactoryContract extends BaseContract {
                     from: defaultFromAddress,
                     ...contractDefaults
                 },
-                self.renounceOwnership.estimateGasAsync.bind<CappedSTOFactoryContract, any, Promise<number>>(
+                self.unpause.estimateGasAsync.bind<PLCRVotingCheckpointContract, any, Promise<number>>(
                     self,
                     
                     estimateGasFactor,
@@ -850,8 +338,8 @@ export class CappedSTOFactoryContract extends BaseContract {
             factor?: number,
             txData: Partial<TxData> = {},
         ): Promise<number> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('renounceOwnership()',
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('unpause()',
             []);
             const contractDefaults = self._web3Wrapper.getContractDefaults();
             const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -874,8 +362,8 @@ export class CappedSTOFactoryContract extends BaseContract {
         },
         getABIEncodedTransactionData(
         ): string {
-            const self = this as any as CappedSTOFactoryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('renounceOwnership()',
+            const self = this as any as PLCRVotingCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('unpause()',
             []);
             return abiEncodedTransactionData;
         },
@@ -884,8 +372,8 @@ export class CappedSTOFactoryContract extends BaseContract {
             defaultBlock?: BlockParam,
         ): Promise<void
         > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('renounceOwnership()', []);
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('unpause()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -896,242 +384,21 @@ export class CappedSTOFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('renounceOwnership()');
+            const abiEncoder = self._lookupAbiEncoder('unpause()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<void
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public description = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('description()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('description()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public polymathRegistry = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('polymathRegistry()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('polymathRegistry()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public setupCost = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<BigNumber
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('setupCost()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('setupCost()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<BigNumber
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public getLowerSTVersionBounds = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<BigNumber[]
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('getLowerSTVersionBounds()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('getLowerSTVersionBounds()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<BigNumber[]
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public changeName = {
-        async sendTransactionAsync(
-            _name: string,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeName(bytes32)', [_name
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.changeName.estimateGasAsync.bind<CappedSTOFactoryContract, any, Promise<number>>(
-                    self,
-                    _name
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _name: string,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeName(bytes32)',
-            [_name
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _name: string,
-        ): string {
-            const self = this as any as CappedSTOFactoryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changeName(bytes32)',
-            [_name
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _name: string,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<void
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeName(bytes32)', [_name
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('changeName(bytes32)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public owner = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('owner()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('owner()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public isOwner = {
+    public paused = {
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<boolean
         > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('isOwner()', []);
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('paused()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -1142,21 +409,46 @@ export class CappedSTOFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('isOwner()');
+            const abiEncoder = self._lookupAbiEncoder('paused()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<boolean
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public getTags = {
+    public polyToken = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('polyToken()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('polyToken()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getDefaultExemptionVotersList = {
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
         ): Promise<string[]
         > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('getTags()', []);
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('getDefaultExemptionVotersList()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -1167,24 +459,178 @@ export class CappedSTOFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('getTags()');
+            const abiEncoder = self._lookupAbiEncoder('getDefaultExemptionVotersList()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<string[]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public modules = {
+    public pause = {
+        async sendTransactionAsync(
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('pause()', []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.pause.estimateGasAsync.bind<PLCRVotingCheckpointContract, any, Promise<number>>(
+                    self,
+                    
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('pause()',
+            []);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+        ): string {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('pause()',
+            []);
+            return abiEncodedTransactionData;
+        },
         async callAsync(
-            index_0: string,
-            index_1: string,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<BigNumber
+        ): Promise<void
         > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('modules(address,address)', [index_0,
-        index_1
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('pause()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('pause()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public reclaimERC20 = {
+        async sendTransactionAsync(
+            _tokenContract: string,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('reclaimERC20(address)', [_tokenContract
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.reclaimERC20.estimateGasAsync.bind<PLCRVotingCheckpointContract, any, Promise<number>>(
+                    self,
+                    _tokenContract
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _tokenContract: string,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('reclaimERC20(address)',
+            [_tokenContract
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _tokenContract: string,
+        ): string {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('reclaimERC20(address)',
+            [_tokenContract
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _tokenContract: string,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('reclaimERC20(address)', [_tokenContract
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -1196,22 +642,1099 @@ export class CappedSTOFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('modules(address,address)');
+            const abiEncoder = self._lookupAbiEncoder('reclaimERC20(address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public OPERATOR = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('OPERATOR()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('OPERATOR()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public securityToken = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('securityToken()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('securityToken()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public factory = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('factory()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('factory()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public changeDefaultExemptedVotersList = {
+        async sendTransactionAsync(
+            _voter: string,
+            _exempt: boolean,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeDefaultExemptedVotersList(address,bool)', [_voter,
+    _exempt
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.changeDefaultExemptedVotersList.estimateGasAsync.bind<PLCRVotingCheckpointContract, any, Promise<number>>(
+                    self,
+                    _voter,
+    _exempt
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _voter: string,
+            _exempt: boolean,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeDefaultExemptedVotersList(address,bool)',
+            [_voter,
+    _exempt
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _voter: string,
+            _exempt: boolean,
+        ): string {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('changeDefaultExemptedVotersList(address,bool)',
+            [_voter,
+    _exempt
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _voter: string,
+            _exempt: boolean,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeDefaultExemptedVotersList(address,bool)', [_voter,
+        _exempt
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('changeDefaultExemptedVotersList(address,bool)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getDataStore = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('getDataStore()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getDataStore()');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<string
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public createBallot = {
+        async sendTransactionAsync(
+            _commitDuration: BigNumber,
+            _revealDuration: BigNumber,
+            _noOfProposals: BigNumber,
+            _quorumPercentage: BigNumber,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('createBallot(uint256,uint256,uint256,uint256)', [_commitDuration,
+    _revealDuration,
+    _noOfProposals,
+    _quorumPercentage
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.createBallot.estimateGasAsync.bind<PLCRVotingCheckpointContract, any, Promise<number>>(
+                    self,
+                    _commitDuration,
+    _revealDuration,
+    _noOfProposals,
+    _quorumPercentage
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _commitDuration: BigNumber,
+            _revealDuration: BigNumber,
+            _noOfProposals: BigNumber,
+            _quorumPercentage: BigNumber,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('createBallot(uint256,uint256,uint256,uint256)',
+            [_commitDuration,
+    _revealDuration,
+    _noOfProposals,
+    _quorumPercentage
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _commitDuration: BigNumber,
+            _revealDuration: BigNumber,
+            _noOfProposals: BigNumber,
+            _quorumPercentage: BigNumber,
+        ): string {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('createBallot(uint256,uint256,uint256,uint256)',
+            [_commitDuration,
+    _revealDuration,
+    _noOfProposals,
+    _quorumPercentage
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _commitDuration: BigNumber,
+            _revealDuration: BigNumber,
+            _noOfProposals: BigNumber,
+            _quorumPercentage: BigNumber,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('createBallot(uint256,uint256,uint256,uint256)', [_commitDuration,
+        _revealDuration,
+        _noOfProposals,
+        _quorumPercentage
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('createBallot(uint256,uint256,uint256,uint256)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public createCustomBallot = {
+        async sendTransactionAsync(
+            _commitDuration: BigNumber,
+            _revealDuration: BigNumber,
+            _noOfProposals: BigNumber,
+            _quorumPercentage: BigNumber,
+            _checkpointId: BigNumber,
+            _startTime: BigNumber,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('createCustomBallot(uint256,uint256,uint256,uint256,uint256,uint256)', [_commitDuration,
+    _revealDuration,
+    _noOfProposals,
+    _quorumPercentage,
+    _checkpointId,
+    _startTime
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.createCustomBallot.estimateGasAsync.bind<PLCRVotingCheckpointContract, any, Promise<number>>(
+                    self,
+                    _commitDuration,
+    _revealDuration,
+    _noOfProposals,
+    _quorumPercentage,
+    _checkpointId,
+    _startTime
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _commitDuration: BigNumber,
+            _revealDuration: BigNumber,
+            _noOfProposals: BigNumber,
+            _quorumPercentage: BigNumber,
+            _checkpointId: BigNumber,
+            _startTime: BigNumber,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('createCustomBallot(uint256,uint256,uint256,uint256,uint256,uint256)',
+            [_commitDuration,
+    _revealDuration,
+    _noOfProposals,
+    _quorumPercentage,
+    _checkpointId,
+    _startTime
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _commitDuration: BigNumber,
+            _revealDuration: BigNumber,
+            _noOfProposals: BigNumber,
+            _quorumPercentage: BigNumber,
+            _checkpointId: BigNumber,
+            _startTime: BigNumber,
+        ): string {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('createCustomBallot(uint256,uint256,uint256,uint256,uint256,uint256)',
+            [_commitDuration,
+    _revealDuration,
+    _noOfProposals,
+    _quorumPercentage,
+    _checkpointId,
+    _startTime
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _commitDuration: BigNumber,
+            _revealDuration: BigNumber,
+            _noOfProposals: BigNumber,
+            _quorumPercentage: BigNumber,
+            _checkpointId: BigNumber,
+            _startTime: BigNumber,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('createCustomBallot(uint256,uint256,uint256,uint256,uint256,uint256)', [_commitDuration,
+        _revealDuration,
+        _noOfProposals,
+        _quorumPercentage,
+        _checkpointId,
+        _startTime
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('createCustomBallot(uint256,uint256,uint256,uint256,uint256,uint256)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public commitVote = {
+        async sendTransactionAsync(
+            _ballotId: BigNumber,
+            _secretVote: string,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('commitVote(uint256,bytes32)', [_ballotId,
+    _secretVote
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.commitVote.estimateGasAsync.bind<PLCRVotingCheckpointContract, any, Promise<number>>(
+                    self,
+                    _ballotId,
+    _secretVote
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _ballotId: BigNumber,
+            _secretVote: string,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('commitVote(uint256,bytes32)',
+            [_ballotId,
+    _secretVote
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _ballotId: BigNumber,
+            _secretVote: string,
+        ): string {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('commitVote(uint256,bytes32)',
+            [_ballotId,
+    _secretVote
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _ballotId: BigNumber,
+            _secretVote: string,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('commitVote(uint256,bytes32)', [_ballotId,
+        _secretVote
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('commitVote(uint256,bytes32)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public revealVote = {
+        async sendTransactionAsync(
+            _ballotId: BigNumber,
+            _choiceOfProposal: BigNumber,
+            _salt: BigNumber,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('revealVote(uint256,uint256,uint256)', [_ballotId,
+    _choiceOfProposal,
+    _salt
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.revealVote.estimateGasAsync.bind<PLCRVotingCheckpointContract, any, Promise<number>>(
+                    self,
+                    _ballotId,
+    _choiceOfProposal,
+    _salt
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _ballotId: BigNumber,
+            _choiceOfProposal: BigNumber,
+            _salt: BigNumber,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('revealVote(uint256,uint256,uint256)',
+            [_ballotId,
+    _choiceOfProposal,
+    _salt
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _ballotId: BigNumber,
+            _choiceOfProposal: BigNumber,
+            _salt: BigNumber,
+        ): string {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('revealVote(uint256,uint256,uint256)',
+            [_ballotId,
+    _choiceOfProposal,
+    _salt
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _ballotId: BigNumber,
+            _choiceOfProposal: BigNumber,
+            _salt: BigNumber,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('revealVote(uint256,uint256,uint256)', [_ballotId,
+        _choiceOfProposal,
+        _salt
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('revealVote(uint256,uint256,uint256)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public changeBallotExemptedVotersList = {
+        async sendTransactionAsync(
+            _ballotId: BigNumber,
+            _voter: string,
+            _exempt: boolean,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeBallotExemptedVotersList(uint256,address,bool)', [_ballotId,
+    _voter,
+    _exempt
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.changeBallotExemptedVotersList.estimateGasAsync.bind<PLCRVotingCheckpointContract, any, Promise<number>>(
+                    self,
+                    _ballotId,
+    _voter,
+    _exempt
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _ballotId: BigNumber,
+            _voter: string,
+            _exempt: boolean,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeBallotExemptedVotersList(uint256,address,bool)',
+            [_ballotId,
+    _voter,
+    _exempt
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _ballotId: BigNumber,
+            _voter: string,
+            _exempt: boolean,
+        ): string {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('changeBallotExemptedVotersList(uint256,address,bool)',
+            [_ballotId,
+    _voter,
+    _exempt
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _ballotId: BigNumber,
+            _voter: string,
+            _exempt: boolean,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeBallotExemptedVotersList(uint256,address,bool)', [_ballotId,
+        _voter,
+        _exempt
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('changeBallotExemptedVotersList(uint256,address,bool)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public changeBallotExemptedVotersListMulti = {
+        async sendTransactionAsync(
+            _ballotId: BigNumber,
+            _voters: string[],
+            _exempts: boolean[],
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeBallotExemptedVotersListMulti(uint256,address[],bool[])', [_ballotId,
+    _voters,
+    _exempts
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.changeBallotExemptedVotersListMulti.estimateGasAsync.bind<PLCRVotingCheckpointContract, any, Promise<number>>(
+                    self,
+                    _ballotId,
+    _voters,
+    _exempts
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _ballotId: BigNumber,
+            _voters: string[],
+            _exempts: boolean[],
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeBallotExemptedVotersListMulti(uint256,address[],bool[])',
+            [_ballotId,
+    _voters,
+    _exempts
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _ballotId: BigNumber,
+            _voters: string[],
+            _exempts: boolean[],
+        ): string {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('changeBallotExemptedVotersListMulti(uint256,address[],bool[])',
+            [_ballotId,
+    _voters,
+    _exempts
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _ballotId: BigNumber,
+            _voters: string[],
+            _exempts: boolean[],
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeBallotExemptedVotersListMulti(uint256,address[],bool[])', [_ballotId,
+        _voters,
+        _exempts
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('changeBallotExemptedVotersListMulti(uint256,address[],bool[])');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public isVoterAllowed = {
+        async callAsync(
+            _ballotId: BigNumber,
+            _voter: string,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<boolean
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('isVoterAllowed(uint256,address)', [_ballotId,
+        _voter
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('isVoterAllowed(uint256,address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<boolean
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public changeBallotStatus = {
+        async sendTransactionAsync(
+            _ballotId: BigNumber,
+            _isActive: boolean,
+            txData: Partial<TxData> = {},
+            estimateGasFactor?: number,
+        ): Promise<PolyResponse> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeBallotStatus(uint256,bool)', [_ballotId,
+    _isActive
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+                self.changeBallotStatus.estimateGasAsync.bind<PLCRVotingCheckpointContract, any, Promise<number>>(
+                    self,
+                    _ballotId,
+    _isActive
+    ,
+                    estimateGasFactor,
+                ),
+            );
+            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+    
+            return new PolyResponse(txHash, receipt);
+        },
+        async estimateGasAsync(
+            _ballotId: BigNumber,
+            _isActive: boolean,
+            factor?: number,
+            txData: Partial<TxData> = {},
+        ): Promise<number> {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeBallotStatus(uint256,bool)',
+            [_ballotId,
+    _isActive
+    ]);
+            const contractDefaults = self._web3Wrapper.getContractDefaults();
+            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+                {
+                    to: self.address,
+                    ...txData,
+                    data: encodedData,
+                },
+                {
+                    from: defaultFromAddress,
+                    ...contractDefaults
+                },
+            );
+            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+            const _safetyGasEstimation = Math.round(_factor * gas);
+            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
+        },
+        getABIEncodedTransactionData(
+            _ballotId: BigNumber,
+            _isActive: boolean,
+        ): string {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const abiEncodedTransactionData = self._strictEncodeArguments('changeBallotStatus(uint256,bool)',
+            [_ballotId,
+    _isActive
+    ]);
+            return abiEncodedTransactionData;
+        },
+        async callAsync(
+            _ballotId: BigNumber,
+            _isActive: boolean,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<void
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('changeBallotStatus(uint256,bool)', [_ballotId,
+        _isActive
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('changeBallotStatus(uint256,bool)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<void
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getCurrentBallotStage = {
+        async callAsync(
+            _ballotId: BigNumber,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<BigNumber
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('getCurrentBallotStage(uint256)', [_ballotId
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getCurrentBallotStage(uint256)');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<BigNumber
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public moduleToSecurityToken = {
+    public getBallotResults = {
         async callAsync(
-            index_0: string,
+            _ballotId: BigNumber,
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<string
+        ): Promise<[BigNumber[], BigNumber[], BigNumber, boolean, BigNumber]
         > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('moduleToSecurityToken(address)', [index_0
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('getBallotResults(uint256)', [_ballotId
         ]);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
@@ -1223,21 +1746,129 @@ export class CappedSTOFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('moduleToSecurityToken(address)');
+            const abiEncoder = self._lookupAbiEncoder('getBallotResults(uint256)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber[], BigNumber[], BigNumber, boolean, BigNumber]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getSelectedProposal = {
+        async callAsync(
+            _ballotId: BigNumber,
+            _voter: string,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<BigNumber
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('getSelectedProposal(uint256,address)', [_ballotId,
+        _voter
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getSelectedProposal(uint256,address)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<BigNumber
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getBallotDetails = {
+        async callAsync(
+            _ballotId: BigNumber,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, boolean]
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('getBallotDetails(uint256)', [_ballotId
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getBallotDetails(uint256)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, boolean]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getBallotCommitRevealDuration = {
+        async callAsync(
+            _ballotId: BigNumber,
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<[BigNumber, BigNumber]
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('getBallotCommitRevealDuration(uint256)', [_ballotId
+        ]);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getBallotCommitRevealDuration(uint256)');
+            // tslint:disable boolean-naming
+            const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber]
+        >(rawCallResult);
+            // tslint:enable boolean-naming
+            return result;
+        },};
+    public getInitFunction = {
+        async callAsync(
+        callData: Partial<CallData> = {},
+            defaultBlock?: BlockParam,
+        ): Promise<string
+        > {
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('getInitFunction()', []);
+            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+            {
+            to: self.address,
+            ...callData,
+            data: encodedData,
+            },
+            self._web3Wrapper.getContractDefaults(),
+            );
+            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+            const abiEncoder = self._lookupAbiEncoder('getInitFunction()');
             // tslint:disable boolean-naming
             const result = abiEncoder.strictDecodeReturnValue<string
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
         },};
-    public getTypes = {
+    public getPermissions = {
         async callAsync(
         callData: Partial<CallData> = {},
             defaultBlock?: BlockParam,
-        ): Promise<BigNumber[]
+        ): Promise<string[]
         > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('getTypes()', []);
+            const self = this as any as PLCRVotingCheckpointContract;
+            const encodedData = self._strictEncodeArguments('getPermissions()', []);
             const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
             {
             to: self.address,
@@ -1248,655 +1879,9 @@ export class CappedSTOFactoryContract extends BaseContract {
             );
             const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
             BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('getTypes()');
+            const abiEncoder = self._lookupAbiEncoder('getPermissions()');
             // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<BigNumber[]
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public changeCostAndType = {
-        async sendTransactionAsync(
-            _setupCost: BigNumber,
-            _isCostInPoly: boolean,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeCostAndType(uint256,bool)', [_setupCost,
-    _isCostInPoly
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.changeCostAndType.estimateGasAsync.bind<CappedSTOFactoryContract, any, Promise<number>>(
-                    self,
-                    _setupCost,
-    _isCostInPoly
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _setupCost: BigNumber,
-            _isCostInPoly: boolean,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeCostAndType(uint256,bool)',
-            [_setupCost,
-    _isCostInPoly
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _setupCost: BigNumber,
-            _isCostInPoly: boolean,
-        ): string {
-            const self = this as any as CappedSTOFactoryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changeCostAndType(uint256,bool)',
-            [_setupCost,
-    _isCostInPoly
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _setupCost: BigNumber,
-            _isCostInPoly: boolean,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<void
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeCostAndType(uint256,bool)', [_setupCost,
-        _isCostInPoly
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('changeCostAndType(uint256,bool)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public updateLogicContract = {
-        async sendTransactionAsync(
-            _upgrade: BigNumber,
-            _version: string,
-            _logicContract: string,
-            _upgradeData: string,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('updateLogicContract(uint256,string,address,bytes)', [_upgrade,
-    _version,
-    _logicContract,
-    _upgradeData
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.updateLogicContract.estimateGasAsync.bind<CappedSTOFactoryContract, any, Promise<number>>(
-                    self,
-                    _upgrade,
-    _version,
-    _logicContract,
-    _upgradeData
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _upgrade: BigNumber,
-            _version: string,
-            _logicContract: string,
-            _upgradeData: string,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('updateLogicContract(uint256,string,address,bytes)',
-            [_upgrade,
-    _version,
-    _logicContract,
-    _upgradeData
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _upgrade: BigNumber,
-            _version: string,
-            _logicContract: string,
-            _upgradeData: string,
-        ): string {
-            const self = this as any as CappedSTOFactoryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('updateLogicContract(uint256,string,address,bytes)',
-            [_upgrade,
-    _version,
-    _logicContract,
-    _upgradeData
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _upgrade: BigNumber,
-            _version: string,
-            _logicContract: string,
-            _upgradeData: string,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<void
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('updateLogicContract(uint256,string,address,bytes)', [_upgrade,
-        _version,
-        _logicContract,
-        _upgradeData
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('updateLogicContract(uint256,string,address,bytes)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public changeDescription = {
-        async sendTransactionAsync(
-            _description: string,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeDescription(string)', [_description
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.changeDescription.estimateGasAsync.bind<CappedSTOFactoryContract, any, Promise<number>>(
-                    self,
-                    _description
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _description: string,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeDescription(string)',
-            [_description
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _description: string,
-        ): string {
-            const self = this as any as CappedSTOFactoryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changeDescription(string)',
-            [_description
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _description: string,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<void
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeDescription(string)', [_description
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('changeDescription(string)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public transferOwnership = {
-        async sendTransactionAsync(
-            newOwner: string,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [newOwner
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.transferOwnership.estimateGasAsync.bind<CappedSTOFactoryContract, any, Promise<number>>(
-                    self,
-                    newOwner
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            newOwner: string,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('transferOwnership(address)',
-            [newOwner
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            newOwner: string,
-        ): string {
-            const self = this as any as CappedSTOFactoryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('transferOwnership(address)',
-            [newOwner
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            newOwner: string,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<void
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('transferOwnership(address)', [newOwner
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('transferOwnership(address)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public getUpperSTVersionBounds = {
-        async callAsync(
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<BigNumber[]
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('getUpperSTVersionBounds()', []);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('getUpperSTVersionBounds()');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<BigNumber[]
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public changeSTVersionBounds = {
-        async sendTransactionAsync(
-            _boundType: string,
-            _newVersion: Array<number|BigNumber>,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeSTVersionBounds(string,uint8[])', [_boundType,
-    _newVersion
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.changeSTVersionBounds.estimateGasAsync.bind<CappedSTOFactoryContract, any, Promise<number>>(
-                    self,
-                    _boundType,
-    _newVersion
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _boundType: string,
-            _newVersion: Array<number|BigNumber>,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeSTVersionBounds(string,uint8[])',
-            [_boundType,
-    _newVersion
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _boundType: string,
-            _newVersion: Array<number|BigNumber>,
-        ): string {
-            const self = this as any as CappedSTOFactoryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('changeSTVersionBounds(string,uint8[])',
-            [_boundType,
-    _newVersion
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _boundType: string,
-            _newVersion: Array<number|BigNumber>,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<void
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('changeSTVersionBounds(string,uint8[])', [_boundType,
-        _newVersion
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('changeSTVersionBounds(string,uint8[])');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<void
-        >(rawCallResult);
-            // tslint:enable boolean-naming
-            return result;
-        },};
-    public deploy = {
-        async sendTransactionAsync(
-            _data: string,
-            txData: Partial<TxData> = {},
-            estimateGasFactor?: number,
-        ): Promise<PolyResponse> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('deploy(bytes)', [_data
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-                self.deploy.estimateGasAsync.bind<CappedSTOFactoryContract, any, Promise<number>>(
-                    self,
-                    _data
-    ,
-                    estimateGasFactor,
-                ),
-            );
-            const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
-            const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    
-            return new PolyResponse(txHash, receipt);
-        },
-        async estimateGasAsync(
-            _data: string,
-            factor?: number,
-            txData: Partial<TxData> = {},
-        ): Promise<number> {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('deploy(bytes)',
-            [_data
-    ]);
-            const contractDefaults = self._web3Wrapper.getContractDefaults();
-            const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
-            const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-                {
-                    to: self.address,
-                    ...txData,
-                    data: encodedData,
-                },
-                {
-                    from: defaultFromAddress,
-                    ...contractDefaults
-                },
-            );
-            const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
-            const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
-            const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
-            const _safetyGasEstimation = Math.round(_factor * gas);
-            return (_safetyGasEstimation > networkGasLimit) ? networkGasLimit : _safetyGasEstimation;
-        },
-        getABIEncodedTransactionData(
-            _data: string,
-        ): string {
-            const self = this as any as CappedSTOFactoryContract;
-            const abiEncodedTransactionData = self._strictEncodeArguments('deploy(bytes)',
-            [_data
-    ]);
-            return abiEncodedTransactionData;
-        },
-        async callAsync(
-            _data: string,
-        callData: Partial<CallData> = {},
-            defaultBlock?: BlockParam,
-        ): Promise<string
-        > {
-            const self = this as any as CappedSTOFactoryContract;
-            const encodedData = self._strictEncodeArguments('deploy(bytes)', [_data
-        ]);
-            const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-            {
-            to: self.address,
-            ...callData,
-            data: encodedData,
-            },
-            self._web3Wrapper.getContractDefaults(),
-            );
-            const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-            BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-            const abiEncoder = self._lookupAbiEncoder('deploy(bytes)');
-            // tslint:disable boolean-naming
-            const result = abiEncoder.strictDecodeReturnValue<string
+            const result = abiEncoder.strictDecodeReturnValue<string[]
         >(rawCallResult);
             // tslint:enable boolean-naming
             return result;
@@ -1906,32 +1891,24 @@ export class CappedSTOFactoryContract extends BaseContract {
         abi: ContractAbi,
         supportedProvider: SupportedProvider,
         txDefaults: Partial<TxData>,
-            _setupCost: BigNumber,
-            _logicContract: string,
-            _polymathRegistry: string,
-            _isCostInPoly: boolean,
-    ): Promise<CappedSTOFactoryContract> {
+            _securityToken: string,
+            _polyAddress: string,
+    ): Promise<PLCRVotingCheckpointContract> {
         const provider = providerUtils.standardizeOrThrow(supportedProvider);
         const constructorAbi = BaseContract._lookupConstructorAbi(abi);
-        [_setupCost,
-_logicContract,
-_polymathRegistry,
-_isCostInPoly
+        [_securityToken,
+_polyAddress
 ] = BaseContract._formatABIDataItemList(
             constructorAbi.inputs,
-            [_setupCost,
-_logicContract,
-_polymathRegistry,
-_isCostInPoly
+            [_securityToken,
+_polyAddress
 ],
             BaseContract._bigNumberToString,
         );
         const iface = new ethers.utils.Interface(abi);
         const deployInfo = iface.deployFunction;
-        const txData = deployInfo.encode(bytecode, [_setupCost,
-_logicContract,
-_polymathRegistry,
-_isCostInPoly
+        const txData = deployInfo.encode(bytecode, [_securityToken,
+_polyAddress
 ]);
         const web3Wrapper = new Web3Wrapper(provider);
         const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
@@ -1942,17 +1919,15 @@ _isCostInPoly
         const txHash = await web3Wrapper.sendTransactionAsync(txDataWithDefaults);
         logUtils.log(`transactionHash: ${txHash}`);
         const txReceipt = await web3Wrapper.awaitTransactionSuccessAsync(txHash);
-        logUtils.log(`CappedSTOFactory successfully deployed at ${txReceipt.contractAddress}`);
-        const contractInstance = new CappedSTOFactoryContract(abi, txReceipt.contractAddress as string, provider, txDefaults);
-        contractInstance.constructorArgs = [_setupCost,
-_logicContract,
-_polymathRegistry,
-_isCostInPoly
+        logUtils.log(`PLCRVotingCheckpoint successfully deployed at ${txReceipt.contractAddress}`);
+        const contractInstance = new PLCRVotingCheckpointContract(abi, txReceipt.contractAddress as string, provider, txDefaults);
+        contractInstance.constructorArgs = [_securityToken,
+_polyAddress
 ];
         return contractInstance;
     }
     constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number) {
-        super('CappedSTOFactory', abi, address, supportedProvider, txDefaults);
+        super('PLCRVotingCheckpoint', abi, address, supportedProvider, txDefaults);
         this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
         this._web3Wrapper.abiDecoder.addABI(abi);
         classUtils.bindAll(this, ['_abiEncoderByFunctionSignature', 'address', 'abi', '_web3Wrapper', '_defaultEstimateGasFactor']);

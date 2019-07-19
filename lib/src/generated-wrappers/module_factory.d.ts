@@ -80,10 +80,10 @@ export declare class ModuleFactoryContract extends BaseContract {
         getABIEncodedTransactionData(newOwner: string): string;
         callAsync(newOwner: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
-    types: {
+    getTypes: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber[]>;
     };
-    tags: {
+    getTags: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
     };
     version: {
@@ -131,10 +131,10 @@ export declare class ModuleFactoryContract extends BaseContract {
         getABIEncodedTransactionData(_boundType: string, _newVersion: (number | BigNumber)[]): string;
         callAsync(_boundType: string, _newVersion: (number | BigNumber)[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
     };
-    lowerSTVersionBounds: {
+    getLowerSTVersionBounds: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber[]>;
     };
-    upperSTVersionBounds: {
+    getUpperSTVersionBounds: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber[]>;
     };
     setupCostInPoly: {
