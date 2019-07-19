@@ -34,7 +34,6 @@
   "devDependencies": {
     "@0x/abi-gen": "^2.1.1",
     "@0x/types": "^2.4.0",
-    "@polymathnetwork/contract-artifacts": "3.0.0-beta.5",
     "@types/lodash": "^4.14.136",
     "@types/node": "^12.6.8",
     "prettier": "^1.18.2",
@@ -43,6 +42,7 @@
     "uglifyjs-folder": "^1.5.1"
   },
   "dependencies": {
+    "@polymathnetwork/contract-artifacts": "3.0.0-beta.5",
     "@0x/base-contract": "^5.1.1",
     "@0x/utils": "^4.4.0",
     "@0x/web3-wrapper": "^6.0.7",
