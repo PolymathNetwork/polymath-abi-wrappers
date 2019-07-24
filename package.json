@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/PolymathNetwork/polymath-abi-wrappers/blob/master/README.md",
   "devDependencies": {
-    "@0x/abi-gen": "2.1.1",
+    "@0x/abi-gen": "3.1.1",
     "@0x/types": "2.4.0",
     "@polymathnetwork/contract-artifacts": "2.1.1",
     "@types/lodash": "^4.14.119",
