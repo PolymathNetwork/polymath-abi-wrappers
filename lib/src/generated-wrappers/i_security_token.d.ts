@@ -1,5 +1,5 @@
 import { BaseContract } from '@0x/base-contract';
-import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider } from 'ethereum-types';
+import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider, AbiDefinition } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../polyResponse';
 export declare type ISecurityTokenEventArgs = ISecurityTokenTransferEventArgs | ISecurityTokenApprovalEventArgs | ISecurityTokenModuleAddedEventArgs | ISecurityTokenUpdateTokenDetailsEventArgs | ISecurityTokenUpdateTokenNameEventArgs | ISecurityTokenGranularityChangedEventArgs | ISecurityTokenFreezeIssuanceEventArgs | ISecurityTokenFreezeTransfersEventArgs | ISecurityTokenCheckpointCreatedEventArgs | ISecurityTokenSetControllerEventArgs | ISecurityTokenTreasuryWalletChangedEventArgs | ISecurityTokenDisableControllerEventArgs | ISecurityTokenOwnershipTransferredEventArgs | ISecurityTokenTokenUpgradedEventArgs | ISecurityTokenModuleArchivedEventArgs | ISecurityTokenModuleUnarchivedEventArgs | ISecurityTokenModuleRemovedEventArgs | ISecurityTokenModuleBudgetChangedEventArgs | ISecurityTokenTransferByPartitionEventArgs | ISecurityTokenAuthorizedOperatorEventArgs | ISecurityTokenRevokedOperatorEventArgs | ISecurityTokenAuthorizedOperatorByPartitionEventArgs | ISecurityTokenRevokedOperatorByPartitionEventArgs | ISecurityTokenIssuedByPartitionEventArgs | ISecurityTokenRedeemedByPartitionEventArgs | ISecurityTokenDocumentRemovedEventArgs | ISecurityTokenDocumentUpdatedEventArgs | ISecurityTokenControllerTransferEventArgs | ISecurityTokenControllerRedemptionEventArgs | ISecurityTokenIssuedEventArgs | ISecurityTokenRedeemedEventArgs;
@@ -677,6 +677,10 @@ export declare class ISecurityTokenContract extends BaseContract {
      * @returns The contract ABI
      */
     static ABI(): ContractAbi;
+    /**
+     * To add ABIs to the decoder to decode every event log emmited
+     */
+    addABItoDecoder(abiArray: AbiDefinition[], contractName?: string): void;
     constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=i_security_token.d.ts.map

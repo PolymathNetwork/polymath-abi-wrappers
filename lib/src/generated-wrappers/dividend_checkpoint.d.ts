@@ -1,5 +1,5 @@
 import { BaseContract } from '@0x/base-contract';
-import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider } from 'ethereum-types';
+import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider, AbiDefinition } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../polyResponse';
 export declare type DividendCheckpointEventArgs = DividendCheckpointSetDefaultExcludedAddressesEventArgs | DividendCheckpointSetWithholdingEventArgs | DividendCheckpointSetWithholdingFixedEventArgs | DividendCheckpointSetWalletEventArgs | DividendCheckpointUpdateDividendDatesEventArgs | DividendCheckpointPauseEventArgs | DividendCheckpointUnpauseEventArgs;
@@ -241,6 +241,10 @@ export declare class DividendCheckpointContract extends BaseContract {
      * @returns The contract ABI
      */
     static ABI(): ContractAbi;
+    /**
+     * To add ABIs to the decoder to decode every event log emmited
+     */
+    addABItoDecoder(abiArray: AbiDefinition[], contractName?: string): void;
     constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=dividend_checkpoint.d.ts.map
