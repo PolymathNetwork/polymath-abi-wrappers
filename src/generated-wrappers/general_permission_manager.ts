@@ -2279,10 +2279,9 @@ export class GeneralPermissionManagerContract extends BaseContract {
     txDefaults?: Partial<TxData>,
     defaultEstimateGasFactor?: number,
   ) {
-    const abi = GeneralPermissionManagerContract.ABI();
-    super('GeneralPermissionManager', abi, address, supportedProvider, txDefaults);
+    super('GeneralPermissionManager', GeneralPermissionManagerContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(abi);
+    this._web3Wrapper.abiDecoder.addABI(GeneralPermissionManagerContract.ABI());
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

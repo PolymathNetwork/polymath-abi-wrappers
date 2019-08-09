@@ -54,8 +54,6 @@ export enum SecurityTokenRegistryEvents {
   OwnershipTransferred = 'OwnershipTransferred',
   ChangeTickerOwnership = 'ChangeTickerOwnership',
   NewSecurityToken = 'NewSecurityToken',
-  NewSecurityToken = 'NewSecurityToken',
-  RegisterTicker = 'RegisterTicker',
   RegisterTicker = 'RegisterTicker',
   SecurityTokenRefreshed = 'SecurityTokenRefreshed',
   ProtocolFactorySet = 'ProtocolFactorySet',
@@ -5805,10 +5803,9 @@ export class SecurityTokenRegistryContract extends BaseContract {
     txDefaults?: Partial<TxData>,
     defaultEstimateGasFactor?: number,
   ) {
-    const abi = SecurityTokenRegistryContract.ABI();
-    super('SecurityTokenRegistry', abi, address, supportedProvider, txDefaults);
+    super('SecurityTokenRegistry', SecurityTokenRegistryContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(abi);
+    this._web3Wrapper.abiDecoder.addABI(SecurityTokenRegistryContract.ABI());
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

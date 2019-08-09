@@ -2439,10 +2439,9 @@ export class PercentageTransferManagerContract extends BaseContract {
     txDefaults?: Partial<TxData>,
     defaultEstimateGasFactor?: number,
   ) {
-    const abi = PercentageTransferManagerContract.ABI();
-    super('PercentageTransferManager', abi, address, supportedProvider, txDefaults);
+    super('PercentageTransferManager', PercentageTransferManagerContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(abi);
+    this._web3Wrapper.abiDecoder.addABI(PercentageTransferManagerContract.ABI());
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

@@ -123,10 +123,9 @@ txDefaults: Partial<TxData>,
         return abi;
     }
     constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number) {
-        const abi = {{contractName}}Contract.ABI();
-        super('{{contractName}}', abi, address, supportedProvider, txDefaults);
+        super('{{contractName}}', {{contractName}}Contract.ABI(), address, supportedProvider, txDefaults);
         this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-        this._web3Wrapper.abiDecoder.addABI(abi);
+        this._web3Wrapper.abiDecoder.addABI({{contractName}}Contract.ABI());
         classUtils.bindAll(this, ['_abiEncoderByFunctionSignature', 'address', '_web3Wrapper', '_defaultEstimateGasFactor']);
     }
 } 

@@ -2851,10 +2851,9 @@ export class WeightedVoteCheckpointContract extends BaseContract {
     txDefaults?: Partial<TxData>,
     defaultEstimateGasFactor?: number,
   ) {
-    const abi = WeightedVoteCheckpointContract.ABI();
-    super('WeightedVoteCheckpoint', abi, address, supportedProvider, txDefaults);
+    super('WeightedVoteCheckpoint', WeightedVoteCheckpointContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(abi);
+    this._web3Wrapper.abiDecoder.addABI(WeightedVoteCheckpointContract.ABI());
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

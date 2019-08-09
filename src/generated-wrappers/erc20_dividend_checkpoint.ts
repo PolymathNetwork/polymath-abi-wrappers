@@ -4960,10 +4960,9 @@ export class ERC20DividendCheckpointContract extends BaseContract {
     txDefaults?: Partial<TxData>,
     defaultEstimateGasFactor?: number,
   ) {
-    const abi = ERC20DividendCheckpointContract.ABI();
-    super('ERC20DividendCheckpoint', abi, address, supportedProvider, txDefaults);
+    super('ERC20DividendCheckpoint', ERC20DividendCheckpointContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(abi);
+    this._web3Wrapper.abiDecoder.addABI(ERC20DividendCheckpointContract.ABI());
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

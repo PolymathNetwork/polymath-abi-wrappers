@@ -1364,10 +1364,9 @@ export class PolyTokenFaucetContract extends BaseContract {
     txDefaults?: Partial<TxData>,
     defaultEstimateGasFactor?: number,
   ) {
-    const abi = PolyTokenFaucetContract.ABI();
-    super('PolyTokenFaucet', abi, address, supportedProvider, txDefaults);
+    super('PolyTokenFaucet', PolyTokenFaucetContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(abi);
+    this._web3Wrapper.abiDecoder.addABI(PolyTokenFaucetContract.ABI());
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

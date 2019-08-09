@@ -10697,10 +10697,9 @@ export class ISecurityTokenContract extends BaseContract {
     txDefaults?: Partial<TxData>,
     defaultEstimateGasFactor?: number,
   ) {
-    const abi = ISecurityTokenContract.ABI();
-    super('ISecurityToken', abi, address, supportedProvider, txDefaults);
+    super('ISecurityToken', ISecurityTokenContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(abi);
+    this._web3Wrapper.abiDecoder.addABI(ISecurityTokenContract.ABI());
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

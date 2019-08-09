@@ -3162,10 +3162,15 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
     txDefaults?: Partial<TxData>,
     defaultEstimateGasFactor?: number,
   ) {
-    const abi = ManualApprovalTransferManagerContract.ABI();
-    super('ManualApprovalTransferManager', abi, address, supportedProvider, txDefaults);
+    super(
+      'ManualApprovalTransferManager',
+      ManualApprovalTransferManagerContract.ABI(),
+      address,
+      supportedProvider,
+      txDefaults,
+    );
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(abi);
+    this._web3Wrapper.abiDecoder.addABI(ManualApprovalTransferManagerContract.ABI());
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',
