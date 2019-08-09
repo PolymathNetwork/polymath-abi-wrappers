@@ -15,6 +15,7 @@ import {
   TxData,
   TxDataPayable,
   SupportedProvider,
+  AbiDefinition,
 } from 'ethereum-types';
 import { BigNumber, classUtils, logUtils, providerUtils } from '@0x/utils';
 import { SimpleContractArtifact } from '@0x/types';
@@ -314,6 +315,14 @@ export class ISTOContract extends BaseContract {
     ] as ContractAbi;
     return abi;
   }
+
+  /**
+   * To add ABIs to the decoder to decode every event log emmited
+   */
+  public addABItoDecoder(abiArray: AbiDefinition[], contractName?: string): void {
+    this._web3Wrapper.abiDecoder.addABI(abiArray, contractName);
+  }
+
   constructor(
     address: string,
     supportedProvider: SupportedProvider,
@@ -322,7 +331,7 @@ export class ISTOContract extends BaseContract {
   ) {
     super('ISTO', ISTOContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(ISTOContract.ABI());
+    this._web3Wrapper.abiDecoder.addABI(ISTOContract.ABI(), '{contractName}');
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',
