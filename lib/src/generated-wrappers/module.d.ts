@@ -1,5 +1,5 @@
 import { BaseContract } from '@0x/base-contract';
-import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider } from 'ethereum-types';
+import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider, AbiDefinition } from 'ethereum-types';
 import { PolyResponse } from '../polyResponse';
 export declare type ModuleEventArgs = ModulePauseEventArgs | ModuleUnpauseEventArgs;
 export declare enum ModuleEvents {
@@ -79,6 +79,10 @@ export declare class ModuleContract extends BaseContract {
      * @returns The contract ABI
      */
     static ABI(): ContractAbi;
+    /**
+     * To add ABIs to the decoder to decode every event log emmited
+     */
+    addABItoDecoder(abiArray: AbiDefinition[], contractName?: string): void;
     constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=module.d.ts.map

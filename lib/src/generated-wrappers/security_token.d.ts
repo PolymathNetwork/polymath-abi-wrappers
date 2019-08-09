@@ -1,5 +1,5 @@
 import { BaseContract } from '@0x/base-contract';
-import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider } from 'ethereum-types';
+import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider, AbiDefinition } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../polyResponse';
 export declare type SecurityTokenEventArgs = SecurityTokenModuleAddedEventArgs | SecurityTokenModuleUpgradedEventArgs | SecurityTokenUpdateTokenDetailsEventArgs | SecurityTokenUpdateTokenNameEventArgs | SecurityTokenGranularityChangedEventArgs | SecurityTokenFreezeIssuanceEventArgs | SecurityTokenFreezeTransfersEventArgs | SecurityTokenCheckpointCreatedEventArgs | SecurityTokenSetControllerEventArgs | SecurityTokenTreasuryWalletChangedEventArgs | SecurityTokenDisableControllerEventArgs | SecurityTokenOwnershipTransferredEventArgs | SecurityTokenTokenUpgradedEventArgs | SecurityTokenModuleArchivedEventArgs | SecurityTokenModuleUnarchivedEventArgs | SecurityTokenModuleRemovedEventArgs | SecurityTokenModuleBudgetChangedEventArgs | SecurityTokenTransferByPartitionEventArgs | SecurityTokenAuthorizedOperatorEventArgs | SecurityTokenRevokedOperatorEventArgs | SecurityTokenAuthorizedOperatorByPartitionEventArgs | SecurityTokenRevokedOperatorByPartitionEventArgs | SecurityTokenIssuedByPartitionEventArgs | SecurityTokenRedeemedByPartitionEventArgs | SecurityTokenControllerTransferEventArgs | SecurityTokenControllerRedemptionEventArgs | SecurityTokenDocumentRemovedEventArgs | SecurityTokenDocumentUpdatedEventArgs | SecurityTokenIssuedEventArgs | SecurityTokenRedeemedEventArgs | SecurityTokenTransferEventArgs | SecurityTokenApprovalEventArgs;
@@ -602,6 +602,10 @@ export declare class SecurityTokenContract extends BaseContract {
      * @returns The contract ABI
      */
     static ABI(): ContractAbi;
+    /**
+     * To add ABIs to the decoder to decode every event log emmited
+     */
+    addABItoDecoder(abiArray: AbiDefinition[], contractName?: string): void;
     constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=security_token.d.ts.map

@@ -1,5 +1,5 @@
 import { BaseContract } from '@0x/base-contract';
-import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider } from 'ethereum-types';
+import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider, AbiDefinition } from 'ethereum-types';
 export declare type PausableEventArgs = PausablePauseEventArgs | PausableUnpauseEventArgs;
 export declare enum PausableEvents {
     Pause = "Pause",
@@ -22,6 +22,10 @@ export declare class PausableContract extends BaseContract {
      * @returns The contract ABI
      */
     static ABI(): ContractAbi;
+    /**
+     * To add ABIs to the decoder to decode every event log emmited
+     */
+    addABItoDecoder(abiArray: AbiDefinition[], contractName?: string): void;
     constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=pausable.d.ts.map

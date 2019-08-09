@@ -15,6 +15,7 @@ import {
   TxData,
   TxDataPayable,
   SupportedProvider,
+  AbiDefinition,
 } from 'ethereum-types';
 import { BigNumber, classUtils, logUtils, providerUtils } from '@0x/utils';
 import { SimpleContractArtifact } from '@0x/types';
@@ -4974,49 +4975,6 @@ export class SecurityTokenRegistryContract extends BaseContract {
         anonymous: false,
         inputs: [
           {
-            name: '_owner',
-            type: 'address',
-            indexed: true,
-          },
-          {
-            name: '_ticker',
-            type: 'string',
-            indexed: false,
-          },
-          {
-            name: '_name',
-            type: 'string',
-            indexed: false,
-          },
-          {
-            name: '_registrationDate',
-            type: 'uint256',
-            indexed: true,
-          },
-          {
-            name: '_expiryDate',
-            type: 'uint256',
-            indexed: true,
-          },
-          {
-            name: '_fromAdmin',
-            type: 'bool',
-            indexed: false,
-          },
-          {
-            name: '_registrationFee',
-            type: 'uint256',
-            indexed: false,
-          },
-        ],
-        name: 'RegisterTicker',
-        outputs: [],
-        type: 'event',
-      },
-      {
-        anonymous: false,
-        inputs: [
-          {
             name: '_ticker',
             type: 'string',
             indexed: false,
@@ -5797,6 +5755,14 @@ export class SecurityTokenRegistryContract extends BaseContract {
     ] as ContractAbi;
     return abi;
   }
+
+  /**
+   * To add ABIs to the decoder to decode every event log emmited
+   */
+  public addABItoDecoder(abiArray: AbiDefinition[], contractName?: string): void {
+    this._web3Wrapper.abiDecoder.addABI(abiArray, contractName);
+  }
+
   constructor(
     address: string,
     supportedProvider: SupportedProvider,
@@ -5805,7 +5771,7 @@ export class SecurityTokenRegistryContract extends BaseContract {
   ) {
     super('SecurityTokenRegistry', SecurityTokenRegistryContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(SecurityTokenRegistryContract.ABI());
+    this._web3Wrapper.abiDecoder.addABI(SecurityTokenRegistryContract.ABI(), '{contractName}');
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',
