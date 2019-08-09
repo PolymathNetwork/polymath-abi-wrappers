@@ -438,8 +438,10 @@ export class OwnableContract extends BaseContract {
     txDefaults?: Partial<TxData>,
     defaultEstimateGasFactor?: number,
   ) {
-    super('Ownable', OwnableContract.ABI(), address, supportedProvider, txDefaults);
+    const abi = OwnableContract.ABI();
+    super('Ownable', abi, address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
+    this._web3Wrapper.abiDecoder.addABI(abi);
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

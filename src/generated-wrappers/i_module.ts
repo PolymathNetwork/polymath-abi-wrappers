@@ -180,8 +180,10 @@ export class IModuleContract extends BaseContract {
     txDefaults?: Partial<TxData>,
     defaultEstimateGasFactor?: number,
   ) {
-    super('IModule', IModuleContract.ABI(), address, supportedProvider, txDefaults);
+    const abi = IModuleContract.ABI();
+    super('IModule', abi, address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
+    this._web3Wrapper.abiDecoder.addABI(abi);
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

@@ -837,8 +837,10 @@ export class FeatureRegistryContract extends BaseContract {
     txDefaults?: Partial<TxData>,
     defaultEstimateGasFactor?: number,
   ) {
-    super('FeatureRegistry', FeatureRegistryContract.ABI(), address, supportedProvider, txDefaults);
+    const abi = FeatureRegistryContract.ABI();
+    super('FeatureRegistry', abi, address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
+    this._web3Wrapper.abiDecoder.addABI(abi);
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

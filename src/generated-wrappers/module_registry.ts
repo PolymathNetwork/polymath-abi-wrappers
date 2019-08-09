@@ -2848,8 +2848,10 @@ export class ModuleRegistryContract extends BaseContract {
     txDefaults?: Partial<TxData>,
     defaultEstimateGasFactor?: number,
   ) {
-    super('ModuleRegistry', ModuleRegistryContract.ABI(), address, supportedProvider, txDefaults);
+    const abi = ModuleRegistryContract.ABI();
+    super('ModuleRegistry', abi, address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
+    this._web3Wrapper.abiDecoder.addABI(abi);
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

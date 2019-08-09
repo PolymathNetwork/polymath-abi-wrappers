@@ -843,8 +843,10 @@ export class PolymathRegistryContract extends BaseContract {
     txDefaults?: Partial<TxData>,
     defaultEstimateGasFactor?: number,
   ) {
-    super('PolymathRegistry', PolymathRegistryContract.ABI(), address, supportedProvider, txDefaults);
+    const abi = PolymathRegistryContract.ABI();
+    super('PolymathRegistry', abi, address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
+    this._web3Wrapper.abiDecoder.addABI(abi);
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

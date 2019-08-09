@@ -3060,8 +3060,10 @@ export class USDTieredSTOFactoryContract extends BaseContract {
     txDefaults?: Partial<TxData>,
     defaultEstimateGasFactor?: number,
   ) {
-    super('USDTieredSTOFactory', USDTieredSTOFactoryContract.ABI(), address, supportedProvider, txDefaults);
+    const abi = USDTieredSTOFactoryContract.ABI();
+    super('USDTieredSTOFactory', abi, address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
+    this._web3Wrapper.abiDecoder.addABI(abi);
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',
