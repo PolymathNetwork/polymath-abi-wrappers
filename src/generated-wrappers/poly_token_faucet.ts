@@ -1375,7 +1375,6 @@ export class PolyTokenFaucetContract extends BaseContract {
   ) {
     super('PolyTokenFaucet', PolyTokenFaucetContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(PolyTokenFaucetContract.ABI(), '{contractName}');
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

@@ -455,7 +455,6 @@ export class ITransferManagerContract extends BaseContract {
   ) {
     super('ITransferManager', ITransferManagerContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(ITransferManagerContract.ABI(), '{contractName}');
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

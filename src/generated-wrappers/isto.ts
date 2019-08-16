@@ -331,7 +331,6 @@ export class ISTOContract extends BaseContract {
   ) {
     super('ISTO', ISTOContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(ISTOContract.ABI(), '{contractName}');
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

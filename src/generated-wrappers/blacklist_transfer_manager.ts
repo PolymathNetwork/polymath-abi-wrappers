@@ -4058,7 +4058,6 @@ export class BlacklistTransferManagerContract extends BaseContract {
   ) {
     super('BlacklistTransferManager', BlacklistTransferManagerContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(BlacklistTransferManagerContract.ABI(), '{contractName}');
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

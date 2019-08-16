@@ -4613,7 +4613,6 @@ export class VestingEscrowWalletContract extends BaseContract {
   ) {
     super('VestingEscrowWallet', VestingEscrowWalletContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(VestingEscrowWalletContract.ABI(), '{contractName}');
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

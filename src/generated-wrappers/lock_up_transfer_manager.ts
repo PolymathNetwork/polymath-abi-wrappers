@@ -4174,7 +4174,6 @@ export class LockUpTransferManagerContract extends BaseContract {
   ) {
     super('LockUpTransferManager', LockUpTransferManagerContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(LockUpTransferManagerContract.ABI(), '{contractName}');
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

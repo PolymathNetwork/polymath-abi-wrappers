@@ -2527,20 +2527,6 @@ export class ModuleRegistryContract extends BaseContract {
         type: 'function',
       },
       {
-        constant: false,
-        inputs: [
-          {
-            name: '_moduleFactory',
-            type: 'address',
-          },
-        ],
-        name: 'useModule',
-        outputs: [],
-        payable: false,
-        stateMutability: 'nonpayable',
-        type: 'function',
-      },
-      {
         constant: true,
         inputs: [
           {
@@ -2859,7 +2845,6 @@ export class ModuleRegistryContract extends BaseContract {
   ) {
     super('ModuleRegistry', ModuleRegistryContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(ModuleRegistryContract.ABI(), '{contractName}');
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',
