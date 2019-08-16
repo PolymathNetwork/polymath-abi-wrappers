@@ -3886,7 +3886,6 @@ export class DividendCheckpointContract extends BaseContract {
   ) {
     super('DividendCheckpoint', DividendCheckpointContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(DividendCheckpointContract.ABI(), '{contractName}');
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

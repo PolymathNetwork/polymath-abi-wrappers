@@ -954,7 +954,6 @@ export class ERC20DetailedContract extends BaseContract {
   ) {
     super('ERC20Detailed', ERC20DetailedContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(ERC20DetailedContract.ABI(), '{contractName}');
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

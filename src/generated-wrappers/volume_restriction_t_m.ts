@@ -5804,7 +5804,6 @@ export class VolumeRestrictionTMContract extends BaseContract {
   ) {
     super('VolumeRestrictionTM', VolumeRestrictionTMContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(VolumeRestrictionTMContract.ABI(), '{contractName}');
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

@@ -5771,7 +5771,6 @@ export class SecurityTokenRegistryContract extends BaseContract {
   ) {
     super('SecurityTokenRegistry', SecurityTokenRegistryContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(SecurityTokenRegistryContract.ABI(), '{contractName}');
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

@@ -3179,7 +3179,6 @@ export class ManualApprovalTransferManagerContract extends BaseContract {
       txDefaults,
     );
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(ManualApprovalTransferManagerContract.ABI(), '{contractName}');
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

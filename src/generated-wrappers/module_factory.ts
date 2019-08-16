@@ -2281,7 +2281,6 @@ export class ModuleFactoryContract extends BaseContract {
   ) {
     super('ModuleFactory', ModuleFactoryContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(ModuleFactoryContract.ABI(), '{contractName}');
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',

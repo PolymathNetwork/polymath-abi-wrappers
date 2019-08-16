@@ -3234,7 +3234,6 @@ export class PLCRVotingCheckpointContract extends BaseContract {
   ) {
     super('PLCRVotingCheckpoint', PLCRVotingCheckpointContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-    this._web3Wrapper.abiDecoder.addABI(PLCRVotingCheckpointContract.ABI(), '{contractName}');
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',
       'address',
