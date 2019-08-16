@@ -134,7 +134,6 @@ txDefaults: Partial<TxData>,
     constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number) {
         super('{{contractName}}', {{contractName}}Contract.ABI(), address, supportedProvider, txDefaults);
         this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-        this._web3Wrapper.abiDecoder.addABI({{contractName}}Contract.ABI(), '{contractName}');
         classUtils.bindAll(this, ['_abiEncoderByFunctionSignature', 'address', '_web3Wrapper', '_defaultEstimateGasFactor']);
     }
 } 
