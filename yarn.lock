@@ -126,10 +126,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@polymathnetwork/contract-artifacts@3.0.0-beta.5":
-  version "3.0.0-beta.5"
-  resolved "https://registry.yarnpkg.com/@polymathnetwork/contract-artifacts/-/contract-artifacts-3.0.0-beta.5.tgz#b3bf6c7f40eb036402237d08d98f4f11cc230c87"
-  integrity sha512-YS6VXPqEgv69SEUJHArNLrN93psfPZSRFBxX0TnLPiNC/9wsvdDUXhE0a3RhokEMjYBmD4Yi+CDB71Faxg3jpQ==
+"@polymathnetwork/contract-artifacts@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@polymathnetwork/contract-artifacts/-/contract-artifacts-3.0.0.tgz#cb339d8cd5bef87af81c2b51934dcfd169801ead"
+  integrity sha512-W+ByOIukA1YVxIGcePIoccoUXXi+Ze1fyWnLNtcJfxrS24Y4Q1vJMqHoYszlRVOetGqVY0CDv1U00Q0r98gWXA==
 
 "@types/bn.js@^4.11.0":
   version "4.11.5"

@@ -42,7 +42,7 @@
     "uglifyjs-folder": "^1.5.1"
   },
   "dependencies": {
-    "@polymathnetwork/contract-artifacts": "3.0.0-beta.5",
+    "@polymathnetwork/contract-artifacts": "3.0.0",
     "@0x/base-contract": "^5.1.1",
     "@0x/utils": "^4.4.0",
     "@0x/web3-wrapper": "^6.0.7",
