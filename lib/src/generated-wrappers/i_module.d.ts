@@ -1,22 +1,24 @@
 import { BaseContract } from '@0x/base-contract';
-import { BlockParamLiteral, CallData, ContractAbi, TxData, SupportedProvider } from 'ethereum-types';
-import { BigNumber } from '@0x/utils';
-import { PolyResponse } from '../polyResponse';
+import { BlockParamLiteral, CallData, ContractAbi, TxData, SupportedProvider, AbiDefinition } from 'ethereum-types';
 export declare class IModuleContract extends BaseContract {
     private _defaultEstimateGasFactor;
     getInitFunction: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
     };
     getPermissions: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
-    };
-    takeFee: {
-        sendTransactionAsync(_amount: BigNumber, txData?: Partial<TxData>, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_amount: BigNumber, factor?: number | undefined, txData?: Partial<TxData>): Promise<number>;
-        getABIEncodedTransactionData(_amount: BigNumber): string;
-        callAsync(_amount: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
+        getABIEncodedTransactionData(): string;
     };
     static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>): Promise<IModuleContract>;
-    constructor(abi: ContractAbi, address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
+    /**
+     * @returns The contract ABI
+     */
+    static ABI(): ContractAbi;
+    /**
+     * To add ABIs to the decoder to decode every event log emmited
+     */
+    addABItoDecoder(abiArray: AbiDefinition[], contractName?: string): void;
+    constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }
 //# sourceMappingURL=i_module.d.ts.map
