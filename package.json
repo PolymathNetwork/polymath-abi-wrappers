@@ -33,7 +33,7 @@
   "devDependencies": {
     "@0x/abi-gen": "2.1.1",
     "@0x/types": "2.4.0",
-    "@polymathnetwork/contract-artifacts": "2.1.1",
+    "@polymathnetwork/contract-artifacts": "3.0.0",
     "@types/lodash": "^4.14.119",
     "@types/node": "^12.6.8",
     "shx": "^0.3.2",
