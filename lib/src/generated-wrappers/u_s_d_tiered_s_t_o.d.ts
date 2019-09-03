@@ -2,13 +2,14 @@ import { BaseContract } from '@0x/base-contract';
 import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider, AbiDefinition } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../polyResponse';
-export declare type USDTieredSTOEventArgs = USDTieredSTOSetAllowBeneficialInvestmentsEventArgs | USDTieredSTOSetNonAccreditedLimitEventArgs | USDTieredSTOTokenPurchaseEventArgs | USDTieredSTOFundsReceivedEventArgs | USDTieredSTOReserveTokenMintEventArgs | USDTieredSTOSetAddressesEventArgs | USDTieredSTOSetLimitsEventArgs | USDTieredSTOSetTimesEventArgs | USDTieredSTOSetTiersEventArgs | USDTieredSTOSetTreasuryWalletEventArgs | USDTieredSTOPauseEventArgs | USDTieredSTOUnpauseEventArgs | USDTieredSTOSetFundRaiseTypesEventArgs;
+export declare type USDTieredSTOEventArgs = USDTieredSTOSetAllowBeneficialInvestmentsEventArgs | USDTieredSTOSetNonAccreditedLimitEventArgs | USDTieredSTOTokenPurchaseEventArgs | USDTieredSTOFundsReceivedEventArgs | USDTieredSTOReserveTokenMintEventArgs | USDTieredSTOReserveTokenTransferEventArgs | USDTieredSTOSetAddressesEventArgs | USDTieredSTOSetLimitsEventArgs | USDTieredSTOSetTimesEventArgs | USDTieredSTOSetTiersEventArgs | USDTieredSTOSetTreasuryWalletEventArgs | USDTieredSTOPauseEventArgs | USDTieredSTOUnpauseEventArgs | USDTieredSTOSetFundRaiseTypesEventArgs | USDTieredSTORevokePreMintFlagEventArgs | USDTieredSTOAllowPreMintFlagEventArgs;
 export declare enum USDTieredSTOEvents {
     SetAllowBeneficialInvestments = "SetAllowBeneficialInvestments",
     SetNonAccreditedLimit = "SetNonAccreditedLimit",
     TokenPurchase = "TokenPurchase",
     FundsReceived = "FundsReceived",
     ReserveTokenMint = "ReserveTokenMint",
+    ReserveTokenTransfer = "ReserveTokenTransfer",
     SetAddresses = "SetAddresses",
     SetLimits = "SetLimits",
     SetTimes = "SetTimes",
@@ -16,7 +17,9 @@ export declare enum USDTieredSTOEvents {
     SetTreasuryWallet = "SetTreasuryWallet",
     Pause = "Pause",
     Unpause = "Unpause",
-    SetFundRaiseTypes = "SetFundRaiseTypes"
+    SetFundRaiseTypes = "SetFundRaiseTypes",
+    RevokePreMintFlag = "RevokePreMintFlag",
+    AllowPreMintFlag = "AllowPreMintFlag"
 }
 export interface USDTieredSTOSetAllowBeneficialInvestmentsEventArgs extends DecodedLogArgs {
     _allowed: boolean;
@@ -47,6 +50,11 @@ export interface USDTieredSTOReserveTokenMintEventArgs extends DecodedLogArgs {
     _wallet: string;
     _tokens: BigNumber;
     _latestTier: BigNumber;
+}
+export interface USDTieredSTOReserveTokenTransferEventArgs extends DecodedLogArgs {
+    _from: string;
+    _wallet: string;
+    _tokens: BigNumber;
 }
 export interface USDTieredSTOSetAddressesEventArgs extends DecodedLogArgs {
     _wallet: string;
@@ -79,6 +87,16 @@ export interface USDTieredSTOUnpauseEventArgs extends DecodedLogArgs {
 export interface USDTieredSTOSetFundRaiseTypesEventArgs extends DecodedLogArgs {
     _fundRaiseTypes: BigNumber[];
 }
+export interface USDTieredSTORevokePreMintFlagEventArgs extends DecodedLogArgs {
+    _owner: string;
+    _tokens: BigNumber;
+    _preMint: boolean;
+}
+export interface USDTieredSTOAllowPreMintFlagEventArgs extends DecodedLogArgs {
+    _owner: string;
+    _tokens: BigNumber;
+    _preMint: boolean;
+}
 export declare class USDTieredSTOContract extends BaseContract {
     private _defaultEstimateGasFactor;
     tiers: {
@@ -95,6 +113,10 @@ export declare class USDTieredSTOContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
         getABIEncodedTransactionData(): string;
     };
+    getTreasuryWallet: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
+    };
     allowBeneficialInvestments: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
         getABIEncodedTransactionData(): string;
@@ -107,10 +129,6 @@ export declare class USDTieredSTOContract extends BaseContract {
         sendTransactionAsync(txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
         estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
-        getABIEncodedTransactionData(): string;
-    };
-    treasuryWallet: {
-        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
         getABIEncodedTransactionData(): string;
     };
     nonAccreditedLimitUSD: {
@@ -213,6 +231,10 @@ export declare class USDTieredSTOContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
         getABIEncodedTransactionData(): string;
     };
+    preMintAllowed: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
+        getABIEncodedTransactionData(): string;
+    };
     getDataStore: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
         getABIEncodedTransactionData(): string;
@@ -226,6 +248,18 @@ export declare class USDTieredSTOContract extends BaseContract {
         estimateGasAsync(_startTime: BigNumber, _endTime: BigNumber, _ratePerTier: BigNumber[], _ratePerTierDiscountPoly: BigNumber[], _tokensPerTierTotal: BigNumber[], _tokensPerTierDiscountPoly: BigNumber[], _nonAccreditedLimitUSD: BigNumber, _minimumInvestmentUSD: BigNumber, _fundRaiseTypes: (number | BigNumber)[], _wallet: string, _treasuryWallet: string, _usdTokens: string[], factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_startTime: BigNumber, _endTime: BigNumber, _ratePerTier: BigNumber[], _ratePerTierDiscountPoly: BigNumber[], _tokensPerTierTotal: BigNumber[], _tokensPerTierDiscountPoly: BigNumber[], _nonAccreditedLimitUSD: BigNumber, _minimumInvestmentUSD: BigNumber, _fundRaiseTypes: (number | BigNumber)[], _wallet: string, _treasuryWallet: string, _usdTokens: string[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
         getABIEncodedTransactionData(_startTime: BigNumber, _endTime: BigNumber, _ratePerTier: BigNumber[], _ratePerTierDiscountPoly: BigNumber[], _tokensPerTierTotal: BigNumber[], _tokensPerTierDiscountPoly: BigNumber[], _nonAccreditedLimitUSD: BigNumber, _minimumInvestmentUSD: BigNumber, _fundRaiseTypes: (number | BigNumber)[], _wallet: string, _treasuryWallet: string, _usdTokens: string[]): string;
+    };
+    allowPreMinting: {
+        sendTransactionAsync(txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(): string;
+    };
+    revokePreMintFlag: {
+        sendTransactionAsync(txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(): string;
     };
     modifyFunding: {
         sendTransactionAsync(_fundRaiseTypes: (number | BigNumber)[], txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
@@ -359,11 +393,11 @@ export declare class USDTieredSTOContract extends BaseContract {
         callAsync(_fundRaiseType: number | BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
         getABIEncodedTransactionData(_fundRaiseType: number | BigNumber): string;
     };
-    getTokensMintedByTier: {
+    getTokensSoldByTier: {
         callAsync(_tier: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber[]>;
         getABIEncodedTransactionData(_tier: BigNumber): string;
     };
-    getTokensSoldByTier: {
+    getTotalTokensSoldByTier: {
         callAsync(_tier: BigNumber, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
         getABIEncodedTransactionData(_tier: BigNumber): string;
     };
@@ -380,7 +414,7 @@ export declare class USDTieredSTOContract extends BaseContract {
         getABIEncodedTransactionData(): string;
     };
     getSTODetails: {
-        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, BigNumber, BigNumber, BigNumber[], BigNumber[], BigNumber, BigNumber, BigNumber, boolean[]]>;
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, BigNumber, BigNumber, BigNumber[], BigNumber[], BigNumber, BigNumber, BigNumber, boolean[], boolean]>;
         getABIEncodedTransactionData(): string;
     };
     getInitFunction: {

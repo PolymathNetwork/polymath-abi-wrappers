@@ -105,11 +105,23 @@ export declare class GeneralPermissionManagerContract extends BaseContract {
         callAsync(_delegate: string, _details: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
         getABIEncodedTransactionData(_delegate: string, _details: string): string;
     };
+    addDelegateMulti: {
+        sendTransactionAsync(_delegates: string[], _details: string[], txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_delegates: string[], _details: string[], factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
+        callAsync(_delegates: string[], _details: string[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_delegates: string[], _details: string[]): string;
+    };
     deleteDelegate: {
         sendTransactionAsync(_delegate: string, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
         estimateGasAsync(_delegate: string, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(_delegate: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
         getABIEncodedTransactionData(_delegate: string): string;
+    };
+    deleteDelegateMulti: {
+        sendTransactionAsync(_delegates: string[], txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_delegates: string[], factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
+        callAsync(_delegates: string[], callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_delegates: string[]): string;
     };
     checkDelegate: {
         callAsync(_potentialDelegate: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;

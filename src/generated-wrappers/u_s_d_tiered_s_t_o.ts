@@ -31,6 +31,7 @@ export type USDTieredSTOEventArgs =
   | USDTieredSTOTokenPurchaseEventArgs
   | USDTieredSTOFundsReceivedEventArgs
   | USDTieredSTOReserveTokenMintEventArgs
+  | USDTieredSTOReserveTokenTransferEventArgs
   | USDTieredSTOSetAddressesEventArgs
   | USDTieredSTOSetLimitsEventArgs
   | USDTieredSTOSetTimesEventArgs
@@ -38,7 +39,9 @@ export type USDTieredSTOEventArgs =
   | USDTieredSTOSetTreasuryWalletEventArgs
   | USDTieredSTOPauseEventArgs
   | USDTieredSTOUnpauseEventArgs
-  | USDTieredSTOSetFundRaiseTypesEventArgs;
+  | USDTieredSTOSetFundRaiseTypesEventArgs
+  | USDTieredSTORevokePreMintFlagEventArgs
+  | USDTieredSTOAllowPreMintFlagEventArgs;
 
 export enum USDTieredSTOEvents {
   SetAllowBeneficialInvestments = 'SetAllowBeneficialInvestments',
@@ -46,6 +49,7 @@ export enum USDTieredSTOEvents {
   TokenPurchase = 'TokenPurchase',
   FundsReceived = 'FundsReceived',
   ReserveTokenMint = 'ReserveTokenMint',
+  ReserveTokenTransfer = 'ReserveTokenTransfer',
   SetAddresses = 'SetAddresses',
   SetLimits = 'SetLimits',
   SetTimes = 'SetTimes',
@@ -54,6 +58,8 @@ export enum USDTieredSTOEvents {
   Pause = 'Pause',
   Unpause = 'Unpause',
   SetFundRaiseTypes = 'SetFundRaiseTypes',
+  RevokePreMintFlag = 'RevokePreMintFlag',
+  AllowPreMintFlag = 'AllowPreMintFlag',
 }
 
 export interface USDTieredSTOSetAllowBeneficialInvestmentsEventArgs extends DecodedLogArgs {
@@ -86,6 +92,11 @@ export interface USDTieredSTOReserveTokenMintEventArgs extends DecodedLogArgs {
   _tokens: BigNumber;
   _latestTier: BigNumber;
 }
+export interface USDTieredSTOReserveTokenTransferEventArgs extends DecodedLogArgs {
+  _from: string;
+  _wallet: string;
+  _tokens: BigNumber;
+}
 export interface USDTieredSTOSetAddressesEventArgs extends DecodedLogArgs {
   _wallet: string;
   _usdTokens: string[];
@@ -116,6 +127,16 @@ export interface USDTieredSTOUnpauseEventArgs extends DecodedLogArgs {
 }
 export interface USDTieredSTOSetFundRaiseTypesEventArgs extends DecodedLogArgs {
   _fundRaiseTypes: BigNumber[];
+}
+export interface USDTieredSTORevokePreMintFlagEventArgs extends DecodedLogArgs {
+  _owner: string;
+  _tokens: BigNumber;
+  _preMint: boolean;
+}
+export interface USDTieredSTOAllowPreMintFlagEventArgs extends DecodedLogArgs {
+  _owner: string;
+  _tokens: BigNumber;
+  _preMint: boolean;
 }
 
 /* istanbul ignore next */
@@ -304,6 +325,44 @@ export class USDTieredSTOContract extends BaseContract {
       return abiEncodedTransactionData;
     },
   };
+  public getTreasuryWallet = {
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as USDTieredSTOContract;
+      const encodedData = self._strictEncodeArguments('getTreasuryWallet()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('getTreasuryWallet()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<string>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as USDTieredSTOContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('getTreasuryWallet()', []);
+      return abiEncodedTransactionData;
+    },
+  };
   public allowBeneficialInvestments = {
     async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<boolean> {
       assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
@@ -474,44 +533,6 @@ export class USDTieredSTOContract extends BaseContract {
     getABIEncodedTransactionData(): string {
       const self = (this as any) as USDTieredSTOContract;
       const abiEncodedTransactionData = self._strictEncodeArguments('unpause()', []);
-      return abiEncodedTransactionData;
-    },
-  };
-  public treasuryWallet = {
-    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as USDTieredSTOContract;
-      const encodedData = self._strictEncodeArguments('treasuryWallet()', []);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('treasuryWallet()');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<string>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(): string {
-      const self = (this as any) as USDTieredSTOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('treasuryWallet()', []);
       return abiEncodedTransactionData;
     },
   };
@@ -1596,6 +1617,44 @@ export class USDTieredSTOContract extends BaseContract {
       return abiEncodedTransactionData;
     },
   };
+  public preMintAllowed = {
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<boolean> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as USDTieredSTOContract;
+      const encodedData = self._strictEncodeArguments('preMintAllowed()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('preMintAllowed()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<boolean>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as USDTieredSTOContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('preMintAllowed()', []);
+      return abiEncodedTransactionData;
+    },
+  };
   public getDataStore = {
     async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
       assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
@@ -1946,6 +2005,200 @@ export class USDTieredSTOContract extends BaseContract {
           _usdTokens,
         ],
       );
+      return abiEncodedTransactionData;
+    },
+  };
+  public allowPreMinting = {
+    async sendTransactionAsync(
+      txData?: Partial<TxData> | undefined,
+      estimateGasFactor?: number,
+    ): Promise<PolyResponse> {
+      const self = (this as any) as USDTieredSTOContract;
+      const encodedData = self._strictEncodeArguments('allowPreMinting()', []);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+        self.allowPreMinting.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
+          self,
+
+          estimateGasFactor,
+        ),
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+      const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+
+      return new PolyResponse(txHash, receipt);
+    },
+    async estimateGasAsync(factor?: number, txData?: Partial<TxData> | undefined): Promise<number> {
+      const self = (this as any) as USDTieredSTOContract;
+      const encodedData = self._strictEncodeArguments('allowPreMinting()', []);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+      const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+      const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+      const _safetyGasEstimation = Math.round(_factor * gas);
+      return _safetyGasEstimation > networkGasLimit ? networkGasLimit : _safetyGasEstimation;
+    },
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<void> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as USDTieredSTOContract;
+      const encodedData = self._strictEncodeArguments('allowPreMinting()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('allowPreMinting()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<void>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as USDTieredSTOContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('allowPreMinting()', []);
+      return abiEncodedTransactionData;
+    },
+  };
+  public revokePreMintFlag = {
+    async sendTransactionAsync(
+      txData?: Partial<TxData> | undefined,
+      estimateGasFactor?: number,
+    ): Promise<PolyResponse> {
+      const self = (this as any) as USDTieredSTOContract;
+      const encodedData = self._strictEncodeArguments('revokePreMintFlag()', []);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+        self.revokePreMintFlag.estimateGasAsync.bind<USDTieredSTOContract, any, Promise<number>>(
+          self,
+
+          estimateGasFactor,
+        ),
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+      const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+
+      return new PolyResponse(txHash, receipt);
+    },
+    async estimateGasAsync(factor?: number, txData?: Partial<TxData> | undefined): Promise<number> {
+      const self = (this as any) as USDTieredSTOContract;
+      const encodedData = self._strictEncodeArguments('revokePreMintFlag()', []);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+      const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+      const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+      const _safetyGasEstimation = Math.round(_factor * gas);
+      return _safetyGasEstimation > networkGasLimit ? networkGasLimit : _safetyGasEstimation;
+    },
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<void> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as USDTieredSTOContract;
+      const encodedData = self._strictEncodeArguments('revokePreMintFlag()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('revokePreMintFlag()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<void>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as USDTieredSTOContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('revokePreMintFlag()', []);
       return abiEncodedTransactionData;
     },
   };
@@ -4466,52 +4719,12 @@ export class USDTieredSTOContract extends BaseContract {
       return abiEncodedTransactionData;
     },
   };
-  public getTokensMintedByTier = {
+  public getTokensSoldByTier = {
     async callAsync(
       _tier: BigNumber,
       callData: Partial<CallData> = {},
       defaultBlock?: BlockParam,
     ): Promise<BigNumber[]> {
-      assert.isBigNumber('_tier', _tier);
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as USDTieredSTOContract;
-      const encodedData = self._strictEncodeArguments('getTokensMintedByTier(uint256)', [_tier]);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('getTokensMintedByTier(uint256)');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<BigNumber[]>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(_tier: BigNumber): string {
-      assert.isBigNumber('_tier', _tier);
-      const self = (this as any) as USDTieredSTOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('getTokensMintedByTier(uint256)', [_tier]);
-      return abiEncodedTransactionData;
-    },
-  };
-  public getTokensSoldByTier = {
-    async callAsync(_tier: BigNumber, callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber> {
       assert.isBigNumber('_tier', _tier);
       assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
         schemas.addressSchema,
@@ -4539,7 +4752,7 @@ export class USDTieredSTOContract extends BaseContract {
       BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
       const abiEncoder = self._lookupAbiEncoder('getTokensSoldByTier(uint256)');
       // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
+      const result = abiEncoder.strictDecodeReturnValue<BigNumber[]>(rawCallResult);
       // tslint:enable boolean-naming
       return result;
     },
@@ -4547,6 +4760,46 @@ export class USDTieredSTOContract extends BaseContract {
       assert.isBigNumber('_tier', _tier);
       const self = (this as any) as USDTieredSTOContract;
       const abiEncodedTransactionData = self._strictEncodeArguments('getTokensSoldByTier(uint256)', [_tier]);
+      return abiEncodedTransactionData;
+    },
+  };
+  public getTotalTokensSoldByTier = {
+    async callAsync(_tier: BigNumber, callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber> {
+      assert.isBigNumber('_tier', _tier);
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as USDTieredSTOContract;
+      const encodedData = self._strictEncodeArguments('getTotalTokensSoldByTier(uint256)', [_tier]);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('getTotalTokensSoldByTier(uint256)');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(_tier: BigNumber): string {
+      assert.isBigNumber('_tier', _tier);
+      const self = (this as any) as USDTieredSTOContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('getTotalTokensSoldByTier(uint256)', [_tier]);
       return abiEncodedTransactionData;
     },
   };
@@ -4669,7 +4922,7 @@ export class USDTieredSTOContract extends BaseContract {
       callData: Partial<CallData> = {},
       defaultBlock?: BlockParam,
     ): Promise<
-      [BigNumber, BigNumber, BigNumber, BigNumber[], BigNumber[], BigNumber, BigNumber, BigNumber, boolean[]]
+      [BigNumber, BigNumber, BigNumber, BigNumber[], BigNumber[], BigNumber, BigNumber, BigNumber, boolean[], boolean]
     > {
       assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
         schemas.addressSchema,
@@ -4698,7 +4951,7 @@ export class USDTieredSTOContract extends BaseContract {
       const abiEncoder = self._lookupAbiEncoder('getSTODetails()');
       // tslint:disable boolean-naming
       const result = abiEncoder.strictDecodeReturnValue<
-        [BigNumber, BigNumber, BigNumber, BigNumber[], BigNumber[], BigNumber, BigNumber, BigNumber, boolean[]]
+        [BigNumber, BigNumber, BigNumber, BigNumber[], BigNumber[], BigNumber, BigNumber, BigNumber, boolean[], boolean]
       >(rawCallResult);
       // tslint:enable boolean-naming
       return result;
@@ -4818,11 +5071,11 @@ export class USDTieredSTOContract extends BaseContract {
             type: 'uint256',
           },
           {
-            name: 'mintedTotal',
+            name: 'totalTokensSoldInTier',
             type: 'uint256',
           },
           {
-            name: 'mintedDiscountPoly',
+            name: 'soldDiscountPoly',
             type: 'uint256',
           },
         ],
@@ -4847,6 +5100,20 @@ export class USDTieredSTOContract extends BaseContract {
           {
             name: '',
             type: 'bytes32',
+          },
+        ],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        constant: true,
+        inputs: [],
+        name: 'getTreasuryWallet',
+        outputs: [
+          {
+            name: 'wallet',
+            type: 'address',
           },
         ],
         payable: false,
@@ -4888,20 +5155,6 @@ export class USDTieredSTOContract extends BaseContract {
         outputs: [],
         payable: false,
         stateMutability: 'nonpayable',
-        type: 'function',
-      },
-      {
-        constant: true,
-        inputs: [],
-        name: 'treasuryWallet',
-        outputs: [
-          {
-            name: '',
-            type: 'address',
-          },
-        ],
-        payable: false,
-        stateMutability: 'view',
         type: 'function',
       },
       {
@@ -5277,6 +5530,20 @@ export class USDTieredSTOContract extends BaseContract {
       {
         constant: true,
         inputs: [],
+        name: 'preMintAllowed',
+        outputs: [
+          {
+            name: '',
+            type: 'bool',
+          },
+        ],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        constant: true,
+        inputs: [],
         name: 'getDataStore',
         outputs: [
           {
@@ -5469,6 +5736,29 @@ export class USDTieredSTOContract extends BaseContract {
         anonymous: false,
         inputs: [
           {
+            name: '_from',
+            type: 'address',
+            indexed: true,
+          },
+          {
+            name: '_wallet',
+            type: 'address',
+            indexed: true,
+          },
+          {
+            name: '_tokens',
+            type: 'uint256',
+            indexed: false,
+          },
+        ],
+        name: 'ReserveTokenTransfer',
+        outputs: [],
+        type: 'event',
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
             name: '_wallet',
             type: 'address',
             indexed: true,
@@ -5605,6 +5895,52 @@ export class USDTieredSTOContract extends BaseContract {
         type: 'event',
       },
       {
+        anonymous: false,
+        inputs: [
+          {
+            name: '_owner',
+            type: 'address',
+            indexed: true,
+          },
+          {
+            name: '_tokens',
+            type: 'uint256',
+            indexed: false,
+          },
+          {
+            name: '_preMint',
+            type: 'bool',
+            indexed: false,
+          },
+        ],
+        name: 'RevokePreMintFlag',
+        outputs: [],
+        type: 'event',
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            name: '_owner',
+            type: 'address',
+            indexed: true,
+          },
+          {
+            name: '_tokens',
+            type: 'uint256',
+            indexed: false,
+          },
+          {
+            name: '_preMint',
+            type: 'bool',
+            indexed: false,
+          },
+        ],
+        name: 'AllowPreMintFlag',
+        outputs: [],
+        type: 'event',
+      },
+      {
         constant: false,
         inputs: [
           {
@@ -5657,6 +5993,24 @@ export class USDTieredSTOContract extends BaseContract {
           },
         ],
         name: 'configure',
+        outputs: [],
+        payable: false,
+        stateMutability: 'nonpayable',
+        type: 'function',
+      },
+      {
+        constant: false,
+        inputs: [],
+        name: 'allowPreMinting',
+        outputs: [],
+        payable: false,
+        stateMutability: 'nonpayable',
+        type: 'function',
+      },
+      {
+        constant: false,
+        inputs: [],
+        name: 'revokePreMintFlag',
         outputs: [],
         payable: false,
         stateMutability: 'nonpayable',
@@ -6187,7 +6541,7 @@ export class USDTieredSTOContract extends BaseContract {
             type: 'uint256',
           },
         ],
-        name: 'getTokensMintedByTier',
+        name: 'getTokensSoldByTier',
         outputs: [
           {
             name: '',
@@ -6206,7 +6560,7 @@ export class USDTieredSTOContract extends BaseContract {
             type: 'uint256',
           },
         ],
-        name: 'getTokensSoldByTier',
+        name: 'getTotalTokensSoldByTier',
         outputs: [
           {
             name: '',
@@ -6299,6 +6653,10 @@ export class USDTieredSTOContract extends BaseContract {
           {
             name: '',
             type: 'bool[]',
+          },
+          {
+            name: '',
+            type: 'bool',
           },
         ],
         payable: false,

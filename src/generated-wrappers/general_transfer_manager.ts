@@ -1030,6 +1030,44 @@ export class GeneralTransferManagerContract extends BaseContract {
       return abiEncodedTransactionData;
     },
   };
+  public WHITELISTMODULE = {
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as GeneralTransferManagerContract;
+      const encodedData = self._strictEncodeArguments('WHITELISTMODULE()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('WHITELISTMODULE()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as GeneralTransferManagerContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('WHITELISTMODULE()', []);
+      return abiEncodedTransactionData;
+    },
+  };
   public defaults = {
     async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<[BigNumber, BigNumber]> {
       assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
@@ -1545,14 +1583,14 @@ export class GeneralTransferManagerContract extends BaseContract {
       _from: string,
       _to: string,
       index_2: BigNumber,
-      index_3: string,
+      _data: string,
       callData: Partial<CallData> = {},
       defaultBlock?: BlockParam,
     ): Promise<[BigNumber, string]> {
       assert.isString('_from', _from);
       assert.isString('_to', _to);
       assert.isBigNumber('index_2', index_2);
-      assert.isString('index_3', index_3);
+      assert.isString('_data', _data);
       assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
         schemas.addressSchema,
         schemas.numberSchema,
@@ -1566,7 +1604,7 @@ export class GeneralTransferManagerContract extends BaseContract {
         _from,
         _to,
         index_2,
-        index_3,
+        _data,
       ]);
       const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
         {
@@ -1588,17 +1626,17 @@ export class GeneralTransferManagerContract extends BaseContract {
       // tslint:enable boolean-naming
       return result;
     },
-    getABIEncodedTransactionData(_from: string, _to: string, index_2: BigNumber, index_3: string): string {
+    getABIEncodedTransactionData(_from: string, _to: string, index_2: BigNumber, _data: string): string {
       assert.isString('_from', _from);
       assert.isString('_to', _to);
       assert.isBigNumber('index_2', index_2);
-      assert.isString('index_3', index_3);
+      assert.isString('_data', _data);
       const self = (this as any) as GeneralTransferManagerContract;
       const abiEncodedTransactionData = self._strictEncodeArguments('verifyTransfer(address,address,uint256,bytes)', [
         _from,
         _to,
         index_2,
-        index_3,
+        _data,
       ]);
       return abiEncodedTransactionData;
     },
@@ -3660,6 +3698,20 @@ export class GeneralTransferManagerContract extends BaseContract {
       {
         constant: true,
         inputs: [],
+        name: 'WHITELISTMODULE',
+        outputs: [
+          {
+            name: '',
+            type: 'uint256',
+          },
+        ],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        constant: true,
+        inputs: [],
         name: 'defaults',
         outputs: [
           {
@@ -3944,7 +3996,7 @@ export class GeneralTransferManagerContract extends BaseContract {
             type: 'uint256',
           },
           {
-            name: 'index_3',
+            name: '_data',
             type: 'bytes',
           },
         ],

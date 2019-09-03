@@ -40,3 +40,4 @@ export * from "./generated-wrappers/vesting_escrow_wallet";
 export * from "./generated-wrappers/volume_restriction_t_m";
 export * from "./generated-wrappers/weighted_vote_checkpoint";
 export * from "./generated-wrappers/p_l_c_r_voting_checkpoint";
+export * from "./generated-wrappers/restricted_partial_sale_t_m";

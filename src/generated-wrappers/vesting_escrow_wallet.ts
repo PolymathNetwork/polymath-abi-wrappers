@@ -108,6 +108,50 @@ export interface VestingEscrowWalletUnpauseEventArgs extends DecodedLogArgs {
 // tslint:disable-next-line:class-name
 export class VestingEscrowWalletContract extends BaseContract {
   private _defaultEstimateGasFactor: number;
+  public templates = {
+    async callAsync(
+      index_0: string,
+      callData: Partial<CallData> = {},
+      defaultBlock?: BlockParam,
+    ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber]> {
+      assert.isString('index_0', index_0);
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as VestingEscrowWalletContract;
+      const encodedData = self._strictEncodeArguments('templates(bytes32)', [index_0]);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('templates(bytes32)');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<[BigNumber, BigNumber, BigNumber, BigNumber]>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(index_0: string): string {
+      assert.isString('index_0', index_0);
+      const self = (this as any) as VestingEscrowWalletContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('templates(bytes32)', [index_0]);
+      return abiEncodedTransactionData;
+    },
+  };
   public reclaimETH = {
     async sendTransactionAsync(
       txData?: Partial<TxData> | undefined,
@@ -337,44 +381,6 @@ export class VestingEscrowWalletContract extends BaseContract {
     getABIEncodedTransactionData(): string {
       const self = (this as any) as VestingEscrowWalletContract;
       const abiEncodedTransactionData = self._strictEncodeArguments('unpause()', []);
-      return abiEncodedTransactionData;
-    },
-  };
-  public treasuryWallet = {
-    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as VestingEscrowWalletContract;
-      const encodedData = self._strictEncodeArguments('treasuryWallet()', []);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('treasuryWallet()');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<string>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(): string {
-      const self = (this as any) as VestingEscrowWalletContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('treasuryWallet()', []);
       return abiEncodedTransactionData;
     },
   };
@@ -2815,6 +2821,134 @@ export class VestingEscrowWalletContract extends BaseContract {
       return abiEncodedTransactionData;
     },
   };
+  public getSchedulesCountByTemplate = {
+    async callAsync(
+      _templateName: string,
+      callData: Partial<CallData> = {},
+      defaultBlock?: BlockParam,
+    ): Promise<BigNumber> {
+      assert.isString('_templateName', _templateName);
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as VestingEscrowWalletContract;
+      const encodedData = self._strictEncodeArguments('getSchedulesCountByTemplate(bytes32)', [_templateName]);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('getSchedulesCountByTemplate(bytes32)');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(_templateName: string): string {
+      assert.isString('_templateName', _templateName);
+      const self = (this as any) as VestingEscrowWalletContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('getSchedulesCountByTemplate(bytes32)', [
+        _templateName,
+      ]);
+      return abiEncodedTransactionData;
+    },
+  };
+  public getAllBeneficiaries = {
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string[]> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as VestingEscrowWalletContract;
+      const encodedData = self._strictEncodeArguments('getAllBeneficiaries()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('getAllBeneficiaries()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<string[]>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as VestingEscrowWalletContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('getAllBeneficiaries()', []);
+      return abiEncodedTransactionData;
+    },
+  };
+  public getAvailableTokens = {
+    async callAsync(
+      _beneficiary: string,
+      callData: Partial<CallData> = {},
+      defaultBlock?: BlockParam,
+    ): Promise<BigNumber> {
+      assert.isString('_beneficiary', _beneficiary);
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as VestingEscrowWalletContract;
+      const encodedData = self._strictEncodeArguments('getAvailableTokens(address)', [_beneficiary]);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('getAvailableTokens(address)');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(_beneficiary: string): string {
+      assert.isString('_beneficiary', _beneficiary);
+      const self = (this as any) as VestingEscrowWalletContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('getAvailableTokens(address)', [_beneficiary]);
+      return abiEncodedTransactionData;
+    },
+  };
   public getScheduleCount = {
     async callAsync(
       _beneficiary: string,
@@ -3637,6 +3771,37 @@ export class VestingEscrowWalletContract extends BaseContract {
   public static ABI(): ContractAbi {
     const abi = [
       {
+        constant: true,
+        inputs: [
+          {
+            name: 'index_0',
+            type: 'bytes32',
+          },
+        ],
+        name: 'templates',
+        outputs: [
+          {
+            name: 'numberOfTokens',
+            type: 'uint256',
+          },
+          {
+            name: 'duration',
+            type: 'uint256',
+          },
+          {
+            name: 'frequency',
+            type: 'uint256',
+          },
+          {
+            name: 'index',
+            type: 'uint256',
+          },
+        ],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
         constant: false,
         inputs: [],
         name: 'reclaimETH',
@@ -3666,20 +3831,6 @@ export class VestingEscrowWalletContract extends BaseContract {
         outputs: [],
         payable: false,
         stateMutability: 'nonpayable',
-        type: 'function',
-      },
-      {
-        constant: true,
-        inputs: [],
-        name: 'treasuryWallet',
-        outputs: [
-          {
-            name: '',
-            type: 'address',
-          },
-        ],
-        payable: false,
-        stateMutability: 'view',
         type: 'function',
       },
       {
@@ -4445,6 +4596,58 @@ export class VestingEscrowWalletContract extends BaseContract {
           {
             name: '',
             type: 'bytes32[]',
+          },
+        ],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        constant: true,
+        inputs: [
+          {
+            name: '_templateName',
+            type: 'bytes32',
+          },
+        ],
+        name: 'getSchedulesCountByTemplate',
+        outputs: [
+          {
+            name: '',
+            type: 'uint256',
+          },
+        ],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        constant: true,
+        inputs: [],
+        name: 'getAllBeneficiaries',
+        outputs: [
+          {
+            name: '',
+            type: 'address[]',
+          },
+        ],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        constant: true,
+        inputs: [
+          {
+            name: '_beneficiary',
+            type: 'address',
+          },
+        ],
+        name: 'getAvailableTokens',
+        outputs: [
+          {
+            name: 'availableTokens',
+            type: 'uint256',
           },
         ],
         payable: false,

@@ -25,52 +25,39 @@ import { PolyResponse } from '../polyResponse';
 import * as ethers from 'ethers';
 // tslint:enable:no-unused-variable
 
-export type STOEventArgs =
-  | STOPauseEventArgs
-  | STOUnpauseEventArgs
-  | STOSetFundRaiseTypesEventArgs
-  | STORevokePreMintFlagEventArgs
-  | STOAllowPreMintFlagEventArgs;
+export type RestrictedPartialSaleTMEventArgs =
+  | RestrictedPartialSaleTMChangedExemptWalletListEventArgs
+  | RestrictedPartialSaleTMPauseEventArgs
+  | RestrictedPartialSaleTMUnpauseEventArgs;
 
-export enum STOEvents {
+export enum RestrictedPartialSaleTMEvents {
+  ChangedExemptWalletList = 'ChangedExemptWalletList',
   Pause = 'Pause',
   Unpause = 'Unpause',
-  SetFundRaiseTypes = 'SetFundRaiseTypes',
-  RevokePreMintFlag = 'RevokePreMintFlag',
-  AllowPreMintFlag = 'AllowPreMintFlag',
 }
 
-export interface STOPauseEventArgs extends DecodedLogArgs {
+export interface RestrictedPartialSaleTMChangedExemptWalletListEventArgs extends DecodedLogArgs {
+  _wallet: string;
+  _exempted: boolean;
+}
+export interface RestrictedPartialSaleTMPauseEventArgs extends DecodedLogArgs {
   account: string;
 }
-export interface STOUnpauseEventArgs extends DecodedLogArgs {
+export interface RestrictedPartialSaleTMUnpauseEventArgs extends DecodedLogArgs {
   account: string;
-}
-export interface STOSetFundRaiseTypesEventArgs extends DecodedLogArgs {
-  _fundRaiseTypes: BigNumber[];
-}
-export interface STORevokePreMintFlagEventArgs extends DecodedLogArgs {
-  _owner: string;
-  _tokens: BigNumber;
-  _preMint: boolean;
-}
-export interface STOAllowPreMintFlagEventArgs extends DecodedLogArgs {
-  _owner: string;
-  _tokens: BigNumber;
-  _preMint: boolean;
 }
 
 /* istanbul ignore next */
 // tslint:disable:no-parameter-reassignment
 // tslint:disable-next-line:class-name
-export class STOContract extends BaseContract {
+export class RestrictedPartialSaleTMContract extends BaseContract {
   private _defaultEstimateGasFactor: number;
   public reclaimETH = {
     async sendTransactionAsync(
       txData?: Partial<TxData> | undefined,
       estimateGasFactor?: number,
     ): Promise<PolyResponse> {
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const encodedData = self._strictEncodeArguments('reclaimETH()', []);
       const contractDefaults = self._web3Wrapper.getContractDefaults();
       const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -84,7 +71,7 @@ export class STOContract extends BaseContract {
           from: defaultFromAddress,
           ...contractDefaults,
         },
-        self.reclaimETH.estimateGasAsync.bind<STOContract, any, Promise<number>>(
+        self.reclaimETH.estimateGasAsync.bind<RestrictedPartialSaleTMContract, any, Promise<number>>(
           self,
 
           estimateGasFactor,
@@ -100,7 +87,7 @@ export class STOContract extends BaseContract {
       return new PolyResponse(txHash, receipt);
     },
     async estimateGasAsync(factor?: number, txData?: Partial<TxData> | undefined): Promise<number> {
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const encodedData = self._strictEncodeArguments('reclaimETH()', []);
       const contractDefaults = self._web3Wrapper.getContractDefaults();
       const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -134,7 +121,7 @@ export class STOContract extends BaseContract {
       if (defaultBlock !== undefined) {
         assert.isBlockParam('defaultBlock', defaultBlock);
       }
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const encodedData = self._strictEncodeArguments('reclaimETH()', []);
       const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
         {
@@ -157,13 +144,22 @@ export class STOContract extends BaseContract {
       return result;
     },
     getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const abiEncodedTransactionData = self._strictEncodeArguments('reclaimETH()', []);
       return abiEncodedTransactionData;
     },
   };
-  public getInitFunction = {
-    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
+  public getTokensByPartition = {
+    async callAsync(
+      _partition: string,
+      _tokenHolder: string,
+      index_2: BigNumber,
+      callData: Partial<CallData> = {},
+      defaultBlock?: BlockParam,
+    ): Promise<BigNumber> {
+      assert.isString('_partition', _partition);
+      assert.isString('_tokenHolder', _tokenHolder);
+      assert.isBigNumber('index_2', index_2);
       assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
         schemas.addressSchema,
         schemas.numberSchema,
@@ -172,8 +168,12 @@ export class STOContract extends BaseContract {
       if (defaultBlock !== undefined) {
         assert.isBlockParam('defaultBlock', defaultBlock);
       }
-      const self = (this as any) as STOContract;
-      const encodedData = self._strictEncodeArguments('getInitFunction()', []);
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('getTokensByPartition(bytes32,address,uint256)', [
+        _partition,
+        _tokenHolder,
+        index_2,
+      ]);
       const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
         {
           to: self.address,
@@ -188,15 +188,22 @@ export class STOContract extends BaseContract {
 
       const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
       BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('getInitFunction()');
+      const abiEncoder = self._lookupAbiEncoder('getTokensByPartition(bytes32,address,uint256)');
       // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<string>(rawCallResult);
+      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
       // tslint:enable boolean-naming
       return result;
     },
-    getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('getInitFunction()', []);
+    getABIEncodedTransactionData(_partition: string, _tokenHolder: string, index_2: BigNumber): string {
+      assert.isString('_partition', _partition);
+      assert.isString('_tokenHolder', _tokenHolder);
+      assert.isBigNumber('index_2', index_2);
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('getTokensByPartition(bytes32,address,uint256)', [
+        _partition,
+        _tokenHolder,
+        index_2,
+      ]);
       return abiEncodedTransactionData;
     },
   };
@@ -210,7 +217,7 @@ export class STOContract extends BaseContract {
       if (defaultBlock !== undefined) {
         assert.isBlockParam('defaultBlock', defaultBlock);
       }
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const encodedData = self._strictEncodeArguments('ADMIN()', []);
       const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
         {
@@ -233,46 +240,8 @@ export class STOContract extends BaseContract {
       return result;
     },
     getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const abiEncodedTransactionData = self._strictEncodeArguments('ADMIN()', []);
-      return abiEncodedTransactionData;
-    },
-  };
-  public endTime = {
-    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber> {
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as STOContract;
-      const encodedData = self._strictEncodeArguments('endTime()', []);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('endTime()');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('endTime()', []);
       return abiEncodedTransactionData;
     },
   };
@@ -281,7 +250,7 @@ export class STOContract extends BaseContract {
       txData?: Partial<TxData> | undefined,
       estimateGasFactor?: number,
     ): Promise<PolyResponse> {
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const encodedData = self._strictEncodeArguments('unpause()', []);
       const contractDefaults = self._web3Wrapper.getContractDefaults();
       const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -295,7 +264,7 @@ export class STOContract extends BaseContract {
           from: defaultFromAddress,
           ...contractDefaults,
         },
-        self.unpause.estimateGasAsync.bind<STOContract, any, Promise<number>>(
+        self.unpause.estimateGasAsync.bind<RestrictedPartialSaleTMContract, any, Promise<number>>(
           self,
 
           estimateGasFactor,
@@ -311,7 +280,7 @@ export class STOContract extends BaseContract {
       return new PolyResponse(txHash, receipt);
     },
     async estimateGasAsync(factor?: number, txData?: Partial<TxData> | undefined): Promise<number> {
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const encodedData = self._strictEncodeArguments('unpause()', []);
       const contractDefaults = self._web3Wrapper.getContractDefaults();
       const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -345,7 +314,7 @@ export class STOContract extends BaseContract {
       if (defaultBlock !== undefined) {
         assert.isBlockParam('defaultBlock', defaultBlock);
       }
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const encodedData = self._strictEncodeArguments('unpause()', []);
       const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
         {
@@ -368,46 +337,8 @@ export class STOContract extends BaseContract {
       return result;
     },
     getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const abiEncodedTransactionData = self._strictEncodeArguments('unpause()', []);
-      return abiEncodedTransactionData;
-    },
-  };
-  public wallet = {
-    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as STOContract;
-      const encodedData = self._strictEncodeArguments('wallet()', []);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('wallet()');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<string>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('wallet()', []);
       return abiEncodedTransactionData;
     },
   };
@@ -421,7 +352,7 @@ export class STOContract extends BaseContract {
       if (defaultBlock !== undefined) {
         assert.isBlockParam('defaultBlock', defaultBlock);
       }
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const encodedData = self._strictEncodeArguments('paused()', []);
       const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
         {
@@ -444,13 +375,13 @@ export class STOContract extends BaseContract {
       return result;
     },
     getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const abiEncodedTransactionData = self._strictEncodeArguments('paused()', []);
       return abiEncodedTransactionData;
     },
   };
-  public totalTokensSold = {
-    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber> {
+  public UNLOCKED = {
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
       assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
         schemas.addressSchema,
         schemas.numberSchema,
@@ -459,8 +390,8 @@ export class STOContract extends BaseContract {
       if (defaultBlock !== undefined) {
         assert.isBlockParam('defaultBlock', defaultBlock);
       }
-      const self = (this as any) as STOContract;
-      const encodedData = self._strictEncodeArguments('totalTokensSold()', []);
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('UNLOCKED()', []);
       const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
         {
           to: self.address,
@@ -475,15 +406,15 @@ export class STOContract extends BaseContract {
 
       const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
       BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('totalTokensSold()');
+      const abiEncoder = self._lookupAbiEncoder('UNLOCKED()');
       // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
+      const result = abiEncoder.strictDecodeReturnValue<string>(rawCallResult);
       // tslint:enable boolean-naming
       return result;
     },
     getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('totalTokensSold()', []);
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('UNLOCKED()', []);
       return abiEncodedTransactionData;
     },
   };
@@ -497,7 +428,7 @@ export class STOContract extends BaseContract {
       if (defaultBlock !== undefined) {
         assert.isBlockParam('defaultBlock', defaultBlock);
       }
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const encodedData = self._strictEncodeArguments('polyToken()', []);
       const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
         {
@@ -520,558 +451,8 @@ export class STOContract extends BaseContract {
       return result;
     },
     getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const abiEncodedTransactionData = self._strictEncodeArguments('polyToken()', []);
-      return abiEncodedTransactionData;
-    },
-  };
-  public startTime = {
-    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber> {
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as STOContract;
-      const encodedData = self._strictEncodeArguments('startTime()', []);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('startTime()');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('startTime()', []);
-      return abiEncodedTransactionData;
-    },
-  };
-  public isFinalized = {
-    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<boolean> {
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as STOContract;
-      const encodedData = self._strictEncodeArguments('isFinalized()', []);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('isFinalized()');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<boolean>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('isFinalized()', []);
-      return abiEncodedTransactionData;
-    },
-  };
-  public OPERATOR = {
-    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as STOContract;
-      const encodedData = self._strictEncodeArguments('OPERATOR()', []);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('OPERATOR()');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<string>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('OPERATOR()', []);
-      return abiEncodedTransactionData;
-    },
-  };
-  public pausedTime = {
-    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber> {
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as STOContract;
-      const encodedData = self._strictEncodeArguments('pausedTime()', []);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('pausedTime()');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('pausedTime()', []);
-      return abiEncodedTransactionData;
-    },
-  };
-  public securityToken = {
-    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as STOContract;
-      const encodedData = self._strictEncodeArguments('securityToken()', []);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('securityToken()');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<string>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('securityToken()', []);
-      return abiEncodedTransactionData;
-    },
-  };
-  public getPermissions = {
-    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string[]> {
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as STOContract;
-      const encodedData = self._strictEncodeArguments('getPermissions()', []);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('getPermissions()');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<string[]>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('getPermissions()', []);
-      return abiEncodedTransactionData;
-    },
-  };
-  public factory = {
-    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as STOContract;
-      const encodedData = self._strictEncodeArguments('factory()', []);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('factory()');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<string>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('factory()', []);
-      return abiEncodedTransactionData;
-    },
-  };
-  public fundsRaised = {
-    async callAsync(
-      index_0: number | BigNumber,
-      callData: Partial<CallData> = {},
-      defaultBlock?: BlockParam,
-    ): Promise<BigNumber> {
-      assert.isNumberOrBigNumber('index_0', index_0);
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as STOContract;
-      const encodedData = self._strictEncodeArguments('fundsRaised(uint8)', [index_0]);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('fundsRaised(uint8)');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(index_0: number | BigNumber): string {
-      assert.isNumberOrBigNumber('index_0', index_0);
-      const self = (this as any) as STOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('fundsRaised(uint8)', [index_0]);
-      return abiEncodedTransactionData;
-    },
-  };
-  public fundRaiseTypes = {
-    async callAsync(
-      index_0: number | BigNumber,
-      callData: Partial<CallData> = {},
-      defaultBlock?: BlockParam,
-    ): Promise<boolean> {
-      assert.isNumberOrBigNumber('index_0', index_0);
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as STOContract;
-      const encodedData = self._strictEncodeArguments('fundRaiseTypes(uint8)', [index_0]);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('fundRaiseTypes(uint8)');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<boolean>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(index_0: number | BigNumber): string {
-      assert.isNumberOrBigNumber('index_0', index_0);
-      const self = (this as any) as STOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('fundRaiseTypes(uint8)', [index_0]);
-      return abiEncodedTransactionData;
-    },
-  };
-  public investorCount = {
-    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber> {
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as STOContract;
-      const encodedData = self._strictEncodeArguments('investorCount()', []);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('investorCount()');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('investorCount()', []);
-      return abiEncodedTransactionData;
-    },
-  };
-  public preMintAllowed = {
-    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<boolean> {
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as STOContract;
-      const encodedData = self._strictEncodeArguments('preMintAllowed()', []);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('preMintAllowed()');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<boolean>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('preMintAllowed()', []);
-      return abiEncodedTransactionData;
-    },
-  };
-  public getDataStore = {
-    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as STOContract;
-      const encodedData = self._strictEncodeArguments('getDataStore()', []);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('getDataStore()');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<string>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('getDataStore()', []);
-      return abiEncodedTransactionData;
-    },
-  };
-  public getRaised = {
-    async callAsync(
-      _fundRaiseType: number | BigNumber,
-      callData: Partial<CallData> = {},
-      defaultBlock?: BlockParam,
-    ): Promise<BigNumber> {
-      assert.isNumberOrBigNumber('_fundRaiseType', _fundRaiseType);
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as STOContract;
-      const encodedData = self._strictEncodeArguments('getRaised(uint8)', [_fundRaiseType]);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('getRaised(uint8)');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(_fundRaiseType: number | BigNumber): string {
-      assert.isNumberOrBigNumber('_fundRaiseType', _fundRaiseType);
-      const self = (this as any) as STOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('getRaised(uint8)', [_fundRaiseType]);
-      return abiEncodedTransactionData;
-    },
-  };
-  public getTokensSold = {
-    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber> {
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as STOContract;
-      const encodedData = self._strictEncodeArguments('getTokensSold()', []);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('getTokensSold()');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('getTokensSold()', []);
       return abiEncodedTransactionData;
     },
   };
@@ -1080,7 +461,7 @@ export class STOContract extends BaseContract {
       txData?: Partial<TxData> | undefined,
       estimateGasFactor?: number,
     ): Promise<PolyResponse> {
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const encodedData = self._strictEncodeArguments('pause()', []);
       const contractDefaults = self._web3Wrapper.getContractDefaults();
       const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -1094,7 +475,7 @@ export class STOContract extends BaseContract {
           from: defaultFromAddress,
           ...contractDefaults,
         },
-        self.pause.estimateGasAsync.bind<STOContract, any, Promise<number>>(
+        self.pause.estimateGasAsync.bind<RestrictedPartialSaleTMContract, any, Promise<number>>(
           self,
 
           estimateGasFactor,
@@ -1110,7 +491,7 @@ export class STOContract extends BaseContract {
       return new PolyResponse(txHash, receipt);
     },
     async estimateGasAsync(factor?: number, txData?: Partial<TxData> | undefined): Promise<number> {
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const encodedData = self._strictEncodeArguments('pause()', []);
       const contractDefaults = self._web3Wrapper.getContractDefaults();
       const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -1144,7 +525,7 @@ export class STOContract extends BaseContract {
       if (defaultBlock !== undefined) {
         assert.isBlockParam('defaultBlock', defaultBlock);
       }
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const encodedData = self._strictEncodeArguments('pause()', []);
       const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
         {
@@ -1167,46 +548,8 @@ export class STOContract extends BaseContract {
       return result;
     },
     getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const abiEncodedTransactionData = self._strictEncodeArguments('pause()', []);
-      return abiEncodedTransactionData;
-    },
-  };
-  public getTreasuryWallet = {
-    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
-      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
-        schemas.addressSchema,
-        schemas.numberSchema,
-        schemas.jsNumber,
-      ]);
-      if (defaultBlock !== undefined) {
-        assert.isBlockParam('defaultBlock', defaultBlock);
-      }
-      const self = (this as any) as STOContract;
-      const encodedData = self._strictEncodeArguments('getTreasuryWallet()', []);
-      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
-        {
-          to: self.address,
-          ...callData,
-          data: encodedData,
-        },
-        self._web3Wrapper.getContractDefaults(),
-      );
-      callDataWithDefaults.from = callDataWithDefaults.from
-        ? callDataWithDefaults.from.toLowerCase()
-        : callDataWithDefaults.from;
-
-      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
-      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('getTreasuryWallet()');
-      // tslint:disable boolean-naming
-      const result = abiEncoder.strictDecodeReturnValue<string>(rawCallResult);
-      // tslint:enable boolean-naming
-      return result;
-    },
-    getABIEncodedTransactionData(): string {
-      const self = (this as any) as STOContract;
-      const abiEncodedTransactionData = self._strictEncodeArguments('getTreasuryWallet()', []);
       return abiEncodedTransactionData;
     },
   };
@@ -1217,7 +560,7 @@ export class STOContract extends BaseContract {
       estimateGasFactor?: number,
     ): Promise<PolyResponse> {
       assert.isString('_tokenContract', _tokenContract);
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const encodedData = self._strictEncodeArguments('reclaimERC20(address)', [_tokenContract]);
       const contractDefaults = self._web3Wrapper.getContractDefaults();
       const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -1231,7 +574,7 @@ export class STOContract extends BaseContract {
           from: defaultFromAddress,
           ...contractDefaults,
         },
-        self.reclaimERC20.estimateGasAsync.bind<STOContract, any, Promise<number>>(
+        self.reclaimERC20.estimateGasAsync.bind<RestrictedPartialSaleTMContract, any, Promise<number>>(
           self,
           _tokenContract,
           estimateGasFactor,
@@ -1252,7 +595,7 @@ export class STOContract extends BaseContract {
       txData?: Partial<TxData> | undefined,
     ): Promise<number> {
       assert.isString('_tokenContract', _tokenContract);
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const encodedData = self._strictEncodeArguments('reclaimERC20(address)', [_tokenContract]);
       const contractDefaults = self._web3Wrapper.getContractDefaults();
       const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -1291,7 +634,7 @@ export class STOContract extends BaseContract {
       if (defaultBlock !== undefined) {
         assert.isBlockParam('defaultBlock', defaultBlock);
       }
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const encodedData = self._strictEncodeArguments('reclaimERC20(address)', [_tokenContract]);
       const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
         {
@@ -1315,8 +658,890 @@ export class STOContract extends BaseContract {
     },
     getABIEncodedTransactionData(_tokenContract: string): string {
       assert.isString('_tokenContract', _tokenContract);
-      const self = (this as any) as STOContract;
+      const self = (this as any) as RestrictedPartialSaleTMContract;
       const abiEncodedTransactionData = self._strictEncodeArguments('reclaimERC20(address)', [_tokenContract]);
+      return abiEncodedTransactionData;
+    },
+  };
+  public OPERATOR = {
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('OPERATOR()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('OPERATOR()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<string>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('OPERATOR()', []);
+      return abiEncodedTransactionData;
+    },
+  };
+  public LOCKED = {
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('LOCKED()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('LOCKED()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<string>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('LOCKED()', []);
+      return abiEncodedTransactionData;
+    },
+  };
+  public securityToken = {
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('securityToken()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('securityToken()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<string>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('securityToken()', []);
+      return abiEncodedTransactionData;
+    },
+  };
+  public factory = {
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('factory()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('factory()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<string>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('factory()', []);
+      return abiEncodedTransactionData;
+    },
+  };
+  public getDataStore = {
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('getDataStore()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('getDataStore()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<string>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('getDataStore()', []);
+      return abiEncodedTransactionData;
+    },
+  };
+  public getInitFunction = {
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('getInitFunction()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('getInitFunction()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<string>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('getInitFunction()', []);
+      return abiEncodedTransactionData;
+    },
+  };
+  public configure = {
+    async sendTransactionAsync(
+      _treasuryWallet: string,
+      txData?: Partial<TxData> | undefined,
+      estimateGasFactor?: number,
+    ): Promise<PolyResponse> {
+      assert.isString('_treasuryWallet', _treasuryWallet);
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('configure(address)', [_treasuryWallet]);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+        self.configure.estimateGasAsync.bind<RestrictedPartialSaleTMContract, any, Promise<number>>(
+          self,
+          _treasuryWallet,
+          estimateGasFactor,
+        ),
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+      const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+
+      return new PolyResponse(txHash, receipt);
+    },
+    async estimateGasAsync(
+      _treasuryWallet: string,
+      factor?: number,
+      txData?: Partial<TxData> | undefined,
+    ): Promise<number> {
+      assert.isString('_treasuryWallet', _treasuryWallet);
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('configure(address)', [_treasuryWallet]);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+      const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+      const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+      const _safetyGasEstimation = Math.round(_factor * gas);
+      return _safetyGasEstimation > networkGasLimit ? networkGasLimit : _safetyGasEstimation;
+    },
+    async callAsync(
+      _treasuryWallet: string,
+      callData: Partial<CallData> = {},
+      defaultBlock?: BlockParam,
+    ): Promise<void> {
+      assert.isString('_treasuryWallet', _treasuryWallet);
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('configure(address)', [_treasuryWallet]);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('configure(address)');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<void>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(_treasuryWallet: string): string {
+      assert.isString('_treasuryWallet', _treasuryWallet);
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('configure(address)', [_treasuryWallet]);
+      return abiEncodedTransactionData;
+    },
+  };
+  public executeTransfer = {
+    async sendTransactionAsync(
+      _from: string,
+      index_1: string,
+      _amount: BigNumber,
+      index_3: string,
+      txData?: Partial<TxData> | undefined,
+      estimateGasFactor?: number,
+    ): Promise<PolyResponse> {
+      assert.isString('_from', _from);
+      assert.isString('index_1', index_1);
+      assert.isBigNumber('_amount', _amount);
+      assert.isString('index_3', index_3);
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('executeTransfer(address,address,uint256,bytes)', [
+        _from,
+        index_1,
+        _amount,
+        index_3,
+      ]);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+        self.executeTransfer.estimateGasAsync.bind<RestrictedPartialSaleTMContract, any, Promise<number>>(
+          self,
+          _from,
+          index_1,
+          _amount,
+          index_3,
+          estimateGasFactor,
+        ),
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+      const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+
+      return new PolyResponse(txHash, receipt);
+    },
+    async estimateGasAsync(
+      _from: string,
+      index_1: string,
+      _amount: BigNumber,
+      index_3: string,
+      factor?: number,
+      txData?: Partial<TxData> | undefined,
+    ): Promise<number> {
+      assert.isString('_from', _from);
+      assert.isString('index_1', index_1);
+      assert.isBigNumber('_amount', _amount);
+      assert.isString('index_3', index_3);
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('executeTransfer(address,address,uint256,bytes)', [
+        _from,
+        index_1,
+        _amount,
+        index_3,
+      ]);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+      const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+      const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+      const _safetyGasEstimation = Math.round(_factor * gas);
+      return _safetyGasEstimation > networkGasLimit ? networkGasLimit : _safetyGasEstimation;
+    },
+    async callAsync(
+      _from: string,
+      index_1: string,
+      _amount: BigNumber,
+      index_3: string,
+      callData: Partial<CallData> = {},
+      defaultBlock?: BlockParam,
+    ): Promise<BigNumber> {
+      assert.isString('_from', _from);
+      assert.isString('index_1', index_1);
+      assert.isBigNumber('_amount', _amount);
+      assert.isString('index_3', index_3);
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('executeTransfer(address,address,uint256,bytes)', [
+        _from,
+        index_1,
+        _amount,
+        index_3,
+      ]);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('executeTransfer(address,address,uint256,bytes)');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(_from: string, index_1: string, _amount: BigNumber, index_3: string): string {
+      assert.isString('_from', _from);
+      assert.isString('index_1', index_1);
+      assert.isBigNumber('_amount', _amount);
+      assert.isString('index_3', index_3);
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('executeTransfer(address,address,uint256,bytes)', [
+        _from,
+        index_1,
+        _amount,
+        index_3,
+      ]);
+      return abiEncodedTransactionData;
+    },
+  };
+  public verifyTransfer = {
+    async callAsync(
+      _from: string,
+      index_1: string,
+      _amount: BigNumber,
+      index_3: string,
+      callData: Partial<CallData> = {},
+      defaultBlock?: BlockParam,
+    ): Promise<[BigNumber, string]> {
+      assert.isString('_from', _from);
+      assert.isString('index_1', index_1);
+      assert.isBigNumber('_amount', _amount);
+      assert.isString('index_3', index_3);
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('verifyTransfer(address,address,uint256,bytes)', [
+        _from,
+        index_1,
+        _amount,
+        index_3,
+      ]);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('verifyTransfer(address,address,uint256,bytes)');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<[BigNumber, string]>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(_from: string, index_1: string, _amount: BigNumber, index_3: string): string {
+      assert.isString('_from', _from);
+      assert.isString('index_1', index_1);
+      assert.isBigNumber('_amount', _amount);
+      assert.isString('index_3', index_3);
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('verifyTransfer(address,address,uint256,bytes)', [
+        _from,
+        index_1,
+        _amount,
+        index_3,
+      ]);
+      return abiEncodedTransactionData;
+    },
+  };
+  public changeExemptWalletList = {
+    async sendTransactionAsync(
+      _wallet: string,
+      _exempted: boolean,
+      txData?: Partial<TxData> | undefined,
+      estimateGasFactor?: number,
+    ): Promise<PolyResponse> {
+      assert.isString('_wallet', _wallet);
+      assert.isBoolean('_exempted', _exempted);
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('changeExemptWalletList(address,bool)', [_wallet, _exempted]);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+        self.changeExemptWalletList.estimateGasAsync.bind<RestrictedPartialSaleTMContract, any, Promise<number>>(
+          self,
+          _wallet,
+          _exempted,
+          estimateGasFactor,
+        ),
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+      const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+
+      return new PolyResponse(txHash, receipt);
+    },
+    async estimateGasAsync(
+      _wallet: string,
+      _exempted: boolean,
+      factor?: number,
+      txData?: Partial<TxData> | undefined,
+    ): Promise<number> {
+      assert.isString('_wallet', _wallet);
+      assert.isBoolean('_exempted', _exempted);
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('changeExemptWalletList(address,bool)', [_wallet, _exempted]);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+      const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+      const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+      const _safetyGasEstimation = Math.round(_factor * gas);
+      return _safetyGasEstimation > networkGasLimit ? networkGasLimit : _safetyGasEstimation;
+    },
+    async callAsync(
+      _wallet: string,
+      _exempted: boolean,
+      callData: Partial<CallData> = {},
+      defaultBlock?: BlockParam,
+    ): Promise<void> {
+      assert.isString('_wallet', _wallet);
+      assert.isBoolean('_exempted', _exempted);
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('changeExemptWalletList(address,bool)', [_wallet, _exempted]);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('changeExemptWalletList(address,bool)');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<void>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(_wallet: string, _exempted: boolean): string {
+      assert.isString('_wallet', _wallet);
+      assert.isBoolean('_exempted', _exempted);
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('changeExemptWalletList(address,bool)', [
+        _wallet,
+        _exempted,
+      ]);
+      return abiEncodedTransactionData;
+    },
+  };
+  public changeExemptWalletListMulti = {
+    async sendTransactionAsync(
+      _wallet: string[],
+      _exempted: boolean[],
+      txData?: Partial<TxData> | undefined,
+      estimateGasFactor?: number,
+    ): Promise<PolyResponse> {
+      assert.isArray('_wallet', _wallet);
+      assert.isArray('_exempted', _exempted);
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('changeExemptWalletListMulti(address[],bool[])', [
+        _wallet,
+        _exempted,
+      ]);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+        self.changeExemptWalletListMulti.estimateGasAsync.bind<RestrictedPartialSaleTMContract, any, Promise<number>>(
+          self,
+          _wallet,
+          _exempted,
+          estimateGasFactor,
+        ),
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+      const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+
+      return new PolyResponse(txHash, receipt);
+    },
+    async estimateGasAsync(
+      _wallet: string[],
+      _exempted: boolean[],
+      factor?: number,
+      txData?: Partial<TxData> | undefined,
+    ): Promise<number> {
+      assert.isArray('_wallet', _wallet);
+      assert.isArray('_exempted', _exempted);
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('changeExemptWalletListMulti(address[],bool[])', [
+        _wallet,
+        _exempted,
+      ]);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+      const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+      const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+      const _safetyGasEstimation = Math.round(_factor * gas);
+      return _safetyGasEstimation > networkGasLimit ? networkGasLimit : _safetyGasEstimation;
+    },
+    async callAsync(
+      _wallet: string[],
+      _exempted: boolean[],
+      callData: Partial<CallData> = {},
+      defaultBlock?: BlockParam,
+    ): Promise<void> {
+      assert.isArray('_wallet', _wallet);
+      assert.isArray('_exempted', _exempted);
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('changeExemptWalletListMulti(address[],bool[])', [
+        _wallet,
+        _exempted,
+      ]);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('changeExemptWalletListMulti(address[],bool[])');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<void>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(_wallet: string[], _exempted: boolean[]): string {
+      assert.isArray('_wallet', _wallet);
+      assert.isArray('_exempted', _exempted);
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('changeExemptWalletListMulti(address[],bool[])', [
+        _wallet,
+        _exempted,
+      ]);
+      return abiEncodedTransactionData;
+    },
+  };
+  public getExemptAddresses = {
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string[]> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('getExemptAddresses()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('getExemptAddresses()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<string[]>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('getExemptAddresses()', []);
+      return abiEncodedTransactionData;
+    },
+  };
+  public getPermissions = {
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string[]> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const encodedData = self._strictEncodeArguments('getPermissions()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('getPermissions()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<string[]>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as RestrictedPartialSaleTMContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('getPermissions()', []);
       return abiEncodedTransactionData;
     },
   };
@@ -1325,7 +1550,9 @@ export class STOContract extends BaseContract {
     abi: ContractAbi,
     supportedProvider: SupportedProvider,
     txDefaults: Partial<TxData>,
-  ): Promise<STOContract> {
+    _securityToken: string,
+    _polyAddress: string,
+  ): Promise<RestrictedPartialSaleTMContract> {
     assert.isHexString('bytecode', bytecode);
     assert.doesConformToSchema('txDefaults', txDefaults, schemas.txDataSchema, [
       schemas.addressSchema,
@@ -1334,10 +1561,14 @@ export class STOContract extends BaseContract {
     ]);
     const provider = providerUtils.standardizeOrThrow(supportedProvider);
     const constructorAbi = BaseContract._lookupConstructorAbi(abi);
-    [] = BaseContract._formatABIDataItemList(constructorAbi.inputs, [], BaseContract._bigNumberToString);
+    [_securityToken, _polyAddress] = BaseContract._formatABIDataItemList(
+      constructorAbi.inputs,
+      [_securityToken, _polyAddress],
+      BaseContract._bigNumberToString,
+    );
     const iface = new ethers.utils.Interface(abi);
     const deployInfo = iface.deployFunction;
-    const txData = deployInfo.encode(bytecode, []);
+    const txData = deployInfo.encode(bytecode, [_securityToken, _polyAddress]);
     const web3Wrapper = new Web3Wrapper(provider);
     const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
       { data: txData },
@@ -1347,9 +1578,13 @@ export class STOContract extends BaseContract {
     const txHash = await web3Wrapper.sendTransactionAsync(txDataWithDefaults);
     logUtils.log(`transactionHash: ${txHash}`);
     const txReceipt = await web3Wrapper.awaitTransactionSuccessAsync(txHash);
-    logUtils.log(`STO successfully deployed at ${txReceipt.contractAddress}`);
-    const contractInstance = new STOContract(txReceipt.contractAddress as string, provider, txDefaults);
-    contractInstance.constructorArgs = [];
+    logUtils.log(`RestrictedPartialSaleTM successfully deployed at ${txReceipt.contractAddress}`);
+    const contractInstance = new RestrictedPartialSaleTMContract(
+      txReceipt.contractAddress as string,
+      provider,
+      txDefaults,
+    );
+    contractInstance.constructorArgs = [_securityToken, _polyAddress];
     return contractInstance;
   }
 
@@ -1369,16 +1604,29 @@ export class STOContract extends BaseContract {
       },
       {
         constant: true,
-        inputs: [],
-        name: 'getInitFunction',
+        inputs: [
+          {
+            name: '_partition',
+            type: 'bytes32',
+          },
+          {
+            name: '_tokenHolder',
+            type: 'address',
+          },
+          {
+            name: 'index_2',
+            type: 'uint256',
+          },
+        ],
+        name: 'getTokensByPartition',
         outputs: [
           {
-            name: 'initFunction',
-            type: 'bytes4',
+            name: '',
+            type: 'uint256',
           },
         ],
         payable: false,
-        stateMutability: 'pure',
+        stateMutability: 'view',
         type: 'function',
       },
       {
@@ -1396,40 +1644,12 @@ export class STOContract extends BaseContract {
         type: 'function',
       },
       {
-        constant: true,
-        inputs: [],
-        name: 'endTime',
-        outputs: [
-          {
-            name: '',
-            type: 'uint256',
-          },
-        ],
-        payable: false,
-        stateMutability: 'view',
-        type: 'function',
-      },
-      {
         constant: false,
         inputs: [],
         name: 'unpause',
         outputs: [],
         payable: false,
         stateMutability: 'nonpayable',
-        type: 'function',
-      },
-      {
-        constant: true,
-        inputs: [],
-        name: 'wallet',
-        outputs: [
-          {
-            name: '',
-            type: 'address',
-          },
-        ],
-        payable: false,
-        stateMutability: 'view',
         type: 'function',
       },
       {
@@ -1449,11 +1669,11 @@ export class STOContract extends BaseContract {
       {
         constant: true,
         inputs: [],
-        name: 'totalTokensSold',
+        name: 'UNLOCKED',
         outputs: [
           {
             name: '',
-            type: 'uint256',
+            type: 'bytes32',
           },
         ],
         payable: false,
@@ -1475,31 +1695,26 @@ export class STOContract extends BaseContract {
         type: 'function',
       },
       {
-        constant: true,
+        constant: false,
         inputs: [],
-        name: 'startTime',
-        outputs: [
-          {
-            name: '',
-            type: 'uint256',
-          },
-        ],
+        name: 'pause',
+        outputs: [],
         payable: false,
-        stateMutability: 'view',
+        stateMutability: 'nonpayable',
         type: 'function',
       },
       {
-        constant: true,
-        inputs: [],
-        name: 'isFinalized',
-        outputs: [
+        constant: false,
+        inputs: [
           {
-            name: '',
-            type: 'bool',
+            name: '_tokenContract',
+            type: 'address',
           },
         ],
+        name: 'reclaimERC20',
+        outputs: [],
         payable: false,
-        stateMutability: 'view',
+        stateMutability: 'nonpayable',
         type: 'function',
       },
       {
@@ -1519,11 +1734,11 @@ export class STOContract extends BaseContract {
       {
         constant: true,
         inputs: [],
-        name: 'pausedTime',
+        name: 'LOCKED',
         outputs: [
           {
             name: '',
-            type: 'uint256',
+            type: 'bytes32',
           },
         ],
         payable: false,
@@ -1547,91 +1762,11 @@ export class STOContract extends BaseContract {
       {
         constant: true,
         inputs: [],
-        name: 'getPermissions',
-        outputs: [
-          {
-            name: 'permissions',
-            type: 'bytes32[]',
-          },
-        ],
-        payable: false,
-        stateMutability: 'view',
-        type: 'function',
-      },
-      {
-        constant: true,
-        inputs: [],
         name: 'factory',
         outputs: [
           {
             name: '',
             type: 'address',
-          },
-        ],
-        payable: false,
-        stateMutability: 'view',
-        type: 'function',
-      },
-      {
-        constant: true,
-        inputs: [
-          {
-            name: 'index_0',
-            type: 'uint8',
-          },
-        ],
-        name: 'fundsRaised',
-        outputs: [
-          {
-            name: '',
-            type: 'uint256',
-          },
-        ],
-        payable: false,
-        stateMutability: 'view',
-        type: 'function',
-      },
-      {
-        constant: true,
-        inputs: [
-          {
-            name: 'index_0',
-            type: 'uint8',
-          },
-        ],
-        name: 'fundRaiseTypes',
-        outputs: [
-          {
-            name: '',
-            type: 'bool',
-          },
-        ],
-        payable: false,
-        stateMutability: 'view',
-        type: 'function',
-      },
-      {
-        constant: true,
-        inputs: [],
-        name: 'investorCount',
-        outputs: [
-          {
-            name: '',
-            type: 'uint256',
-          },
-        ],
-        payable: false,
-        stateMutability: 'view',
-        type: 'function',
-      },
-      {
-        constant: true,
-        inputs: [],
-        name: 'preMintAllowed',
-        outputs: [
-          {
-            name: '',
-            type: 'bool',
           },
         ],
         payable: false,
@@ -1651,6 +1786,40 @@ export class STOContract extends BaseContract {
         payable: false,
         stateMutability: 'view',
         type: 'function',
+      },
+      {
+        inputs: [
+          {
+            name: '_securityToken',
+            type: 'address',
+          },
+          {
+            name: '_polyAddress',
+            type: 'address',
+          },
+        ],
+        outputs: [],
+        payable: false,
+        stateMutability: 'nonpayable',
+        type: 'constructor',
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            name: '_wallet',
+            type: 'address',
+            indexed: true,
+          },
+          {
+            name: '_exempted',
+            type: 'bool',
+            indexed: false,
+          },
+        ],
+        name: 'ChangedExemptWalletList',
+        outputs: [],
+        type: 'event',
       },
       {
         anonymous: false,
@@ -1679,114 +1848,93 @@ export class STOContract extends BaseContract {
         type: 'event',
       },
       {
-        anonymous: false,
-        inputs: [
-          {
-            name: '_fundRaiseTypes',
-            type: 'uint8[]',
-            indexed: false,
-          },
-        ],
-        name: 'SetFundRaiseTypes',
-        outputs: [],
-        type: 'event',
-      },
-      {
-        anonymous: false,
-        inputs: [
-          {
-            name: '_owner',
-            type: 'address',
-            indexed: true,
-          },
-          {
-            name: '_tokens',
-            type: 'uint256',
-            indexed: false,
-          },
-          {
-            name: '_preMint',
-            type: 'bool',
-            indexed: false,
-          },
-        ],
-        name: 'RevokePreMintFlag',
-        outputs: [],
-        type: 'event',
-      },
-      {
-        anonymous: false,
-        inputs: [
-          {
-            name: '_owner',
-            type: 'address',
-            indexed: true,
-          },
-          {
-            name: '_tokens',
-            type: 'uint256',
-            indexed: false,
-          },
-          {
-            name: '_preMint',
-            type: 'bool',
-            indexed: false,
-          },
-        ],
-        name: 'AllowPreMintFlag',
-        outputs: [],
-        type: 'event',
-      },
-      {
         constant: true,
+        inputs: [],
+        name: 'getInitFunction',
+        outputs: [
+          {
+            name: '',
+            type: 'bytes4',
+          },
+        ],
+        payable: false,
+        stateMutability: 'pure',
+        type: 'function',
+      },
+      {
+        constant: false,
         inputs: [
           {
-            name: '_fundRaiseType',
+            name: '_treasuryWallet',
+            type: 'address',
+          },
+        ],
+        name: 'configure',
+        outputs: [],
+        payable: false,
+        stateMutability: 'nonpayable',
+        type: 'function',
+      },
+      {
+        constant: false,
+        inputs: [
+          {
+            name: '_from',
+            type: 'address',
+          },
+          {
+            name: 'index_1',
+            type: 'address',
+          },
+          {
+            name: '_amount',
+            type: 'uint256',
+          },
+          {
+            name: 'index_3',
+            type: 'bytes',
+          },
+        ],
+        name: 'executeTransfer',
+        outputs: [
+          {
+            name: '',
             type: 'uint8',
           },
         ],
-        name: 'getRaised',
-        outputs: [
-          {
-            name: '',
-            type: 'uint256',
-          },
-        ],
-        payable: false,
-        stateMutability: 'view',
-        type: 'function',
-      },
-      {
-        constant: true,
-        inputs: [],
-        name: 'getTokensSold',
-        outputs: [
-          {
-            name: '',
-            type: 'uint256',
-          },
-        ],
-        payable: false,
-        stateMutability: 'view',
-        type: 'function',
-      },
-      {
-        constant: false,
-        inputs: [],
-        name: 'pause',
-        outputs: [],
         payable: false,
         stateMutability: 'nonpayable',
         type: 'function',
       },
       {
         constant: true,
-        inputs: [],
-        name: 'getTreasuryWallet',
+        inputs: [
+          {
+            name: '_from',
+            type: 'address',
+          },
+          {
+            name: 'index_1',
+            type: 'address',
+          },
+          {
+            name: '_amount',
+            type: 'uint256',
+          },
+          {
+            name: 'index_3',
+            type: 'bytes',
+          },
+        ],
+        name: 'verifyTransfer',
         outputs: [
           {
-            name: 'wallet',
-            type: 'address',
+            name: '',
+            type: 'uint8',
+          },
+          {
+            name: '',
+            type: 'bytes32',
           },
         ],
         payable: false,
@@ -1797,14 +1945,64 @@ export class STOContract extends BaseContract {
         constant: false,
         inputs: [
           {
-            name: '_tokenContract',
+            name: '_wallet',
             type: 'address',
           },
+          {
+            name: '_exempted',
+            type: 'bool',
+          },
         ],
-        name: 'reclaimERC20',
+        name: 'changeExemptWalletList',
         outputs: [],
         payable: false,
         stateMutability: 'nonpayable',
+        type: 'function',
+      },
+      {
+        constant: false,
+        inputs: [
+          {
+            name: '_wallet',
+            type: 'address[]',
+          },
+          {
+            name: '_exempted',
+            type: 'bool[]',
+          },
+        ],
+        name: 'changeExemptWalletListMulti',
+        outputs: [],
+        payable: false,
+        stateMutability: 'nonpayable',
+        type: 'function',
+      },
+      {
+        constant: true,
+        inputs: [],
+        name: 'getExemptAddresses',
+        outputs: [
+          {
+            name: '',
+            type: 'address[]',
+          },
+        ],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        constant: true,
+        inputs: [],
+        name: 'getPermissions',
+        outputs: [
+          {
+            name: '',
+            type: 'bytes32[]',
+          },
+        ],
+        payable: false,
+        stateMutability: 'view',
         type: 'function',
       },
     ] as ContractAbi;
@@ -1824,7 +2022,7 @@ export class STOContract extends BaseContract {
     txDefaults?: Partial<TxData>,
     defaultEstimateGasFactor?: number,
   ) {
-    super('STO', STOContract.ABI(), address, supportedProvider, txDefaults);
+    super('RestrictedPartialSaleTM', RestrictedPartialSaleTMContract.ABI(), address, supportedProvider, txDefaults);
     this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
     classUtils.bindAll(this, [
       '_abiEncoderByFunctionSignature',

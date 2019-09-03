@@ -2,11 +2,13 @@ import { BaseContract } from '@0x/base-contract';
 import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider, AbiDefinition } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../polyResponse';
-export declare type STOEventArgs = STOPauseEventArgs | STOUnpauseEventArgs | STOSetFundRaiseTypesEventArgs;
+export declare type STOEventArgs = STOPauseEventArgs | STOUnpauseEventArgs | STOSetFundRaiseTypesEventArgs | STORevokePreMintFlagEventArgs | STOAllowPreMintFlagEventArgs;
 export declare enum STOEvents {
     Pause = "Pause",
     Unpause = "Unpause",
-    SetFundRaiseTypes = "SetFundRaiseTypes"
+    SetFundRaiseTypes = "SetFundRaiseTypes",
+    RevokePreMintFlag = "RevokePreMintFlag",
+    AllowPreMintFlag = "AllowPreMintFlag"
 }
 export interface STOPauseEventArgs extends DecodedLogArgs {
     account: string;
@@ -16,6 +18,16 @@ export interface STOUnpauseEventArgs extends DecodedLogArgs {
 }
 export interface STOSetFundRaiseTypesEventArgs extends DecodedLogArgs {
     _fundRaiseTypes: BigNumber[];
+}
+export interface STORevokePreMintFlagEventArgs extends DecodedLogArgs {
+    _owner: string;
+    _tokens: BigNumber;
+    _preMint: boolean;
+}
+export interface STOAllowPreMintFlagEventArgs extends DecodedLogArgs {
+    _owner: string;
+    _tokens: BigNumber;
+    _preMint: boolean;
 }
 export declare class STOContract extends BaseContract {
     private _defaultEstimateGasFactor;
@@ -63,11 +75,9 @@ export declare class STOContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
         getABIEncodedTransactionData(): string;
     };
-    reclaimERC20: {
-        sendTransactionAsync(_tokenContract: string, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_tokenContract: string, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
-        callAsync(_tokenContract: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
-        getABIEncodedTransactionData(_tokenContract: string): string;
+    isFinalized: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
+        getABIEncodedTransactionData(): string;
     };
     OPERATOR: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
@@ -101,6 +111,10 @@ export declare class STOContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
         getABIEncodedTransactionData(): string;
     };
+    preMintAllowed: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
+        getABIEncodedTransactionData(): string;
+    };
     getDataStore: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
         getABIEncodedTransactionData(): string;
@@ -118,6 +132,16 @@ export declare class STOContract extends BaseContract {
         estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
         getABIEncodedTransactionData(): string;
+    };
+    getTreasuryWallet: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
+    };
+    reclaimERC20: {
+        sendTransactionAsync(_tokenContract: string, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_tokenContract: string, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
+        callAsync(_tokenContract: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_tokenContract: string): string;
     };
     static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>): Promise<STOContract>;
     /**

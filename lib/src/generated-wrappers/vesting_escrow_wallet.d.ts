@@ -67,6 +67,10 @@ export interface VestingEscrowWalletUnpauseEventArgs extends DecodedLogArgs {
 }
 export declare class VestingEscrowWalletContract extends BaseContract {
     private _defaultEstimateGasFactor;
+    templates: {
+        callAsync(index_0: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, BigNumber, BigNumber, BigNumber]>;
+        getABIEncodedTransactionData(index_0: string): string;
+    };
     reclaimETH: {
         sendTransactionAsync(txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
         estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
@@ -81,10 +85,6 @@ export declare class VestingEscrowWalletContract extends BaseContract {
         sendTransactionAsync(txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
         estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
-        getABIEncodedTransactionData(): string;
-    };
-    treasuryWallet: {
-        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
         getABIEncodedTransactionData(): string;
     };
     unassignedTokens: {
@@ -239,6 +239,18 @@ export declare class VestingEscrowWalletContract extends BaseContract {
     };
     getTemplateNames: {
         callAsync(_beneficiary: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
+        getABIEncodedTransactionData(_beneficiary: string): string;
+    };
+    getSchedulesCountByTemplate: {
+        callAsync(_templateName: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
+        getABIEncodedTransactionData(_templateName: string): string;
+    };
+    getAllBeneficiaries: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string[]>;
+        getABIEncodedTransactionData(): string;
+    };
+    getAvailableTokens: {
+        callAsync(_beneficiary: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
         getABIEncodedTransactionData(_beneficiary: string): string;
     };
     getScheduleCount: {
