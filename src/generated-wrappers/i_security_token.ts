@@ -29,6 +29,7 @@ export type ISecurityTokenEventArgs =
   | ISecurityTokenTransferEventArgs
   | ISecurityTokenApprovalEventArgs
   | ISecurityTokenModuleAddedEventArgs
+  | ISecurityTokenModuleUpgradedEventArgs
   | ISecurityTokenUpdateTokenDetailsEventArgs
   | ISecurityTokenUpdateTokenNameEventArgs
   | ISecurityTokenGranularityChangedEventArgs
@@ -62,6 +63,7 @@ export enum ISecurityTokenEvents {
   Transfer = 'Transfer',
   Approval = 'Approval',
   ModuleAdded = 'ModuleAdded',
+  ModuleUpgraded = 'ModuleUpgraded',
   UpdateTokenDetails = 'UpdateTokenDetails',
   UpdateTokenName = 'UpdateTokenName',
   GranularityChanged = 'GranularityChanged',
@@ -111,6 +113,10 @@ export interface ISecurityTokenModuleAddedEventArgs extends DecodedLogArgs {
   _budget: BigNumber;
   _label: string;
   _archived: boolean;
+}
+export interface ISecurityTokenModuleUpgradedEventArgs extends DecodedLogArgs {
+  _types: BigNumber[];
+  _module: string;
 }
 export interface ISecurityTokenUpdateTokenDetailsEventArgs extends DecodedLogArgs {
   _oldDetails: string;
@@ -8256,6 +8262,24 @@ export class ISecurityTokenContract extends BaseContract {
         anonymous: false,
         inputs: [
           {
+            name: '_types',
+            type: 'uint8[]',
+            indexed: false,
+          },
+          {
+            name: '_module',
+            type: 'address',
+            indexed: false,
+          },
+        ],
+        name: 'ModuleUpgraded',
+        outputs: [],
+        type: 'event',
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
             name: '_oldDetails',
             type: 'string',
             indexed: false,
@@ -9837,7 +9861,7 @@ export class ISecurityTokenContract extends BaseContract {
           },
         ],
         payable: false,
-        stateMutability: 'view',
+        stateMutability: 'pure',
         type: 'function',
       },
       {

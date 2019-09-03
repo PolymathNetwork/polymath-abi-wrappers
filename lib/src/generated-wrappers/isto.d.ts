@@ -2,12 +2,24 @@ import { BaseContract } from '@0x/base-contract';
 import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider, AbiDefinition } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../polyResponse';
-export declare type ISTOEventArgs = ISTOSetFundRaiseTypesEventArgs;
+export declare type ISTOEventArgs = ISTOSetFundRaiseTypesEventArgs | ISTORevokePreMintFlagEventArgs | ISTOAllowPreMintFlagEventArgs;
 export declare enum ISTOEvents {
-    SetFundRaiseTypes = "SetFundRaiseTypes"
+    SetFundRaiseTypes = "SetFundRaiseTypes",
+    RevokePreMintFlag = "RevokePreMintFlag",
+    AllowPreMintFlag = "AllowPreMintFlag"
 }
 export interface ISTOSetFundRaiseTypesEventArgs extends DecodedLogArgs {
     _fundRaiseTypes: BigNumber[];
+}
+export interface ISTORevokePreMintFlagEventArgs extends DecodedLogArgs {
+    _owner: string;
+    _tokens: BigNumber;
+    _preMint: boolean;
+}
+export interface ISTOAllowPreMintFlagEventArgs extends DecodedLogArgs {
+    _owner: string;
+    _tokens: BigNumber;
+    _preMint: boolean;
 }
 export declare class ISTOContract extends BaseContract {
     private _defaultEstimateGasFactor;

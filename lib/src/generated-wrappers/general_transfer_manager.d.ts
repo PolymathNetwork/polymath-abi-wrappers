@@ -126,6 +126,10 @@ export declare class GeneralTransferManagerContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
         getABIEncodedTransactionData(): string;
     };
+    WHITELISTMODULE: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
+        getABIEncodedTransactionData(): string;
+    };
     defaults: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, BigNumber]>;
         getABIEncodedTransactionData(): string;
@@ -157,8 +161,8 @@ export declare class GeneralTransferManagerContract extends BaseContract {
         getABIEncodedTransactionData(_from: string, _to: string, index_2: BigNumber, _data: string): string;
     };
     verifyTransfer: {
-        callAsync(_from: string, _to: string, index_2: BigNumber, index_3: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, string]>;
-        getABIEncodedTransactionData(_from: string, _to: string, index_2: BigNumber, index_3: string): string;
+        callAsync(_from: string, _to: string, index_2: BigNumber, _data: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, string]>;
+        getABIEncodedTransactionData(_from: string, _to: string, index_2: BigNumber, _data: string): string;
     };
     modifyTransferRequirements: {
         sendTransactionAsync(_transferType: number | BigNumber, _fromValidKYC: boolean, _toValidKYC: boolean, _fromRestricted: boolean, _toRestricted: boolean, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;

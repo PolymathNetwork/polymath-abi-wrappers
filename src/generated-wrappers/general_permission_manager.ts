@@ -1078,6 +1078,127 @@ export class GeneralPermissionManagerContract extends BaseContract {
       return abiEncodedTransactionData;
     },
   };
+  public addDelegateMulti = {
+    async sendTransactionAsync(
+      _delegates: string[],
+      _details: string[],
+      txData?: Partial<TxData> | undefined,
+      estimateGasFactor?: number,
+    ): Promise<PolyResponse> {
+      assert.isArray('_delegates', _delegates);
+      assert.isArray('_details', _details);
+      const self = (this as any) as GeneralPermissionManagerContract;
+      const encodedData = self._strictEncodeArguments('addDelegateMulti(address[],bytes32[])', [_delegates, _details]);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+        self.addDelegateMulti.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
+          self,
+          _delegates,
+          _details,
+          estimateGasFactor,
+        ),
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+      const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+
+      return new PolyResponse(txHash, receipt);
+    },
+    async estimateGasAsync(
+      _delegates: string[],
+      _details: string[],
+      factor?: number,
+      txData?: Partial<TxData> | undefined,
+    ): Promise<number> {
+      assert.isArray('_delegates', _delegates);
+      assert.isArray('_details', _details);
+      const self = (this as any) as GeneralPermissionManagerContract;
+      const encodedData = self._strictEncodeArguments('addDelegateMulti(address[],bytes32[])', [_delegates, _details]);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+      const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+      const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+      const _safetyGasEstimation = Math.round(_factor * gas);
+      return _safetyGasEstimation > networkGasLimit ? networkGasLimit : _safetyGasEstimation;
+    },
+    async callAsync(
+      _delegates: string[],
+      _details: string[],
+      callData: Partial<CallData> = {},
+      defaultBlock?: BlockParam,
+    ): Promise<void> {
+      assert.isArray('_delegates', _delegates);
+      assert.isArray('_details', _details);
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as GeneralPermissionManagerContract;
+      const encodedData = self._strictEncodeArguments('addDelegateMulti(address[],bytes32[])', [_delegates, _details]);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('addDelegateMulti(address[],bytes32[])');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<void>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(_delegates: string[], _details: string[]): string {
+      assert.isArray('_delegates', _delegates);
+      assert.isArray('_details', _details);
+      const self = (this as any) as GeneralPermissionManagerContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('addDelegateMulti(address[],bytes32[])', [
+        _delegates,
+        _details,
+      ]);
+      return abiEncodedTransactionData;
+    },
+  };
   public deleteDelegate = {
     async sendTransactionAsync(
       _delegate: string,
@@ -1177,6 +1298,112 @@ export class GeneralPermissionManagerContract extends BaseContract {
       assert.isString('_delegate', _delegate);
       const self = (this as any) as GeneralPermissionManagerContract;
       const abiEncodedTransactionData = self._strictEncodeArguments('deleteDelegate(address)', [_delegate]);
+      return abiEncodedTransactionData;
+    },
+  };
+  public deleteDelegateMulti = {
+    async sendTransactionAsync(
+      _delegates: string[],
+      txData?: Partial<TxData> | undefined,
+      estimateGasFactor?: number,
+    ): Promise<PolyResponse> {
+      assert.isArray('_delegates', _delegates);
+      const self = (this as any) as GeneralPermissionManagerContract;
+      const encodedData = self._strictEncodeArguments('deleteDelegateMulti(address[])', [_delegates]);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+        self.deleteDelegateMulti.estimateGasAsync.bind<GeneralPermissionManagerContract, any, Promise<number>>(
+          self,
+          _delegates,
+          estimateGasFactor,
+        ),
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+      const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+
+      return new PolyResponse(txHash, receipt);
+    },
+    async estimateGasAsync(
+      _delegates: string[],
+      factor?: number,
+      txData?: Partial<TxData> | undefined,
+    ): Promise<number> {
+      assert.isArray('_delegates', _delegates);
+      const self = (this as any) as GeneralPermissionManagerContract;
+      const encodedData = self._strictEncodeArguments('deleteDelegateMulti(address[])', [_delegates]);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+      const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+      const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+      const _safetyGasEstimation = Math.round(_factor * gas);
+      return _safetyGasEstimation > networkGasLimit ? networkGasLimit : _safetyGasEstimation;
+    },
+    async callAsync(_delegates: string[], callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<void> {
+      assert.isArray('_delegates', _delegates);
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as GeneralPermissionManagerContract;
+      const encodedData = self._strictEncodeArguments('deleteDelegateMulti(address[])', [_delegates]);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('deleteDelegateMulti(address[])');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<void>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(_delegates: string[]): string {
+      assert.isArray('_delegates', _delegates);
+      const self = (this as any) as GeneralPermissionManagerContract;
+      const abiEncodedTransactionData = self._strictEncodeArguments('deleteDelegateMulti(address[])', [_delegates]);
       return abiEncodedTransactionData;
     },
   };
@@ -2112,11 +2339,43 @@ export class GeneralPermissionManagerContract extends BaseContract {
         constant: false,
         inputs: [
           {
+            name: '_delegates',
+            type: 'address[]',
+          },
+          {
+            name: '_details',
+            type: 'bytes32[]',
+          },
+        ],
+        name: 'addDelegateMulti',
+        outputs: [],
+        payable: false,
+        stateMutability: 'nonpayable',
+        type: 'function',
+      },
+      {
+        constant: false,
+        inputs: [
+          {
             name: '_delegate',
             type: 'address',
           },
         ],
         name: 'deleteDelegate',
+        outputs: [],
+        payable: false,
+        stateMutability: 'nonpayable',
+        type: 'function',
+      },
+      {
+        constant: false,
+        inputs: [
+          {
+            name: '_delegates',
+            type: 'address[]',
+          },
+        ],
+        name: 'deleteDelegateMulti',
         outputs: [],
         payable: false,
         stateMutability: 'nonpayable',

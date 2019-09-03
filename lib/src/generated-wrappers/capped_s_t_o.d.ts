@@ -2,13 +2,17 @@ import { BaseContract } from '@0x/base-contract';
 import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider, AbiDefinition } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../polyResponse';
-export declare type CappedSTOEventArgs = CappedSTOTokenPurchaseEventArgs | CappedSTOSetAllowBeneficialInvestmentsEventArgs | CappedSTOPauseEventArgs | CappedSTOUnpauseEventArgs | CappedSTOSetFundRaiseTypesEventArgs;
+export declare type CappedSTOEventArgs = CappedSTOTokenPurchaseEventArgs | CappedSTOSetAllowBeneficialInvestmentsEventArgs | CappedSTOReserveTokenMintEventArgs | CappedSTOReserveTokenTransferEventArgs | CappedSTOPauseEventArgs | CappedSTOUnpauseEventArgs | CappedSTOSetFundRaiseTypesEventArgs | CappedSTORevokePreMintFlagEventArgs | CappedSTOAllowPreMintFlagEventArgs;
 export declare enum CappedSTOEvents {
     TokenPurchase = "TokenPurchase",
     SetAllowBeneficialInvestments = "SetAllowBeneficialInvestments",
+    ReserveTokenMint = "ReserveTokenMint",
+    ReserveTokenTransfer = "ReserveTokenTransfer",
     Pause = "Pause",
     Unpause = "Unpause",
-    SetFundRaiseTypes = "SetFundRaiseTypes"
+    SetFundRaiseTypes = "SetFundRaiseTypes",
+    RevokePreMintFlag = "RevokePreMintFlag",
+    AllowPreMintFlag = "AllowPreMintFlag"
 }
 export interface CappedSTOTokenPurchaseEventArgs extends DecodedLogArgs {
     purchaser: string;
@@ -19,6 +23,16 @@ export interface CappedSTOTokenPurchaseEventArgs extends DecodedLogArgs {
 export interface CappedSTOSetAllowBeneficialInvestmentsEventArgs extends DecodedLogArgs {
     _allowed: boolean;
 }
+export interface CappedSTOReserveTokenMintEventArgs extends DecodedLogArgs {
+    _owner: string;
+    _wallet: string;
+    _tokens: BigNumber;
+}
+export interface CappedSTOReserveTokenTransferEventArgs extends DecodedLogArgs {
+    _from: string;
+    _wallet: string;
+    _tokens: BigNumber;
+}
 export interface CappedSTOPauseEventArgs extends DecodedLogArgs {
     account: string;
 }
@@ -27,6 +41,16 @@ export interface CappedSTOUnpauseEventArgs extends DecodedLogArgs {
 }
 export interface CappedSTOSetFundRaiseTypesEventArgs extends DecodedLogArgs {
     _fundRaiseTypes: BigNumber[];
+}
+export interface CappedSTORevokePreMintFlagEventArgs extends DecodedLogArgs {
+    _owner: string;
+    _tokens: BigNumber;
+    _preMint: boolean;
+}
+export interface CappedSTOAllowPreMintFlagEventArgs extends DecodedLogArgs {
+    _owner: string;
+    _tokens: BigNumber;
+    _preMint: boolean;
 }
 export declare class CappedSTOContract extends BaseContract {
     private _defaultEstimateGasFactor;
@@ -37,6 +61,10 @@ export declare class CappedSTOContract extends BaseContract {
         getABIEncodedTransactionData(): string;
     };
     ADMIN: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
+    };
+    getTreasuryWallet: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
         getABIEncodedTransactionData(): string;
     };
@@ -98,6 +126,10 @@ export declare class CappedSTOContract extends BaseContract {
         callAsync(_tokenContract: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
         getABIEncodedTransactionData(_tokenContract: string): string;
     };
+    isFinalized: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
+        getABIEncodedTransactionData(): string;
+    };
     OPERATOR: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
         getABIEncodedTransactionData(): string;
@@ -130,18 +162,34 @@ export declare class CappedSTOContract extends BaseContract {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<BigNumber>;
         getABIEncodedTransactionData(): string;
     };
+    preMintAllowed: {
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<boolean>;
+        getABIEncodedTransactionData(): string;
+    };
     getDataStore: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
         getABIEncodedTransactionData(): string;
     };
     configure: {
-        sendTransactionAsync(_startTime: BigNumber, _endTime: BigNumber, _cap: BigNumber, _rate: BigNumber, _fundRaiseTypes: (number | BigNumber)[], _fundsReceiver: string, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
-        estimateGasAsync(_startTime: BigNumber, _endTime: BigNumber, _cap: BigNumber, _rate: BigNumber, _fundRaiseTypes: (number | BigNumber)[], _fundsReceiver: string, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
-        callAsync(_startTime: BigNumber, _endTime: BigNumber, _cap: BigNumber, _rate: BigNumber, _fundRaiseTypes: (number | BigNumber)[], _fundsReceiver: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
-        getABIEncodedTransactionData(_startTime: BigNumber, _endTime: BigNumber, _cap: BigNumber, _rate: BigNumber, _fundRaiseTypes: (number | BigNumber)[], _fundsReceiver: string): string;
+        sendTransactionAsync(_startTime: BigNumber, _endTime: BigNumber, _cap: BigNumber, _rate: BigNumber, _fundRaiseTypes: (number | BigNumber)[], _fundsReceiver: string, _treasuryWallet: string, txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(_startTime: BigNumber, _endTime: BigNumber, _cap: BigNumber, _rate: BigNumber, _fundRaiseTypes: (number | BigNumber)[], _fundsReceiver: string, _treasuryWallet: string, factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
+        callAsync(_startTime: BigNumber, _endTime: BigNumber, _cap: BigNumber, _rate: BigNumber, _fundRaiseTypes: (number | BigNumber)[], _fundsReceiver: string, _treasuryWallet: string, callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(_startTime: BigNumber, _endTime: BigNumber, _cap: BigNumber, _rate: BigNumber, _fundRaiseTypes: (number | BigNumber)[], _fundsReceiver: string, _treasuryWallet: string): string;
     };
     getInitFunction: {
         callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<string>;
+        getABIEncodedTransactionData(): string;
+    };
+    allowPreMinting: {
+        sendTransactionAsync(txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
+        getABIEncodedTransactionData(): string;
+    };
+    revokePreMintFlag: {
+        sendTransactionAsync(txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
         getABIEncodedTransactionData(): string;
     };
     changeAllowBeneficialInvestments: {
@@ -175,7 +223,13 @@ export declare class CappedSTOContract extends BaseContract {
         getABIEncodedTransactionData(): string;
     };
     getSTODetails: {
-        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, boolean]>;
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<[BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, boolean, boolean]>;
+        getABIEncodedTransactionData(): string;
+    };
+    finalize: {
+        sendTransactionAsync(txData?: Partial<TxData> | undefined, estimateGasFactor?: number | undefined): Promise<PolyResponse>;
+        estimateGasAsync(factor?: number | undefined, txData?: Partial<TxData> | undefined): Promise<number>;
+        callAsync(callData?: Partial<CallData>, defaultBlock?: number | BlockParamLiteral | undefined): Promise<void>;
         getABIEncodedTransactionData(): string;
     };
     static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>, _securityToken: string, _polyToken: string): Promise<CappedSTOContract>;

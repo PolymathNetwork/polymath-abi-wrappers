@@ -25,14 +25,29 @@ import { PolyResponse } from '../polyResponse';
 import * as ethers from 'ethers';
 // tslint:enable:no-unused-variable
 
-export type ISTOEventArgs = ISTOSetFundRaiseTypesEventArgs;
+export type ISTOEventArgs =
+  | ISTOSetFundRaiseTypesEventArgs
+  | ISTORevokePreMintFlagEventArgs
+  | ISTOAllowPreMintFlagEventArgs;
 
 export enum ISTOEvents {
   SetFundRaiseTypes = 'SetFundRaiseTypes',
+  RevokePreMintFlag = 'RevokePreMintFlag',
+  AllowPreMintFlag = 'AllowPreMintFlag',
 }
 
 export interface ISTOSetFundRaiseTypesEventArgs extends DecodedLogArgs {
   _fundRaiseTypes: BigNumber[];
+}
+export interface ISTORevokePreMintFlagEventArgs extends DecodedLogArgs {
+  _owner: string;
+  _tokens: BigNumber;
+  _preMint: boolean;
+}
+export interface ISTOAllowPreMintFlagEventArgs extends DecodedLogArgs {
+  _owner: string;
+  _tokens: BigNumber;
+  _preMint: boolean;
 }
 
 /* istanbul ignore next */
@@ -267,6 +282,52 @@ export class ISTOContract extends BaseContract {
           },
         ],
         name: 'SetFundRaiseTypes',
+        outputs: [],
+        type: 'event',
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            name: '_owner',
+            type: 'address',
+            indexed: true,
+          },
+          {
+            name: '_tokens',
+            type: 'uint256',
+            indexed: false,
+          },
+          {
+            name: '_preMint',
+            type: 'bool',
+            indexed: false,
+          },
+        ],
+        name: 'RevokePreMintFlag',
+        outputs: [],
+        type: 'event',
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            name: '_owner',
+            type: 'address',
+            indexed: true,
+          },
+          {
+            name: '_tokens',
+            type: 'uint256',
+            indexed: false,
+          },
+          {
+            name: '_preMint',
+            type: 'bool',
+            indexed: false,
+          },
+        ],
+        name: 'AllowPreMintFlag',
         outputs: [],
         type: 'event',
       },

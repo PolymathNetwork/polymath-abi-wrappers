@@ -2,11 +2,12 @@ import { BaseContract } from '@0x/base-contract';
 import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider, AbiDefinition } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../polyResponse';
-export declare type ISecurityTokenEventArgs = ISecurityTokenTransferEventArgs | ISecurityTokenApprovalEventArgs | ISecurityTokenModuleAddedEventArgs | ISecurityTokenUpdateTokenDetailsEventArgs | ISecurityTokenUpdateTokenNameEventArgs | ISecurityTokenGranularityChangedEventArgs | ISecurityTokenFreezeIssuanceEventArgs | ISecurityTokenFreezeTransfersEventArgs | ISecurityTokenCheckpointCreatedEventArgs | ISecurityTokenSetControllerEventArgs | ISecurityTokenTreasuryWalletChangedEventArgs | ISecurityTokenDisableControllerEventArgs | ISecurityTokenOwnershipTransferredEventArgs | ISecurityTokenTokenUpgradedEventArgs | ISecurityTokenModuleArchivedEventArgs | ISecurityTokenModuleUnarchivedEventArgs | ISecurityTokenModuleRemovedEventArgs | ISecurityTokenModuleBudgetChangedEventArgs | ISecurityTokenTransferByPartitionEventArgs | ISecurityTokenAuthorizedOperatorEventArgs | ISecurityTokenRevokedOperatorEventArgs | ISecurityTokenAuthorizedOperatorByPartitionEventArgs | ISecurityTokenRevokedOperatorByPartitionEventArgs | ISecurityTokenIssuedByPartitionEventArgs | ISecurityTokenRedeemedByPartitionEventArgs | ISecurityTokenDocumentRemovedEventArgs | ISecurityTokenDocumentUpdatedEventArgs | ISecurityTokenControllerTransferEventArgs | ISecurityTokenControllerRedemptionEventArgs | ISecurityTokenIssuedEventArgs | ISecurityTokenRedeemedEventArgs;
+export declare type ISecurityTokenEventArgs = ISecurityTokenTransferEventArgs | ISecurityTokenApprovalEventArgs | ISecurityTokenModuleAddedEventArgs | ISecurityTokenModuleUpgradedEventArgs | ISecurityTokenUpdateTokenDetailsEventArgs | ISecurityTokenUpdateTokenNameEventArgs | ISecurityTokenGranularityChangedEventArgs | ISecurityTokenFreezeIssuanceEventArgs | ISecurityTokenFreezeTransfersEventArgs | ISecurityTokenCheckpointCreatedEventArgs | ISecurityTokenSetControllerEventArgs | ISecurityTokenTreasuryWalletChangedEventArgs | ISecurityTokenDisableControllerEventArgs | ISecurityTokenOwnershipTransferredEventArgs | ISecurityTokenTokenUpgradedEventArgs | ISecurityTokenModuleArchivedEventArgs | ISecurityTokenModuleUnarchivedEventArgs | ISecurityTokenModuleRemovedEventArgs | ISecurityTokenModuleBudgetChangedEventArgs | ISecurityTokenTransferByPartitionEventArgs | ISecurityTokenAuthorizedOperatorEventArgs | ISecurityTokenRevokedOperatorEventArgs | ISecurityTokenAuthorizedOperatorByPartitionEventArgs | ISecurityTokenRevokedOperatorByPartitionEventArgs | ISecurityTokenIssuedByPartitionEventArgs | ISecurityTokenRedeemedByPartitionEventArgs | ISecurityTokenDocumentRemovedEventArgs | ISecurityTokenDocumentUpdatedEventArgs | ISecurityTokenControllerTransferEventArgs | ISecurityTokenControllerRedemptionEventArgs | ISecurityTokenIssuedEventArgs | ISecurityTokenRedeemedEventArgs;
 export declare enum ISecurityTokenEvents {
     Transfer = "Transfer",
     Approval = "Approval",
     ModuleAdded = "ModuleAdded",
+    ModuleUpgraded = "ModuleUpgraded",
     UpdateTokenDetails = "UpdateTokenDetails",
     UpdateTokenName = "UpdateTokenName",
     GranularityChanged = "GranularityChanged",
@@ -55,6 +56,10 @@ export interface ISecurityTokenModuleAddedEventArgs extends DecodedLogArgs {
     _budget: BigNumber;
     _label: string;
     _archived: boolean;
+}
+export interface ISecurityTokenModuleUpgradedEventArgs extends DecodedLogArgs {
+    _types: BigNumber[];
+    _module: string;
 }
 export interface ISecurityTokenUpdateTokenDetailsEventArgs extends DecodedLogArgs {
     _oldDetails: string;
