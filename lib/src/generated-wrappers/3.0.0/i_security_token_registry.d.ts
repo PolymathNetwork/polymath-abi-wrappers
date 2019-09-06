@@ -2,7 +2,7 @@ import { BaseContract } from '@0x/base-contract';
 import { BlockParamLiteral, CallData, ContractAbi, DecodedLogArgs, TxData, SupportedProvider, AbiDefinition } from 'ethereum-types';
 import { BigNumber } from '@0x/utils';
 import { PolyResponse } from '../../PolyResponse';
-export declare type ISecurityTokenRegistryEventArgs_3_0_0 = ISecurityTokenRegistryPauseEventArgs_3_0_0 | ISecurityTokenRegistryUnpauseEventArgs_3_0_0 | ISecurityTokenRegistryTickerRemovedEventArgs_3_0_0 | ISecurityTokenRegistryChangeExpiryLimitEventArgs_3_0_0 | ISecurityTokenRegistryChangeSecurityLaunchFeeEventArgs_3_0_0 | ISecurityTokenRegistryChangeTickerRegistrationFeeEventArgs_3_0_0 | ISecurityTokenRegistryChangeFeeCurrencyEventArgs_3_0_0 | ISecurityTokenRegistryOwnershipTransferredEventArgs_3_0_0 | ISecurityTokenRegistryChangeTickerOwnershipEventArgs_3_0_0 | ISecurityTokenRegistryNewSecurityTokenEventArgs_3_0_0 | ISecurityTokenRegistryNewSecurityTokenEventArgs_3_0_0 | ISecurityTokenRegistryRegisterTickerEventArgs_3_0_0 | ISecurityTokenRegistryRegisterTickerEventArgs_3_0_0 | ISecurityTokenRegistrySecurityTokenRefreshedEventArgs_3_0_0 | ISecurityTokenRegistryProtocolFactorySetEventArgs_3_0_0 | ISecurityTokenRegistryLatestVersionSetEventArgs_3_0_0 | ISecurityTokenRegistryProtocolFactoryRemovedEventArgs_3_0_0;
+export declare type ISecurityTokenRegistryEventArgs_3_0_0 = ISecurityTokenRegistryPauseEventArgs_3_0_0 | ISecurityTokenRegistryUnpauseEventArgs_3_0_0 | ISecurityTokenRegistryTickerRemovedEventArgs_3_0_0 | ISecurityTokenRegistryChangeExpiryLimitEventArgs_3_0_0 | ISecurityTokenRegistryChangeSecurityLaunchFeeEventArgs_3_0_0 | ISecurityTokenRegistryChangeTickerRegistrationFeeEventArgs_3_0_0 | ISecurityTokenRegistryChangeFeeCurrencyEventArgs_3_0_0 | ISecurityTokenRegistryOwnershipTransferredEventArgs_3_0_0 | ISecurityTokenRegistryChangeTickerOwnershipEventArgs_3_0_0 | ISecurityTokenRegistryNewSecurityTokenEventArgs_3_0_0 | ISecurityTokenRegistryRegisterTickerEventArgs_3_0_0 | ISecurityTokenRegistrySecurityTokenRefreshedEventArgs_3_0_0 | ISecurityTokenRegistryProtocolFactorySetEventArgs_3_0_0 | ISecurityTokenRegistryLatestVersionSetEventArgs_3_0_0 | ISecurityTokenRegistryProtocolFactoryRemovedEventArgs_3_0_0;
 export declare enum ISecurityTokenRegistryEvents_3_0_0 {
     Pause = "Pause",
     Unpause = "Unpause",
@@ -66,16 +66,6 @@ export interface ISecurityTokenRegistryNewSecurityTokenEventArgs_3_0_0 extends D
     _polyFee: BigNumber;
     _protocolVersion: BigNumber;
 }
-export interface ISecurityTokenRegistryNewSecurityTokenEventArgs_3_0_0 extends DecodedLogArgs {
-    _ticker: string;
-    _name: string;
-    _securityTokenAddress: string;
-    _owner: string;
-    _addedAt: BigNumber;
-    _registrant: string;
-    _fromAdmin: boolean;
-    _registrationFee: BigNumber;
-}
 export interface ISecurityTokenRegistryRegisterTickerEventArgs_3_0_0 extends DecodedLogArgs {
     _owner: string;
     _ticker: string;
@@ -84,15 +74,6 @@ export interface ISecurityTokenRegistryRegisterTickerEventArgs_3_0_0 extends Dec
     _fromAdmin: boolean;
     _registrationFeePoly: BigNumber;
     _registrationFeeUsd: BigNumber;
-}
-export interface ISecurityTokenRegistryRegisterTickerEventArgs_3_0_0 extends DecodedLogArgs {
-    _owner: string;
-    _ticker: string;
-    _name: string;
-    _registrationDate: BigNumber;
-    _expiryDate: BigNumber;
-    _fromAdmin: boolean;
-    _registrationFee: BigNumber;
 }
 export interface ISecurityTokenRegistrySecurityTokenRefreshedEventArgs_3_0_0 extends DecodedLogArgs {
     _ticker: string;

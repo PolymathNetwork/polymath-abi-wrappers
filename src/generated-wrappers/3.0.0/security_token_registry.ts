@@ -36,8 +36,6 @@ export type SecurityTokenRegistryEventArgs_3_0_0 =
   | SecurityTokenRegistryOwnershipTransferredEventArgs_3_0_0
   | SecurityTokenRegistryChangeTickerOwnershipEventArgs_3_0_0
   | SecurityTokenRegistryNewSecurityTokenEventArgs_3_0_0
-  | SecurityTokenRegistryNewSecurityTokenEventArgs_3_0_0
-  | SecurityTokenRegistryRegisterTickerEventArgs_3_0_0
   | SecurityTokenRegistryRegisterTickerEventArgs_3_0_0
   | SecurityTokenRegistrySecurityTokenRefreshedEventArgs_3_0_0
   | SecurityTokenRegistryProtocolFactorySetEventArgs_3_0_0
@@ -108,16 +106,6 @@ export interface SecurityTokenRegistryNewSecurityTokenEventArgs_3_0_0 extends De
   _polyFee: BigNumber;
   _protocolVersion: BigNumber;
 }
-export interface SecurityTokenRegistryNewSecurityTokenEventArgs_3_0_0 extends DecodedLogArgs {
-  _ticker: string;
-  _name: string;
-  _securityTokenAddress: string;
-  _owner: string;
-  _addedAt: BigNumber;
-  _registrant: string;
-  _fromAdmin: boolean;
-  _registrationFee: BigNumber;
-}
 export interface SecurityTokenRegistryRegisterTickerEventArgs_3_0_0 extends DecodedLogArgs {
   _owner: string;
   _ticker: string;
@@ -126,15 +114,6 @@ export interface SecurityTokenRegistryRegisterTickerEventArgs_3_0_0 extends Deco
   _fromAdmin: boolean;
   _registrationFeePoly: BigNumber;
   _registrationFeeUsd: BigNumber;
-}
-export interface SecurityTokenRegistryRegisterTickerEventArgs_3_0_0 extends DecodedLogArgs {
-  _owner: string;
-  _ticker: string;
-  _name: string;
-  _registrationDate: BigNumber;
-  _expiryDate: BigNumber;
-  _fromAdmin: boolean;
-  _registrationFee: BigNumber;
 }
 export interface SecurityTokenRegistrySecurityTokenRefreshedEventArgs_3_0_0 extends DecodedLogArgs {
   _ticker: string;
@@ -4957,49 +4936,6 @@ export class SecurityTokenRegistryContract_3_0_0 extends BaseContract {
           },
           {
             name: '_registrationFeeUsd',
-            type: 'uint256',
-            indexed: false,
-          },
-        ],
-        name: 'RegisterTicker',
-        outputs: [],
-        type: 'event',
-      },
-      {
-        anonymous: false,
-        inputs: [
-          {
-            name: '_owner',
-            type: 'address',
-            indexed: true,
-          },
-          {
-            name: '_ticker',
-            type: 'string',
-            indexed: false,
-          },
-          {
-            name: '_name',
-            type: 'string',
-            indexed: false,
-          },
-          {
-            name: '_registrationDate',
-            type: 'uint256',
-            indexed: true,
-          },
-          {
-            name: '_expiryDate',
-            type: 'uint256',
-            indexed: true,
-          },
-          {
-            name: '_fromAdmin',
-            type: 'bool',
-            indexed: false,
-          },
-          {
-            name: '_registrationFee',
             type: 'uint256',
             indexed: false,
           },
