@@ -1,4 +1,4 @@
-export { PolyResponse } from "./polyResponse";
+export { PolyResponse } from "./PolyResponse";
 export * from "@0x/base-contract";
 export * from "@0x/utils";
 export * from "@0x/web3-wrapper";
