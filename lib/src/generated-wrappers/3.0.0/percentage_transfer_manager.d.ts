@@ -156,12 +156,12 @@ export declare class PercentageTransferManagerContract_3_0_0 extends BaseContrac
     };
     static deployAsync(bytecode: string, abi: ContractAbi, supportedProvider: SupportedProvider, txDefaults: Partial<TxData>, _securityToken: string, _polyToken: string): Promise<PercentageTransferManagerContract_3_0_0>;
     /**
-    * @returns The contract ABI
-    */
+     * @returns The contract ABI
+     */
     static ABI(): ContractAbi;
     /**
-    * To add ABIs to the decoder to decode every event log emmited
-    */
+     * To add ABIs to the decoder to decode every event log emmited
+     */
     addABItoDecoder(abiArray: AbiDefinition[], contractName?: string): void;
     constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number);
 }

@@ -55,8 +55,6 @@ export enum SecurityTokenRegistryEvents_3_0_0 {
   OwnershipTransferred = 'OwnershipTransferred',
   ChangeTickerOwnership = 'ChangeTickerOwnership',
   NewSecurityToken = 'NewSecurityToken',
-  NewSecurityToken = 'NewSecurityToken',
-  RegisterTicker = 'RegisterTicker',
   RegisterTicker = 'RegisterTicker',
   SecurityTokenRefreshed = 'SecurityTokenRefreshed',
   ProtocolFactorySet = 'ProtocolFactorySet',
