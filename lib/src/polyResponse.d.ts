@@ -4,4 +4,4 @@ export declare class PolyResponse {
     receiptAsync: Promise<TransactionReceiptWithDecodedLogs>;
     constructor(txHash: string, receiptAsync: Promise<TransactionReceiptWithDecodedLogs>);
 }
-//# sourceMappingURL=polyResponse.d.ts.map
+//# sourceMappingURL=PolyResponse.d.ts.map

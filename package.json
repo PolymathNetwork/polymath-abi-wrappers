@@ -13,14 +13,9 @@
     "build": "tsc -b && yarn uglify",
     "build:ci": "yarn build",
     "lint": "tslint --format stylish --project .",
-    "uglify": "node_modules/uglifyjs-folder/cli.js lib/src/generated-wrappers -eo lib/src/generated-wrappers --pattern \"**/*.js,!**/*min.js\" -x .js",
-    "pre_build": "yarn clean && yarn generate_contract_wrappers && yarn prettier_contract_wrappers",
-    "clean": "shx rm -rf src/generated-wrappers",
-    "prettier_contract_wrappers": "prettier --write src/generated-wrappers/*",
-    "generate_contract_wrappers": "node_modules/@0x/abi-gen/bin/abi-gen.js --abis ${npm_package_config_abis} --template contract.handlebars --partials 'partials/**/*.handlebars' --output src/generated-wrappers"
-  },
-  "config": {
-    "abis": "node_modules/@polymathnetwork/contract-artifacts/artifacts/@(*).json"
+    "uglify": "node_modules/uglifyjs-folder/cli.js lib/src/generated-wrappers -eo lib/src/generated-wrappers --pattern \"**/*.js,!**/*min.js\" -x .js",    
+    "clean": "shx rm -rf src/generated-wrappers && shx mkdir src/generated-wrappers",
+    "prettier_contract_wrappers": "prettier --write src/generated-wrappers/**/*"
   },
   "repository": {
     "type": "git",
@@ -32,11 +27,13 @@
   },
   "homepage": "https://github.com/PolymathNetwork/polymath-abi-wrappers/blob/master/README.md",
   "devDependencies": {
-    "@polymathnetwork/contract-artifacts": "3.1.0-beta.1",
     "@0x/abi-gen": "^2.1.1",
     "@0x/types": "^2.4.0",
+    "@polymathnetwork/contract-artifacts-3-0-0": "npm:@polymathnetwork/contract-artifacts@3.0.0",
+    "@polymathnetwork/contract-artifacts-3-1-0": "npm:@polymathnetwork/contract-artifacts@3.1.0-beta.1",
     "@types/lodash": "^4.14.136",
     "@types/node": "^12.6.8",
+    "hbs-cli": "^1.3.0",
     "prettier": "^1.18.2",
     "shx": "^0.3.2",
     "tslint": "5.18.0",
