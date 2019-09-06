@@ -1,4 +1,4 @@
-export { PolyResponse } from "./polyResponse";
+export { PolyResponse } from "./PolyResponse";
 export * from "@0x/base-contract";
 export * from "@0x/utils";
 export * from "@0x/web3-wrapper";
@@ -20,6 +20,7 @@ export * from "./generated-wrappers/3.0.0/general_transfer_manager";
 export * from "./generated-wrappers/3.0.0/isto";
 export * from "./generated-wrappers/3.0.0/i_module";
 export * from "./generated-wrappers/3.0.0/i_security_token";
+export * from "./generated-wrappers/3.0.0/security_token";
 export * from "./generated-wrappers/3.0.0/i_security_token_registry";
 export * from "./generated-wrappers/3.0.0/i_transfer_manager";
 export * from "./generated-wrappers/3.0.0/lock_up_transfer_manager";
