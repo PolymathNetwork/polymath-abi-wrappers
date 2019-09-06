@@ -1,6 +1,6 @@
 {
   "name": "@polymathnetwork/abi-wrappers",
-  "version": "4.0.0-beta.2",
+  "version": "5.0.0-beta.2",
   "engines": {
     "node": ">=6.12"
   },
@@ -14,7 +14,7 @@
     "build": "tsc -b && yarn uglify",
     "build:ci": "yarn build",
     "lint": "tslint --format stylish --project .",
-    "uglify": "node_modules/uglifyjs-folder/cli.js lib/src/generated-wrappers -eo lib/src/generated-wrappers --pattern \"**/*.js,!**/*min.js\" -x .js",    
+    "uglify": "node_modules/uglifyjs-folder/cli.js lib/src/generated-wrappers -eo lib/src/generated-wrappers --pattern \"**/*.js,!**/*min.js\" -x .js",
     "clean": "shx rm -rf src/generated-wrappers && shx mkdir src/generated-wrappers",
     "prettier_contract_wrappers": "prettier --write src/generated-wrappers/**/*"
   },
