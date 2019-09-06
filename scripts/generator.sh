@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
+source ./scripts/utils.sh
+yarn clean
 
-# params validation
-if [[ -z "$1" ]]; then
-  echo "Tag is empty"
-  exit 1
-fi
+function generate_wrappers_for_version () {
+  ./scripts/generate_templates.sh "$1"
+  ./scripts/generate_version.sh "$1"
 
-yarn upgrade polymath-contract-artifacts@git://github.com/PolymathNetwork/polymath-contract-artifacts.git#$1
-yarn pre_build && yarn build
-git add --all && git commit -m "ts generated from polymath-contract-artifacts#$1" && git push origin master && git tag -a $1 -m "automatic release from polymath-contract-artifacts#$1" && git push origin $1
+  cleanup_templates
+}
+
+generate_wrappers_for_version 3.0.0
+generate_wrappers_for_version 3.1.0
+
+yarn prettier_contract_wrappers
 
 echo "\nTypescripts successfully created..."
