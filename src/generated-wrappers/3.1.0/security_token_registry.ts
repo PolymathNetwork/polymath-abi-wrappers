@@ -22,6 +22,7 @@ import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { assert } from '@0x/assert';
 import { PolyResponse } from '../../PolyResponse';
+import { isEqual } from 'lodash';
 import * as ethers from 'ethers';
 // tslint:enable:no-unused-variable
 
@@ -52,7 +53,7 @@ export enum SecurityTokenRegistryEvents_3_1_0 {
   ChangeFeeCurrency = 'ChangeFeeCurrency',
   OwnershipTransferred = 'OwnershipTransferred',
   ChangeTickerOwnership = 'ChangeTickerOwnership',
-  NewSecurityToken = 'NewSecurityToken',
+  NewSecurityToken = 'NewSecurityToken',  
   RegisterTicker = 'RegisterTicker',
   SecurityTokenRefreshed = 'SecurityTokenRefreshed',
   ProtocolFactorySet = 'ProtocolFactorySet',
@@ -4943,7 +4944,7 @@ export class SecurityTokenRegistryContract_3_1_0 extends BaseContract {
         name: 'RegisterTicker',
         outputs: [],
         type: 'event',
-      },
+      },     
       {
         anonymous: false,
         inputs: [
@@ -5751,6 +5752,10 @@ export class SecurityTokenRegistryContract_3_1_0 extends BaseContract {
       '_defaultEstimateGasFactor',
     ]);
   }
+}
+
+export function isSecurityTokenRegistryContract_3_1_0(contract: any): contract is SecurityTokenRegistryContract_3_1_0 {
+  return isEqual(SecurityTokenRegistryContract_3_1_0.ABI(), contract.abi);
 }
 
 // tslint:disable:max-file-line-count

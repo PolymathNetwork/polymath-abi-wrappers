@@ -22,6 +22,7 @@ import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { assert } from '@0x/assert';
 import { PolyResponse } from '../../PolyResponse';
+import { isEqual } from 'lodash';
 import * as ethers from 'ethers';
 // tslint:enable:no-unused-variable
 
@@ -136,7 +137,11 @@ txDefaults: Partial<TxData>,
         this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
         classUtils.bindAll(this, ['_abiEncoderByFunctionSignature', 'address', '_web3Wrapper', '_defaultEstimateGasFactor']);
     }
-} 
+}
+
+export function is\{{contractName}}Contract_{{version}}(contract: any): contract is \{{contractName}}Contract_{{version}} {
+    return isEqual(\{{contractName}}Contract_{{version}}.ABI(), contract.abi);
+}
 
 // tslint:disable:max-file-line-count
 // tslint:enable:no-unbound-method no-parameter-reassignment no-consecutive-blank-lines ordered-imports align
