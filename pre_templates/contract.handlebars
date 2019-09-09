@@ -22,6 +22,7 @@ import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { assert } from '@0x/assert';
 import { PolyResponse } from '../../PolyResponse';
+import { isEqual } from 'lodash';
 import { utils as ethersUtils } from 'ethers';
 // tslint:enable:no-unused-variable
 
@@ -89,60 +90,59 @@ txDefaults: Partial<TxData>,
         logUtils.log(`transactionHash: ${txHash}`);
         const txReceipt = await web3Wrapper.awaitTransactionSuccessAsync(txHash);
         logUtils.log(`\{{contractName}} successfully deployed at ${txReceipt.contractAddress}`);
-        const contractInstance = new \{{contractName}}Contract_{{version}}(txReceipt.contractAddress as string,
-        provider, txDefaults);
+        const contractInstance = new \{{contractName}}Contract_{{version}}(txReceipt.contractAddress as string, provider, txDefaults);
         contractInstance.constructorArgs = [\{{> params inputs=ctor.inputs}}];
         return contractInstance;
         }
 
 
-        /**
-        * @returns The contract ABI
-        */
-        public static ABI(): ContractAbi {
+    /**
+    * @returns The contract ABI
+    */
+    public static ABI(): ContractAbi {
         const abi = [
-        \{{#each ABI}}
-        { \{{#if (isDefined this.constant)}}
-        constant: \{{constant}},\{{/if}}\{{#if (isDefined this.anonymous)}}
-        anonymous: \{{anonymous}},\{{/if}}
-        inputs: [
-        \{{#each inputs}}
-        \{{> abi_type this}}
-        \{{/each}}
-        ],\{{#this.name}}
-        name: '\{{{this}}}',\{{/this.name}}
-        outputs: [
-        \{{#each outputs}}
-        \{{> abi_type this}}
-        \{{/each}}
-        ],\{{#if (isDefined this.payable)}}
-        payable: \{{payable}},\{{/if}}\{{#this.stateMutability}}
-        stateMutability: '\{{this}}',\{{/this.stateMutability}}
-        type: '\{{type}}',
-        },
-        \{{/each}}
+            \{{#each ABI}}
+            { \{{#if (isDefined this.constant)}}
+                constant: \{{constant}},\{{/if}}\{{#if (isDefined this.anonymous)}}
+                anonymous: \{{anonymous}},\{{/if}}
+                inputs: [
+                    \{{#each inputs}}
+                    \{{> abi_type this}}
+                    \{{/each}}
+                ],\{{#this.name}}
+                name: '\{{{this}}}',\{{/this.name}}
+                outputs: [
+                    \{{#each outputs}}
+                    \{{> abi_type this}}
+                    \{{/each}}
+                ],\{{#if (isDefined this.payable)}}
+                payable: \{{payable}},\{{/if}}\{{#this.stateMutability}}
+                stateMutability: '\{{this}}',\{{/this.stateMutability}}
+                type: '\{{type}}',
+            },
+            \{{/each}}
         ] as ContractAbi;
         return abi;
-        }
+    }
 
-        /**
-        * To add ABIs to the decoder to decode every event log emmited
-        */
-        public addABItoDecoder(abiArray: AbiDefinition[], contractName?: string): void {
+    /**
+    * To add ABIs to the decoder to decode every event log emmited
+    */
+    public addABItoDecoder(abiArray: AbiDefinition[], contractName?: string): void {
         this._web3Wrapper.abiDecoder.addABI(abiArray, contractName);
-        }
+    }
 
-        constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>,
-            defaultEstimateGasFactor?: number) {
-            super('\{{contractName}}', \{{contractName}}Contract_{{version}}.ABI(), address, supportedProvider,
-            txDefaults);
-            this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
-            classUtils.bindAll(this, ['_abiEncoderByFunctionSignature', 'address', '_web3Wrapper',
-            '_defaultEstimateGasFactor']);
-            }
-            }
+    constructor(address: string, supportedProvider: SupportedProvider, txDefaults?: Partial<TxData>, defaultEstimateGasFactor?: number) {
+        super('\{{contractName}}', \{{contractName}}Contract_{{version}}.ABI(), address, supportedProvider, txDefaults);
+        this._defaultEstimateGasFactor = defaultEstimateGasFactor === undefined ? 1.1 : defaultEstimateGasFactor;
+        classUtils.bindAll(this, ['_abiEncoderByFunctionSignature', 'address', '_web3Wrapper', '_defaultEstimateGasFactor']);
+    }
+}
 
-            // tslint:disable:max-file-line-count
-            // tslint:enable:no-unbound-method no-parameter-reassignment no-consecutive-blank-lines ordered-imports
-            // tslint:enable:align
-            // tslint:enable:trailing-comma whitespace no-trailing-whitespace
+export function is\{{contractName}}Contract_{{version}}(contract: any): contract is \{{contractName}}Contract_{{version}} {
+    return isEqual(\{{contractName}}Contract_{{version}}.ABI(), contract.abi);
+}
+
+// tslint:disable:max-file-line-count
+// tslint:enable:no-unbound-method no-parameter-reassignment no-consecutive-blank-lines ordered-imports align
+// tslint:enable:trailing-comma whitespace no-trailing-whitespace
