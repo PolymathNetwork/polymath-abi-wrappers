@@ -23,7 +23,7 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { assert } from '@0x/assert';
 import { PolyResponse } from '../../PolyResponse';
 import { isEqual } from 'lodash';
-import * as ethers from 'ethers';
+import { utils as ethersUtils } from 'ethers';
 // tslint:enable:no-unused-variable
 
 export type ERC20DetailedEventArgs_3_0_0 = ERC20DetailedTransferEventArgs_3_0_0 | ERC20DetailedApprovalEventArgs_3_0_0;
@@ -676,7 +676,7 @@ export class ERC20DetailedContract_3_0_0 extends BaseContract {
       [name, symbol, decimals],
       BaseContract._bigNumberToString,
     );
-    const iface = new ethers.utils.Interface(abi);
+    const iface = new ethersUtils.Interface(abi);
     const deployInfo = iface.deployFunction;
     const txData = deployInfo.encode(bytecode, [name, symbol, decimals]);
     const web3Wrapper = new Web3Wrapper(provider);

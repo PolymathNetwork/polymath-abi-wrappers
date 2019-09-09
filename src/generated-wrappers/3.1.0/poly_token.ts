@@ -23,7 +23,7 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { assert } from '@0x/assert';
 import { PolyResponse } from '../../PolyResponse';
 import { isEqual } from 'lodash';
-import * as ethers from 'ethers';
+import { utils as ethersUtils } from 'ethers';
 // tslint:enable:no-unused-variable
 
 export type PolyTokenEventArgs_3_1_0 = PolyTokenTransferEventArgs_3_1_0 | PolyTokenApprovalEventArgs_3_1_0;
@@ -963,7 +963,7 @@ export class PolyTokenContract_3_1_0 extends BaseContract {
       [_polyDistributionContractAddress],
       BaseContract._bigNumberToString,
     );
-    const iface = new ethers.utils.Interface(abi);
+    const iface = new ethersUtils.Interface(abi);
     const deployInfo = iface.deployFunction;
     const txData = deployInfo.encode(bytecode, [_polyDistributionContractAddress]);
     const web3Wrapper = new Web3Wrapper(provider);
