@@ -3,7 +3,7 @@ export * from "@0x/base-contract";
 export * from "@0x/utils";
 export * from "@0x/web3-wrapper";
 export * from "ethereum-types";
-export * from "ethers";
+export { utils as ethersUtils } from 'ethers';
 
 // 3.0.0
 export * from "./generated-wrappers/3.0.0/blacklist_transfer_manager";
