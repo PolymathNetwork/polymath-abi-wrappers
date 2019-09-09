@@ -2530,21 +2530,7 @@ export class ModuleRegistryContract_3_1_0 extends BaseContract {
         payable: false,
         stateMutability: 'nonpayable',
         type: 'function',
-      },
-      {
-        constant: false,
-        inputs: [
-          {
-            name: '_moduleFactory',
-            type: 'address',
-          },
-        ],
-        name: 'useModule',
-        outputs: [],
-        payable: false,
-        stateMutability: 'nonpayable',
-        type: 'function',
-      },
+      },      
       {
         constant: true,
         inputs: [
