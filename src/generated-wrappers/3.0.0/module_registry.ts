@@ -5,20 +5,14 @@ import { BaseContract } from '@0x/base-contract';
 import { schemas } from '@0x/json-schemas';
 import {
   BlockParam,
-  BlockParamLiteral,
   CallData,
   ContractAbi,
-  ContractArtifact,
   DecodedLogArgs,
-  MethodAbi,
-  TransactionReceiptWithDecodedLogs,
   TxData,
-  TxDataPayable,
   SupportedProvider,
   AbiDefinition,
 } from 'ethereum-types';
 import { BigNumber, classUtils, logUtils, providerUtils } from '@0x/utils';
-import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { assert } from '@0x/assert';
 import { PolyResponse } from '../../PolyResponse';
@@ -2523,6 +2517,20 @@ export class ModuleRegistryContract_3_0_0 extends BaseContract {
           {
             name: '_isUpgrade',
             type: 'bool',
+          },
+        ],
+        name: 'useModule',
+        outputs: [],
+        payable: false,
+        stateMutability: 'nonpayable',
+        type: 'function',
+      },
+      {
+        constant: false,
+        inputs: [
+          {
+            name: '_moduleFactory',
+            type: 'address',
           },
         ],
         name: 'useModule',
