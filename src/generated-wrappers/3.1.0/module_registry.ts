@@ -22,6 +22,7 @@ import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { assert } from '@0x/assert';
 import { PolyResponse } from '../../PolyResponse';
+import { isEqual } from 'lodash';
 import * as ethers from 'ethers';
 // tslint:enable:no-unused-variable
 
@@ -2529,7 +2530,7 @@ export class ModuleRegistryContract_3_1_0 extends BaseContract {
         payable: false,
         stateMutability: 'nonpayable',
         type: 'function',
-      },
+      },      
       {
         constant: true,
         inputs: [
@@ -2856,6 +2857,10 @@ export class ModuleRegistryContract_3_1_0 extends BaseContract {
       '_defaultEstimateGasFactor',
     ]);
   }
+}
+
+export function isModuleRegistryContract_3_1_0(contract: any): contract is ModuleRegistryContract_3_1_0 {
+  return isEqual(ModuleRegistryContract_3_1_0.ABI(), contract.abi);
 }
 
 // tslint:disable:max-file-line-count

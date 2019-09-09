@@ -22,6 +22,7 @@ import { SimpleContractArtifact } from '@0x/types';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { assert } from '@0x/assert';
 import { PolyResponse } from '../../PolyResponse';
+import { isEqual } from 'lodash';
 import * as ethers from 'ethers';
 // tslint:enable:no-unused-variable
 
@@ -859,6 +860,10 @@ export class FeatureRegistryContract_3_1_0 extends BaseContract {
       '_defaultEstimateGasFactor',
     ]);
   }
+}
+
+export function isFeatureRegistryContract_3_1_0(contract: any): contract is FeatureRegistryContract_3_1_0 {
+  return isEqual(FeatureRegistryContract_3_1_0.ABI(), contract.abi);
 }
 
 // tslint:disable:max-file-line-count
