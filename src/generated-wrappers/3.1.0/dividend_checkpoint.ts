@@ -23,7 +23,7 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { assert } from '@0x/assert';
 import { PolyResponse } from '../../PolyResponse';
 import { isEqual } from 'lodash';
-import * as ethers from 'ethers';
+import { utils as ethersUtils } from 'ethers';
 // tslint:enable:no-unused-variable
 
 export type DividendCheckpointEventArgs_3_1_0 =
@@ -2962,7 +2962,7 @@ export class DividendCheckpointContract_3_1_0 extends BaseContract {
     const provider = providerUtils.standardizeOrThrow(supportedProvider);
     const constructorAbi = BaseContract._lookupConstructorAbi(abi);
     [] = BaseContract._formatABIDataItemList(constructorAbi.inputs, [], BaseContract._bigNumberToString);
-    const iface = new ethers.utils.Interface(abi);
+    const iface = new ethersUtils.Interface(abi);
     const deployInfo = iface.deployFunction;
     const txData = deployInfo.encode(bytecode, []);
     const web3Wrapper = new Web3Wrapper(provider);

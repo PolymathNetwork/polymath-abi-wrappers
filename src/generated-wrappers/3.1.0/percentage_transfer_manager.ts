@@ -23,7 +23,7 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { assert } from '@0x/assert';
 import { PolyResponse } from '../../PolyResponse';
 import { isEqual } from 'lodash';
-import * as ethers from 'ethers';
+import { utils as ethersUtils } from 'ethers';
 // tslint:enable:no-unused-variable
 
 export type PercentageTransferManagerEventArgs_3_1_0 =
@@ -1892,7 +1892,7 @@ export class PercentageTransferManagerContract_3_1_0 extends BaseContract {
       [_securityToken, _polyToken],
       BaseContract._bigNumberToString,
     );
-    const iface = new ethers.utils.Interface(abi);
+    const iface = new ethersUtils.Interface(abi);
     const deployInfo = iface.deployFunction;
     const txData = deployInfo.encode(bytecode, [_securityToken, _polyToken]);
     const web3Wrapper = new Web3Wrapper(provider);
