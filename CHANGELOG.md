@@ -1,3 +1,14 @@
+# [4.0.0-beta.4](https://github.com/PolymathNetwork/polymath-abi-wrappers/compare/v4.0.0-beta.3@beta...v4.0.0-beta.4@beta) (2019-09-11)
+
+
+### Features
+
+* add npm automation ([90da398](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/90da398))
+* add npm automation ([cea1669](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/cea1669))
+* add npm automation ([8611da7](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/8611da7))
+* add npm automation ([415ae33](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/415ae33))
+* add npm automation ([a30d37e](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/a30d37e))
+
 # [4.0.0-beta.1](https://github.com/PolymathNetwork/polymath-abi-wrappers/compare/v3.0.0...v4.0.0-beta.1@beta) (2019-09-10)
 
 
