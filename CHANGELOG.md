@@ -1,3 +1,10 @@
+# [4.0.0-beta.6](https://github.com/PolymathNetwork/polymath-abi-wrappers/compare/v4.0.0-beta.5@beta...v4.0.0-beta.6@beta) (2019-09-25)
+
+
+### Bug Fixes
+
+* export ST wrapper because of missing event in IST wrapper ([d737fa8](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/d737fa8))
+
 # [4.0.0-beta.5](https://github.com/PolymathNetwork/polymath-abi-wrappers/compare/v4.0.0-beta.4@beta...v4.0.0-beta.5@beta) (2019-09-25)
 
 
