@@ -3,7 +3,7 @@ export * from "@0x/base-contract";
 export * from "@0x/utils";
 export * from "@0x/web3-wrapper";
 export * from "ethereum-types";
-export { utils as ethersUtils } from 'ethers';
+export { utils as ethersUtils } from "ethers";
 
 // 3.0.0
 export * from "./generated-wrappers/3.0.0/blacklist_transfer_manager";
@@ -20,7 +20,6 @@ export * from "./generated-wrappers/3.0.0/general_transfer_manager";
 export * from "./generated-wrappers/3.0.0/isto";
 export * from "./generated-wrappers/3.0.0/i_module";
 export * from "./generated-wrappers/3.0.0/i_security_token";
-export * from "./generated-wrappers/3.0.0/security_token";
 export * from "./generated-wrappers/3.0.0/i_security_token_registry";
 export * from "./generated-wrappers/3.0.0/i_transfer_manager";
 export * from "./generated-wrappers/3.0.0/lock_up_transfer_manager";
@@ -50,3 +49,4 @@ export * from "./generated-wrappers/3.1.0/general_transfer_manager";
 export * from "./generated-wrappers/3.1.0/u_s_d_tiered_s_t_o";
 export * from "./generated-wrappers/3.1.0/vesting_escrow_wallet";
 export * from "./generated-wrappers/3.1.0/restricted_partial_sale_t_m";
+export * from "./generated-wrappers/3.1.0/advanced_p_l_c_r_voting_checkpoint";
