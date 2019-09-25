@@ -1,3 +1,15 @@
+# [4.0.0-beta.5](https://github.com/PolymathNetwork/polymath-abi-wrappers/compare/v4.0.0-beta.4@beta...v4.0.0-beta.5@beta) (2019-09-25)
+
+
+### Bug Fixes
+
+* remove wrong sintax format ([dc1524e](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/dc1524e))
+
+
+### Features
+
+* **wrapper:** add APLCRVC wrapper to our components suite ([973e9eb](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/973e9eb))
+
 # [4.0.0-beta.4](https://github.com/PolymathNetwork/polymath-abi-wrappers/compare/v4.0.0-beta.3@beta...v4.0.0-beta.4@beta) (2019-09-11)
 
 
