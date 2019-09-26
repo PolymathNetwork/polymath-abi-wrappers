@@ -1,6 +1,6 @@
 {
   "name": "@polymathnetwork/abi-wrappers",
-  "version": "4.0.0-beta.7",
+  "version": "4.0.0-beta.8",
   "engines": {
     "node": ">=6.12"
   },

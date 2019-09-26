@@ -1,3 +1,10 @@
+# [4.0.0-beta.8](https://github.com/PolymathNetwork/polymath-abi-wrappers/compare/v4.0.0-beta.7@beta...v4.0.0-beta.8@beta) (2019-09-26)
+
+
+### Features
+
+* **dependencies:** dependencies updated ([f208f0b](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/f208f0b))
+
 # [4.0.0-beta.7](https://github.com/PolymathNetwork/polymath-abi-wrappers/compare/v4.0.0-beta.6@beta...v4.0.0-beta.7@beta) (2019-09-26)
 
 
