@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/PolymathNetwork/polymath-contract-wrappers.svg?branch=master)](https://travis-ci.org/PolymathNetwork/contract-wrappers)
+[![Build Status](https://travis-ci.org/PolymathNetwork/polymath-abi-wrappers.svg?branch=master)](https://travis-ci.org/PolymathNetwork/polymath-abi-wrappers)
 [![Greenkeeper badge](https://badges.greenkeeper.io/PolymathNetwork/polymath-abi-wrappers.svg)](https://greenkeeper.io/)
 [![Gitter](https://img.shields.io/badge/chat-gitter-green.svg)](https://gitter.im/PolymathNetwork/Lobby)
 [![Telegram](https://img.shields.io/badge/50k+-telegram-blue.svg)](https://gitter.im/PolymathNetwork/Lobby)
