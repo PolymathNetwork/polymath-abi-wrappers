@@ -32,6 +32,8 @@ export type USDTieredSTOEventArgs_3_1_0 =
   | USDTieredSTOSetTimesEventArgs_3_1_0
   | USDTieredSTOSetTiersEventArgs_3_1_0
   | USDTieredSTOSetTreasuryWalletEventArgs_3_1_0
+  | USDTieredSTOSetOraclesEventArgs_3_1_0
+  | USDTieredSTOUsageFeeDeductedEventArgs_3_1_0
   | USDTieredSTOPauseEventArgs_3_1_0
   | USDTieredSTOUnpauseEventArgs_3_1_0
   | USDTieredSTOSetFundRaiseTypesEventArgs_3_1_0
@@ -50,6 +52,8 @@ export enum USDTieredSTOEvents_3_1_0 {
   SetTimes = 'SetTimes',
   SetTiers = 'SetTiers',
   SetTreasuryWallet = 'SetTreasuryWallet',
+  SetOracles = 'SetOracles',
+  UsageFeeDeducted = 'UsageFeeDeducted',
   Pause = 'Pause',
   Unpause = 'Unpause',
   SetFundRaiseTypes = 'SetFundRaiseTypes',
@@ -94,7 +98,7 @@ export interface USDTieredSTOReserveTokenTransferEventArgs_3_1_0 extends Decoded
 }
 export interface USDTieredSTOSetAddressesEventArgs_3_1_0 extends DecodedLogArgs {
   _wallet: string;
-  _usdTokens: string[];
+  _stableTokens: string[];
 }
 export interface USDTieredSTOSetLimitsEventArgs_3_1_0 extends DecodedLogArgs {
   _nonAccreditedLimitUSD: BigNumber;
@@ -113,6 +117,15 @@ export interface USDTieredSTOSetTiersEventArgs_3_1_0 extends DecodedLogArgs {
 export interface USDTieredSTOSetTreasuryWalletEventArgs_3_1_0 extends DecodedLogArgs {
   _oldWallet: string;
   _newWallet: string;
+}
+export interface USDTieredSTOSetOraclesEventArgs_3_1_0 extends DecodedLogArgs {
+  _denominatedCurrency: string;
+  _isCustomOracles: boolean;
+}
+export interface USDTieredSTOUsageFeeDeductedEventArgs_3_1_0 extends DecodedLogArgs {
+  _wallet: string;
+  _securityToken: string;
+  _module: string;
 }
 export interface USDTieredSTOPauseEventArgs_3_1_0 extends DecodedLogArgs {
   account: string;
@@ -279,6 +292,44 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
     getABIEncodedTransactionData(): string {
       const self = (this as any) as USDTieredSTOContract_3_1_0;
       const abiEncodedTransactionData = self._strictEncodeArguments('reclaimETH()', []);
+      return abiEncodedTransactionData;
+    },
+  };
+  public denominatedCurrency = {
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<string> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as USDTieredSTOContract_3_1_0;
+      const encodedData = self._strictEncodeArguments('denominatedCurrency()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('denominatedCurrency()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<string>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as USDTieredSTOContract_3_1_0;
+      const abiEncodedTransactionData = self._strictEncodeArguments('denominatedCurrency()', []);
       return abiEncodedTransactionData;
     },
   };
@@ -1739,7 +1790,9 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
       _fundRaiseTypes: Array<number | BigNumber>,
       _wallet: string,
       _treasuryWallet: string,
-      _usdTokens: string[],
+      _stableTokens: string[],
+      _customOracleAddresses: string[],
+      _denominatedCurrency: string,
       txData?: Partial<TxData> | undefined,
       estimateGasFactor?: number,
     ): Promise<PolyResponse> {
@@ -1754,10 +1807,12 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
       assert.isArray('_fundRaiseTypes', _fundRaiseTypes);
       assert.isString('_wallet', _wallet);
       assert.isString('_treasuryWallet', _treasuryWallet);
-      assert.isArray('_usdTokens', _usdTokens);
+      assert.isArray('_stableTokens', _stableTokens);
+      assert.isArray('_customOracleAddresses', _customOracleAddresses);
+      assert.isString('_denominatedCurrency', _denominatedCurrency);
       const self = (this as any) as USDTieredSTOContract_3_1_0;
       const encodedData = self._strictEncodeArguments(
-        'configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address[])',
+        'configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address[],address[],bytes32)',
         [
           _startTime,
           _endTime,
@@ -1770,7 +1825,9 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
           _fundRaiseTypes,
           _wallet,
           _treasuryWallet,
-          _usdTokens,
+          _stableTokens,
+          _customOracleAddresses,
+          _denominatedCurrency,
         ],
       );
       const contractDefaults = self._web3Wrapper.getContractDefaults();
@@ -1798,7 +1855,9 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
           _fundRaiseTypes,
           _wallet,
           _treasuryWallet,
-          _usdTokens,
+          _stableTokens,
+          _customOracleAddresses,
+          _denominatedCurrency,
           estimateGasFactor,
         ),
       );
@@ -1823,7 +1882,9 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
       _fundRaiseTypes: Array<number | BigNumber>,
       _wallet: string,
       _treasuryWallet: string,
-      _usdTokens: string[],
+      _stableTokens: string[],
+      _customOracleAddresses: string[],
+      _denominatedCurrency: string,
       factor?: number,
       txData?: Partial<TxData> | undefined,
     ): Promise<number> {
@@ -1838,10 +1899,12 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
       assert.isArray('_fundRaiseTypes', _fundRaiseTypes);
       assert.isString('_wallet', _wallet);
       assert.isString('_treasuryWallet', _treasuryWallet);
-      assert.isArray('_usdTokens', _usdTokens);
+      assert.isArray('_stableTokens', _stableTokens);
+      assert.isArray('_customOracleAddresses', _customOracleAddresses);
+      assert.isString('_denominatedCurrency', _denominatedCurrency);
       const self = (this as any) as USDTieredSTOContract_3_1_0;
       const encodedData = self._strictEncodeArguments(
-        'configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address[])',
+        'configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address[],address[],bytes32)',
         [
           _startTime,
           _endTime,
@@ -1854,7 +1917,9 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
           _fundRaiseTypes,
           _wallet,
           _treasuryWallet,
-          _usdTokens,
+          _stableTokens,
+          _customOracleAddresses,
+          _denominatedCurrency,
         ],
       );
       const contractDefaults = self._web3Wrapper.getContractDefaults();
@@ -1892,7 +1957,9 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
       _fundRaiseTypes: Array<number | BigNumber>,
       _wallet: string,
       _treasuryWallet: string,
-      _usdTokens: string[],
+      _stableTokens: string[],
+      _customOracleAddresses: string[],
+      _denominatedCurrency: string,
       callData: Partial<CallData> = {},
       defaultBlock?: BlockParam,
     ): Promise<void> {
@@ -1907,7 +1974,9 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
       assert.isArray('_fundRaiseTypes', _fundRaiseTypes);
       assert.isString('_wallet', _wallet);
       assert.isString('_treasuryWallet', _treasuryWallet);
-      assert.isArray('_usdTokens', _usdTokens);
+      assert.isArray('_stableTokens', _stableTokens);
+      assert.isArray('_customOracleAddresses', _customOracleAddresses);
+      assert.isString('_denominatedCurrency', _denominatedCurrency);
       assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
         schemas.addressSchema,
         schemas.numberSchema,
@@ -1918,7 +1987,7 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
       }
       const self = (this as any) as USDTieredSTOContract_3_1_0;
       const encodedData = self._strictEncodeArguments(
-        'configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address[])',
+        'configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address[],address[],bytes32)',
         [
           _startTime,
           _endTime,
@@ -1931,7 +2000,9 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
           _fundRaiseTypes,
           _wallet,
           _treasuryWallet,
-          _usdTokens,
+          _stableTokens,
+          _customOracleAddresses,
+          _denominatedCurrency,
         ],
       );
       const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
@@ -1949,7 +2020,7 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
       const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
       BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
       const abiEncoder = self._lookupAbiEncoder(
-        'configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address[])',
+        'configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address[],address[],bytes32)',
       );
       // tslint:disable boolean-naming
       const result = abiEncoder.strictDecodeReturnValue<void>(rawCallResult);
@@ -1968,7 +2039,9 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
       _fundRaiseTypes: Array<number | BigNumber>,
       _wallet: string,
       _treasuryWallet: string,
-      _usdTokens: string[],
+      _stableTokens: string[],
+      _customOracleAddresses: string[],
+      _denominatedCurrency: string,
     ): string {
       assert.isBigNumber('_startTime', _startTime);
       assert.isBigNumber('_endTime', _endTime);
@@ -1981,10 +2054,12 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
       assert.isArray('_fundRaiseTypes', _fundRaiseTypes);
       assert.isString('_wallet', _wallet);
       assert.isString('_treasuryWallet', _treasuryWallet);
-      assert.isArray('_usdTokens', _usdTokens);
+      assert.isArray('_stableTokens', _stableTokens);
+      assert.isArray('_customOracleAddresses', _customOracleAddresses);
+      assert.isString('_denominatedCurrency', _denominatedCurrency);
       const self = (this as any) as USDTieredSTOContract_3_1_0;
       const abiEncodedTransactionData = self._strictEncodeArguments(
-        'configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address[])',
+        'configure(uint256,uint256,uint256[],uint256[],uint256[],uint256[],uint256,uint256,uint8[],address,address,address[],address[],bytes32)',
         [
           _startTime,
           _endTime,
@@ -1997,7 +2072,9 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
           _fundRaiseTypes,
           _wallet,
           _treasuryWallet,
-          _usdTokens,
+          _stableTokens,
+          _customOracleAddresses,
+          _denominatedCurrency,
         ],
       );
       return abiEncodedTransactionData;
@@ -2719,18 +2796,18 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
     async sendTransactionAsync(
       _wallet: string,
       _treasuryWallet: string,
-      _usdTokens: string[],
+      _stableTokens: string[],
       txData?: Partial<TxData> | undefined,
       estimateGasFactor?: number,
     ): Promise<PolyResponse> {
       assert.isString('_wallet', _wallet);
       assert.isString('_treasuryWallet', _treasuryWallet);
-      assert.isArray('_usdTokens', _usdTokens);
+      assert.isArray('_stableTokens', _stableTokens);
       const self = (this as any) as USDTieredSTOContract_3_1_0;
       const encodedData = self._strictEncodeArguments('modifyAddresses(address,address,address[])', [
         _wallet,
         _treasuryWallet,
-        _usdTokens,
+        _stableTokens,
       ]);
       const contractDefaults = self._web3Wrapper.getContractDefaults();
       const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -2748,7 +2825,7 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
           self,
           _wallet,
           _treasuryWallet,
-          _usdTokens,
+          _stableTokens,
           estimateGasFactor,
         ),
       );
@@ -2764,18 +2841,18 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
     async estimateGasAsync(
       _wallet: string,
       _treasuryWallet: string,
-      _usdTokens: string[],
+      _stableTokens: string[],
       factor?: number,
       txData?: Partial<TxData> | undefined,
     ): Promise<number> {
       assert.isString('_wallet', _wallet);
       assert.isString('_treasuryWallet', _treasuryWallet);
-      assert.isArray('_usdTokens', _usdTokens);
+      assert.isArray('_stableTokens', _stableTokens);
       const self = (this as any) as USDTieredSTOContract_3_1_0;
       const encodedData = self._strictEncodeArguments('modifyAddresses(address,address,address[])', [
         _wallet,
         _treasuryWallet,
-        _usdTokens,
+        _stableTokens,
       ]);
       const contractDefaults = self._web3Wrapper.getContractDefaults();
       const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
@@ -2803,13 +2880,13 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
     async callAsync(
       _wallet: string,
       _treasuryWallet: string,
-      _usdTokens: string[],
+      _stableTokens: string[],
       callData: Partial<CallData> = {},
       defaultBlock?: BlockParam,
     ): Promise<void> {
       assert.isString('_wallet', _wallet);
       assert.isString('_treasuryWallet', _treasuryWallet);
-      assert.isArray('_usdTokens', _usdTokens);
+      assert.isArray('_stableTokens', _stableTokens);
       assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
         schemas.addressSchema,
         schemas.numberSchema,
@@ -2822,7 +2899,7 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
       const encodedData = self._strictEncodeArguments('modifyAddresses(address,address,address[])', [
         _wallet,
         _treasuryWallet,
-        _usdTokens,
+        _stableTokens,
       ]);
       const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
         {
@@ -2844,30 +2921,33 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
       // tslint:enable boolean-naming
       return result;
     },
-    getABIEncodedTransactionData(_wallet: string, _treasuryWallet: string, _usdTokens: string[]): string {
+    getABIEncodedTransactionData(_wallet: string, _treasuryWallet: string, _stableTokens: string[]): string {
       assert.isString('_wallet', _wallet);
       assert.isString('_treasuryWallet', _treasuryWallet);
-      assert.isArray('_usdTokens', _usdTokens);
+      assert.isArray('_stableTokens', _stableTokens);
       const self = (this as any) as USDTieredSTOContract_3_1_0;
       const abiEncodedTransactionData = self._strictEncodeArguments('modifyAddresses(address,address,address[])', [
         _wallet,
         _treasuryWallet,
-        _usdTokens,
+        _stableTokens,
       ]);
       return abiEncodedTransactionData;
     },
   };
-  public modifyOracle = {
+  public modifyOracles = {
     async sendTransactionAsync(
-      _fundRaiseType: number | BigNumber,
-      _oracleAddress: string,
+      _customOracleAddresses: string[],
+      _denominatedCurrencySymbol: string,
       txData?: Partial<TxData> | undefined,
       estimateGasFactor?: number,
     ): Promise<PolyResponse> {
-      assert.isNumberOrBigNumber('_fundRaiseType', _fundRaiseType);
-      assert.isString('_oracleAddress', _oracleAddress);
+      assert.isArray('_customOracleAddresses', _customOracleAddresses);
+      assert.isString('_denominatedCurrencySymbol', _denominatedCurrencySymbol);
       const self = (this as any) as USDTieredSTOContract_3_1_0;
-      const encodedData = self._strictEncodeArguments('modifyOracle(uint8,address)', [_fundRaiseType, _oracleAddress]);
+      const encodedData = self._strictEncodeArguments('modifyOracles(address[],bytes32)', [
+        _customOracleAddresses,
+        _denominatedCurrencySymbol,
+      ]);
       const contractDefaults = self._web3Wrapper.getContractDefaults();
       const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
       const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
@@ -2880,10 +2960,10 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
           from: defaultFromAddress,
           ...contractDefaults,
         },
-        self.modifyOracle.estimateGasAsync.bind<USDTieredSTOContract_3_1_0, any, Promise<number>>(
+        self.modifyOracles.estimateGasAsync.bind<USDTieredSTOContract_3_1_0, any, Promise<number>>(
           self,
-          _fundRaiseType,
-          _oracleAddress,
+          _customOracleAddresses,
+          _denominatedCurrencySymbol,
           estimateGasFactor,
         ),
       );
@@ -2897,15 +2977,18 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
       return new PolyResponse(txHash, receipt);
     },
     async estimateGasAsync(
-      _fundRaiseType: number | BigNumber,
-      _oracleAddress: string,
+      _customOracleAddresses: string[],
+      _denominatedCurrencySymbol: string,
       factor?: number,
       txData?: Partial<TxData> | undefined,
     ): Promise<number> {
-      assert.isNumberOrBigNumber('_fundRaiseType', _fundRaiseType);
-      assert.isString('_oracleAddress', _oracleAddress);
+      assert.isArray('_customOracleAddresses', _customOracleAddresses);
+      assert.isString('_denominatedCurrencySymbol', _denominatedCurrencySymbol);
       const self = (this as any) as USDTieredSTOContract_3_1_0;
-      const encodedData = self._strictEncodeArguments('modifyOracle(uint8,address)', [_fundRaiseType, _oracleAddress]);
+      const encodedData = self._strictEncodeArguments('modifyOracles(address[],bytes32)', [
+        _customOracleAddresses,
+        _denominatedCurrencySymbol,
+      ]);
       const contractDefaults = self._web3Wrapper.getContractDefaults();
       const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
       const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
@@ -2930,13 +3013,13 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
       return _safetyGasEstimation > networkGasLimit ? networkGasLimit : _safetyGasEstimation;
     },
     async callAsync(
-      _fundRaiseType: number | BigNumber,
-      _oracleAddress: string,
+      _customOracleAddresses: string[],
+      _denominatedCurrencySymbol: string,
       callData: Partial<CallData> = {},
       defaultBlock?: BlockParam,
     ): Promise<void> {
-      assert.isNumberOrBigNumber('_fundRaiseType', _fundRaiseType);
-      assert.isString('_oracleAddress', _oracleAddress);
+      assert.isArray('_customOracleAddresses', _customOracleAddresses);
+      assert.isString('_denominatedCurrencySymbol', _denominatedCurrencySymbol);
       assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
         schemas.addressSchema,
         schemas.numberSchema,
@@ -2946,7 +3029,10 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
         assert.isBlockParam('defaultBlock', defaultBlock);
       }
       const self = (this as any) as USDTieredSTOContract_3_1_0;
-      const encodedData = self._strictEncodeArguments('modifyOracle(uint8,address)', [_fundRaiseType, _oracleAddress]);
+      const encodedData = self._strictEncodeArguments('modifyOracles(address[],bytes32)', [
+        _customOracleAddresses,
+        _denominatedCurrencySymbol,
+      ]);
       const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
         {
           to: self.address,
@@ -2961,19 +3047,19 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
 
       const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
       BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('modifyOracle(uint8,address)');
+      const abiEncoder = self._lookupAbiEncoder('modifyOracles(address[],bytes32)');
       // tslint:disable boolean-naming
       const result = abiEncoder.strictDecodeReturnValue<void>(rawCallResult);
       // tslint:enable boolean-naming
       return result;
     },
-    getABIEncodedTransactionData(_fundRaiseType: number | BigNumber, _oracleAddress: string): string {
-      assert.isNumberOrBigNumber('_fundRaiseType', _fundRaiseType);
-      assert.isString('_oracleAddress', _oracleAddress);
+    getABIEncodedTransactionData(_customOracleAddresses: string[], _denominatedCurrencySymbol: string): string {
+      assert.isArray('_customOracleAddresses', _customOracleAddresses);
+      assert.isString('_denominatedCurrencySymbol', _denominatedCurrencySymbol);
       const self = (this as any) as USDTieredSTOContract_3_1_0;
-      const abiEncodedTransactionData = self._strictEncodeArguments('modifyOracle(uint8,address)', [
-        _fundRaiseType,
-        _oracleAddress,
+      const abiEncodedTransactionData = self._strictEncodeArguments('modifyOracles(address[],bytes32)', [
+        _customOracleAddresses,
+        _denominatedCurrencySymbol,
       ]);
       return abiEncodedTransactionData;
     },
@@ -4352,6 +4438,50 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
       return abiEncodedTransactionData;
     },
   };
+  public getCustomOracleAddress = {
+    async callAsync(
+      _fundRaiseType: number | BigNumber,
+      callData: Partial<CallData> = {},
+      defaultBlock?: BlockParam,
+    ): Promise<string> {
+      assert.isNumberOrBigNumber('_fundRaiseType', _fundRaiseType);
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as USDTieredSTOContract_3_1_0;
+      const encodedData = self._strictEncodeArguments('getCustomOracleAddress(uint8)', [_fundRaiseType]);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('getCustomOracleAddress(uint8)');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<string>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(_fundRaiseType: number | BigNumber): string {
+      assert.isNumberOrBigNumber('_fundRaiseType', _fundRaiseType);
+      const self = (this as any) as USDTieredSTOContract_3_1_0;
+      const abiEncodedTransactionData = self._strictEncodeArguments('getCustomOracleAddress(uint8)', [_fundRaiseType]);
+      return abiEncodedTransactionData;
+    },
+  };
   public convertToUSD = {
     async sendTransactionAsync(
       _fundRaiseType: number | BigNumber,
@@ -5090,6 +5220,20 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
       {
         constant: true,
         inputs: [],
+        name: 'denominatedCurrency',
+        outputs: [
+          {
+            name: '',
+            type: 'bytes32',
+          },
+        ],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        constant: true,
+        inputs: [],
         name: 'ADMIN',
         outputs: [
           {
@@ -5759,7 +5903,7 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
             indexed: true,
           },
           {
-            name: '_usdTokens',
+            name: '_stableTokens',
             type: 'address[]',
             indexed: false,
           },
@@ -5847,6 +5991,47 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
           },
         ],
         name: 'SetTreasuryWallet',
+        outputs: [],
+        type: 'event',
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            name: '_denominatedCurrency',
+            type: 'bytes32',
+            indexed: false,
+          },
+          {
+            name: '_isCustomOracles',
+            type: 'bool',
+            indexed: false,
+          },
+        ],
+        name: 'SetOracles',
+        outputs: [],
+        type: 'event',
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            name: '_wallet',
+            type: 'address',
+            indexed: true,
+          },
+          {
+            name: '_securityToken',
+            type: 'address',
+            indexed: true,
+          },
+          {
+            name: '_module',
+            type: 'address',
+            indexed: false,
+          },
+        ],
+        name: 'UsageFeeDeducted',
         outputs: [],
         type: 'event',
       },
@@ -5983,8 +6168,16 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
             type: 'address',
           },
           {
-            name: '_usdTokens',
+            name: '_stableTokens',
             type: 'address[]',
+          },
+          {
+            name: '_customOracleAddresses',
+            type: 'address[]',
+          },
+          {
+            name: '_denominatedCurrency',
+            type: 'bytes32',
           },
         ],
         name: 'configure',
@@ -6099,7 +6292,7 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
             type: 'address',
           },
           {
-            name: '_usdTokens',
+            name: '_stableTokens',
             type: 'address[]',
           },
         ],
@@ -6113,15 +6306,15 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
         constant: false,
         inputs: [
           {
-            name: '_fundRaiseType',
-            type: 'uint8',
+            name: '_customOracleAddresses',
+            type: 'address[]',
           },
           {
-            name: '_oracleAddress',
-            type: 'address',
+            name: '_denominatedCurrencySymbol',
+            type: 'bytes32',
           },
         ],
-        name: 'modifyOracle',
+        name: 'modifyOracles',
         outputs: [],
         payable: false,
         stateMutability: 'nonpayable',
@@ -6433,6 +6626,25 @@ export class USDTieredSTOContract_3_1_0 extends BaseContract {
         ],
         payable: false,
         stateMutability: 'nonpayable',
+        type: 'function',
+      },
+      {
+        constant: true,
+        inputs: [
+          {
+            name: '_fundRaiseType',
+            type: 'uint8',
+          },
+        ],
+        name: 'getCustomOracleAddress',
+        outputs: [
+          {
+            name: '',
+            type: 'address',
+          },
+        ],
+        payable: false,
+        stateMutability: 'view',
         type: 'function',
       },
       {

@@ -388,10 +388,10 @@
   resolved "https://registry.yarnpkg.com/@polymathnetwork/contract-artifacts/-/contract-artifacts-3.0.0.tgz#cb339d8cd5bef87af81c2b51934dcfd169801ead"
   integrity sha512-W+ByOIukA1YVxIGcePIoccoUXXi+Ze1fyWnLNtcJfxrS24Y4Q1vJMqHoYszlRVOetGqVY0CDv1U00Q0r98gWXA==
 
-"@polymathnetwork/contract-artifacts-3-1-0@npm:@polymathnetwork/contract-artifacts@3.1.0-beta.2":
-  version "3.1.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@polymathnetwork/contract-artifacts/-/contract-artifacts-3.1.0-beta.2.tgz#ae8629687e1e2aceb28d345f0416972b3be93521"
-  integrity sha512-0vC9aqQ3vV7RdQw6SdSN4rxbRStTDS5l+q9bcomuA+ZIQTsmEcS/DDxj/b1sfXMgMI3JE4R433dtT0dm7NMuag==
+"@polymathnetwork/contract-artifacts-3-1-0@npm:@polymathnetwork/contract-artifacts@3.1.0-beta.3":
+  version "3.1.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@polymathnetwork/contract-artifacts/-/contract-artifacts-3.1.0-beta.3.tgz#8bce7569b87bc3fd158ae2cdc7dd5ee46ef42156"
+  integrity sha512-R7AJuaHV81DKAQALpnOFw33k5eWqqFB6UBIeeh8r/2eTtOlagATpXZpjMIrbCdO/KdHHmZRunGoR+P8bvhyGqw==
 
 "@semantic-release/changelog@^3.0.4":
   version "3.0.4"
