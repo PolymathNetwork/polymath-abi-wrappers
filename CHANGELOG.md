@@ -1,3 +1,17 @@
+# [4.0.0-beta.9](https://github.com/PolymathNetwork/polymath-abi-wrappers/compare/v4.0.0-beta.8@beta...v4.0.0-beta.9@beta) (2019-11-14)
+
+
+### Features
+
+* **usdtieredsto:** tiered sto allows set any stablecoin we want ([7adb896](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/7adb896))
+
+
+### BREAKING CHANGES
+
+* **usdtieredsto:** Contract is now available to be pegged with other fiat currency. Configure function
+is now accepting the contract address of the stable coins, the addresses of the custom oracles and
+the symbol of the denominated currency.
+
 # [4.0.0-beta.8](https://github.com/PolymathNetwork/polymath-abi-wrappers/compare/v4.0.0-beta.7@beta...v4.0.0-beta.8@beta) (2019-09-26)
 
 
