@@ -25,7 +25,10 @@ export type USDTieredSTOFactoryEventArgs_3_1_0 =
   | USDTieredSTOFactoryModuleUpgradedEventArgs_3_1_0
   | USDTieredSTOFactoryOwnershipTransferredEventArgs_3_1_0
   | USDTieredSTOFactoryChangeSetupCostEventArgs_3_1_0
+  | USDTieredSTOFactoryChangeUsageCostEventArgs_3_1_0
+  | USDTieredSTOFactoryUsageCostProposedEventArgs_3_1_0
   | USDTieredSTOFactoryChangeCostTypeEventArgs_3_1_0
+  | USDTieredSTOFactoryChangeCostTypeProposedEventArgs_3_1_0
   | USDTieredSTOFactoryGenerateModuleFromFactoryEventArgs_3_1_0
   | USDTieredSTOFactoryChangeSTVersionBoundEventArgs_3_1_0;
 
@@ -34,7 +37,10 @@ export enum USDTieredSTOFactoryEvents_3_1_0 {
   ModuleUpgraded = 'ModuleUpgraded',
   OwnershipTransferred = 'OwnershipTransferred',
   ChangeSetupCost = 'ChangeSetupCost',
+  ChangeUsageCost = 'ChangeUsageCost',
+  UsageCostProposed = 'UsageCostProposed',
   ChangeCostType = 'ChangeCostType',
+  ChangeCostTypeProposed = 'ChangeCostTypeProposed',
   GenerateModuleFromFactory = 'GenerateModuleFromFactory',
   ChangeSTVersionBound = 'ChangeSTVersionBound',
 }
@@ -58,9 +64,21 @@ export interface USDTieredSTOFactoryChangeSetupCostEventArgs_3_1_0 extends Decod
   _oldSetupCost: BigNumber;
   _newSetupCost: BigNumber;
 }
+export interface USDTieredSTOFactoryChangeUsageCostEventArgs_3_1_0 extends DecodedLogArgs {
+  _oldUsageCost: BigNumber;
+  _newUsageCost: BigNumber;
+}
+export interface USDTieredSTOFactoryUsageCostProposedEventArgs_3_1_0 extends DecodedLogArgs {
+  _proposedFee: BigNumber;
+  _currentFee: BigNumber;
+}
 export interface USDTieredSTOFactoryChangeCostTypeEventArgs_3_1_0 extends DecodedLogArgs {
   _isOldCostInPoly: boolean;
   _isNewCostInPoly: boolean;
+}
+export interface USDTieredSTOFactoryChangeCostTypeProposedEventArgs_3_1_0 extends DecodedLogArgs {
+  _proposedCostType: boolean;
+  _currentCostType: boolean;
 }
 export interface USDTieredSTOFactoryGenerateModuleFromFactoryEventArgs_3_1_0 extends DecodedLogArgs {
   _module: string;
@@ -117,6 +135,116 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
     getABIEncodedTransactionData(): string {
       const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
       const abiEncodedTransactionData = self._strictEncodeArguments('name()', []);
+      return abiEncodedTransactionData;
+    },
+  };
+  public proposeUsageCost = {
+    async sendTransactionAsync(
+      _usageCostProposed: BigNumber,
+      txData?: Partial<TxData> | undefined,
+      estimateGasFactor?: number,
+    ): Promise<PolyResponse> {
+      assert.isBigNumber('_usageCostProposed', _usageCostProposed);
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const encodedData = self._strictEncodeArguments('proposeUsageCost(uint256)', [_usageCostProposed]);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+        self.proposeUsageCost.estimateGasAsync.bind<USDTieredSTOFactoryContract_3_1_0, any, Promise<number>>(
+          self,
+          _usageCostProposed,
+          estimateGasFactor,
+        ),
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+      const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+
+      return new PolyResponse(txHash, receipt);
+    },
+    async estimateGasAsync(
+      _usageCostProposed: BigNumber,
+      factor?: number,
+      txData?: Partial<TxData> | undefined,
+    ): Promise<number> {
+      assert.isBigNumber('_usageCostProposed', _usageCostProposed);
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const encodedData = self._strictEncodeArguments('proposeUsageCost(uint256)', [_usageCostProposed]);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+      const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+      const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+      const _safetyGasEstimation = Math.round(_factor * gas);
+      return _safetyGasEstimation > networkGasLimit ? networkGasLimit : _safetyGasEstimation;
+    },
+    async callAsync(
+      _usageCostProposed: BigNumber,
+      callData: Partial<CallData> = {},
+      defaultBlock?: BlockParam,
+    ): Promise<void> {
+      assert.isBigNumber('_usageCostProposed', _usageCostProposed);
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const encodedData = self._strictEncodeArguments('proposeUsageCost(uint256)', [_usageCostProposed]);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('proposeUsageCost(uint256)');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<void>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(_usageCostProposed: BigNumber): string {
+      assert.isBigNumber('_usageCostProposed', _usageCostProposed);
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const abiEncodedTransactionData = self._strictEncodeArguments('proposeUsageCost(uint256)', [_usageCostProposed]);
       return abiEncodedTransactionData;
     },
   };
@@ -219,6 +347,44 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
       assert.isString('_module', _module);
       const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
       const abiEncodedTransactionData = self._strictEncodeArguments('upgrade(address)', [_module]);
+      return abiEncodedTransactionData;
+    },
+  };
+  public willCostInPoly = {
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<boolean> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const encodedData = self._strictEncodeArguments('willCostInPoly()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('willCostInPoly()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<boolean>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const abiEncodedTransactionData = self._strictEncodeArguments('willCostInPoly()', []);
       return abiEncodedTransactionData;
     },
   };
@@ -775,6 +941,103 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
       return abiEncodedTransactionData;
     },
   };
+  public changeUsageCost = {
+    async sendTransactionAsync(
+      txData?: Partial<TxData> | undefined,
+      estimateGasFactor?: number,
+    ): Promise<PolyResponse> {
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const encodedData = self._strictEncodeArguments('changeUsageCost()', []);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+        self.changeUsageCost.estimateGasAsync.bind<USDTieredSTOFactoryContract_3_1_0, any, Promise<number>>(
+          self,
+
+          estimateGasFactor,
+        ),
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+      const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+
+      return new PolyResponse(txHash, receipt);
+    },
+    async estimateGasAsync(factor?: number, txData?: Partial<TxData> | undefined): Promise<number> {
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const encodedData = self._strictEncodeArguments('changeUsageCost()', []);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+      const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+      const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+      const _safetyGasEstimation = Math.round(_factor * gas);
+      return _safetyGasEstimation > networkGasLimit ? networkGasLimit : _safetyGasEstimation;
+    },
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<void> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const encodedData = self._strictEncodeArguments('changeUsageCost()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('changeUsageCost()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<void>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const abiEncodedTransactionData = self._strictEncodeArguments('changeUsageCost()', []);
+      return abiEncodedTransactionData;
+    },
+  };
   public isCostInPoly = {
     async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<boolean> {
       assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
@@ -968,6 +1231,44 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
       assert.isBigNumber('index_0', index_0);
       const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
       const abiEncodedTransactionData = self._strictEncodeArguments('logicContracts(uint256)', [index_0]);
+      return abiEncodedTransactionData;
+    },
+  };
+  public usageCostProposedAt = {
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const encodedData = self._strictEncodeArguments('usageCostProposedAt()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('usageCostProposedAt()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const abiEncodedTransactionData = self._strictEncodeArguments('usageCostProposedAt()', []);
       return abiEncodedTransactionData;
     },
   };
@@ -1561,17 +1862,120 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
       return abiEncodedTransactionData;
     },
   };
+  public changeCostType = {
+    async sendTransactionAsync(
+      txData?: Partial<TxData> | undefined,
+      estimateGasFactor?: number,
+    ): Promise<PolyResponse> {
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const encodedData = self._strictEncodeArguments('changeCostType()', []);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+        self.changeCostType.estimateGasAsync.bind<USDTieredSTOFactoryContract_3_1_0, any, Promise<number>>(
+          self,
+
+          estimateGasFactor,
+        ),
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+      const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+
+      return new PolyResponse(txHash, receipt);
+    },
+    async estimateGasAsync(factor?: number, txData?: Partial<TxData> | undefined): Promise<number> {
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const encodedData = self._strictEncodeArguments('changeCostType()', []);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+      const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+      const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+      const _safetyGasEstimation = Math.round(_factor * gas);
+      return _safetyGasEstimation > networkGasLimit ? networkGasLimit : _safetyGasEstimation;
+    },
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<void> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const encodedData = self._strictEncodeArguments('changeCostType()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('changeCostType()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<void>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const abiEncodedTransactionData = self._strictEncodeArguments('changeCostType()', []);
+      return abiEncodedTransactionData;
+    },
+  };
   public changeCostAndType = {
     async sendTransactionAsync(
       _setupCost: BigNumber,
+      _usageCost: BigNumber,
       _isCostInPoly: boolean,
       txData?: Partial<TxData> | undefined,
       estimateGasFactor?: number,
     ): Promise<PolyResponse> {
       assert.isBigNumber('_setupCost', _setupCost);
+      assert.isBigNumber('_usageCost', _usageCost);
       assert.isBoolean('_isCostInPoly', _isCostInPoly);
       const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
-      const encodedData = self._strictEncodeArguments('changeCostAndType(uint256,bool)', [_setupCost, _isCostInPoly]);
+      const encodedData = self._strictEncodeArguments('changeCostAndType(uint256,uint256,bool)', [
+        _setupCost,
+        _usageCost,
+        _isCostInPoly,
+      ]);
       const contractDefaults = self._web3Wrapper.getContractDefaults();
       const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
       const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
@@ -1587,6 +1991,7 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
         self.changeCostAndType.estimateGasAsync.bind<USDTieredSTOFactoryContract_3_1_0, any, Promise<number>>(
           self,
           _setupCost,
+          _usageCost,
           _isCostInPoly,
           estimateGasFactor,
         ),
@@ -1602,14 +2007,20 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
     },
     async estimateGasAsync(
       _setupCost: BigNumber,
+      _usageCost: BigNumber,
       _isCostInPoly: boolean,
       factor?: number,
       txData?: Partial<TxData> | undefined,
     ): Promise<number> {
       assert.isBigNumber('_setupCost', _setupCost);
+      assert.isBigNumber('_usageCost', _usageCost);
       assert.isBoolean('_isCostInPoly', _isCostInPoly);
       const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
-      const encodedData = self._strictEncodeArguments('changeCostAndType(uint256,bool)', [_setupCost, _isCostInPoly]);
+      const encodedData = self._strictEncodeArguments('changeCostAndType(uint256,uint256,bool)', [
+        _setupCost,
+        _usageCost,
+        _isCostInPoly,
+      ]);
       const contractDefaults = self._web3Wrapper.getContractDefaults();
       const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
       const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
@@ -1635,11 +2046,13 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
     },
     async callAsync(
       _setupCost: BigNumber,
+      _usageCost: BigNumber,
       _isCostInPoly: boolean,
       callData: Partial<CallData> = {},
       defaultBlock?: BlockParam,
     ): Promise<void> {
       assert.isBigNumber('_setupCost', _setupCost);
+      assert.isBigNumber('_usageCost', _usageCost);
       assert.isBoolean('_isCostInPoly', _isCostInPoly);
       assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
         schemas.addressSchema,
@@ -1650,7 +2063,11 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
         assert.isBlockParam('defaultBlock', defaultBlock);
       }
       const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
-      const encodedData = self._strictEncodeArguments('changeCostAndType(uint256,bool)', [_setupCost, _isCostInPoly]);
+      const encodedData = self._strictEncodeArguments('changeCostAndType(uint256,uint256,bool)', [
+        _setupCost,
+        _usageCost,
+        _isCostInPoly,
+      ]);
       const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
         {
           to: self.address,
@@ -1665,18 +2082,20 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
 
       const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
       BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
-      const abiEncoder = self._lookupAbiEncoder('changeCostAndType(uint256,bool)');
+      const abiEncoder = self._lookupAbiEncoder('changeCostAndType(uint256,uint256,bool)');
       // tslint:disable boolean-naming
       const result = abiEncoder.strictDecodeReturnValue<void>(rawCallResult);
       // tslint:enable boolean-naming
       return result;
     },
-    getABIEncodedTransactionData(_setupCost: BigNumber, _isCostInPoly: boolean): string {
+    getABIEncodedTransactionData(_setupCost: BigNumber, _usageCost: BigNumber, _isCostInPoly: boolean): string {
       assert.isBigNumber('_setupCost', _setupCost);
+      assert.isBigNumber('_usageCost', _usageCost);
       assert.isBoolean('_isCostInPoly', _isCostInPoly);
       const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
-      const abiEncodedTransactionData = self._strictEncodeArguments('changeCostAndType(uint256,bool)', [
+      const abiEncodedTransactionData = self._strictEncodeArguments('changeCostAndType(uint256,uint256,bool)', [
         _setupCost,
+        _usageCost,
         _isCostInPoly,
       ]);
       return abiEncodedTransactionData;
@@ -1836,6 +2255,141 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
         'updateLogicContract(uint256,string,address,bytes)',
         [_upgrade, _version, _logicContract, _upgradeData],
       );
+      return abiEncodedTransactionData;
+    },
+  };
+  public usageCost = {
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const encodedData = self._strictEncodeArguments('usageCost()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('usageCost()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const abiEncodedTransactionData = self._strictEncodeArguments('usageCost()', []);
+      return abiEncodedTransactionData;
+    },
+  };
+  public usageCostInPoly = {
+    async sendTransactionAsync(
+      txData?: Partial<TxData> | undefined,
+      estimateGasFactor?: number,
+    ): Promise<PolyResponse> {
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const encodedData = self._strictEncodeArguments('usageCostInPoly()', []);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+        self.usageCostInPoly.estimateGasAsync.bind<USDTieredSTOFactoryContract_3_1_0, any, Promise<number>>(
+          self,
+
+          estimateGasFactor,
+        ),
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const txHash = await self._web3Wrapper.sendTransactionAsync(txDataWithDefaults);
+      const receipt = self._web3Wrapper.awaitTransactionSuccessAsync(txHash);
+
+      return new PolyResponse(txHash, receipt);
+    },
+    async estimateGasAsync(factor?: number, txData?: Partial<TxData> | undefined): Promise<number> {
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const encodedData = self._strictEncodeArguments('usageCostInPoly()', []);
+      const contractDefaults = self._web3Wrapper.getContractDefaults();
+      const defaultFromAddress = (await self._web3Wrapper.getAvailableAddressesAsync())[0];
+      const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...txData,
+          data: encodedData,
+        },
+        {
+          from: defaultFromAddress,
+          ...contractDefaults,
+        },
+      );
+      if (txDataWithDefaults.from !== undefined) {
+        txDataWithDefaults.from = txDataWithDefaults.from.toLowerCase();
+      }
+
+      const gas = await self._web3Wrapper.estimateGasAsync(txDataWithDefaults);
+      const networkGasLimit = (await self._web3Wrapper.getBlockWithTransactionDataAsync('latest')).gasLimit;
+      const _factor = factor === undefined ? self._defaultEstimateGasFactor : factor;
+      const _safetyGasEstimation = Math.round(_factor * gas);
+      return _safetyGasEstimation > networkGasLimit ? networkGasLimit : _safetyGasEstimation;
+    },
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const encodedData = self._strictEncodeArguments('usageCostInPoly()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('usageCostInPoly()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const abiEncodedTransactionData = self._strictEncodeArguments('usageCostInPoly()', []);
       return abiEncodedTransactionData;
     },
   };
@@ -2047,6 +2601,44 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
       return abiEncodedTransactionData;
     },
   };
+  public proposedUsageCost = {
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const encodedData = self._strictEncodeArguments('proposedUsageCost()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('proposedUsageCost()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const abiEncodedTransactionData = self._strictEncodeArguments('proposedUsageCost()', []);
+      return abiEncodedTransactionData;
+    },
+  };
   public getUpperSTVersionBounds = {
     async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber[]> {
       assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
@@ -2082,6 +2674,44 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
     getABIEncodedTransactionData(): string {
       const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
       const abiEncodedTransactionData = self._strictEncodeArguments('getUpperSTVersionBounds()', []);
+      return abiEncodedTransactionData;
+    },
+  };
+  public changeInCostTypeAt = {
+    async callAsync(callData: Partial<CallData> = {}, defaultBlock?: BlockParam): Promise<BigNumber> {
+      assert.doesConformToSchema('callData', callData, schemas.callDataSchema, [
+        schemas.addressSchema,
+        schemas.numberSchema,
+        schemas.jsNumber,
+      ]);
+      if (defaultBlock !== undefined) {
+        assert.isBlockParam('defaultBlock', defaultBlock);
+      }
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const encodedData = self._strictEncodeArguments('changeInCostTypeAt()', []);
+      const callDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
+        {
+          to: self.address,
+          ...callData,
+          data: encodedData,
+        },
+        self._web3Wrapper.getContractDefaults(),
+      );
+      callDataWithDefaults.from = callDataWithDefaults.from
+        ? callDataWithDefaults.from.toLowerCase()
+        : callDataWithDefaults.from;
+
+      const rawCallResult = await self._web3Wrapper.callAsync(callDataWithDefaults, defaultBlock);
+      BaseContract._throwIfRevertWithReasonCallResult(rawCallResult);
+      const abiEncoder = self._lookupAbiEncoder('changeInCostTypeAt()');
+      // tslint:disable boolean-naming
+      const result = abiEncoder.strictDecodeReturnValue<BigNumber>(rawCallResult);
+      // tslint:enable boolean-naming
+      return result;
+    },
+    getABIEncodedTransactionData(): string {
+      const self = (this as any) as USDTieredSTOFactoryContract_3_1_0;
+      const abiEncodedTransactionData = self._strictEncodeArguments('changeInCostTypeAt()', []);
       return abiEncodedTransactionData;
     },
   };
@@ -2323,6 +2953,7 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
     supportedProvider: SupportedProvider,
     txDefaults: Partial<TxData>,
     _setupCost: BigNumber,
+    _usageCost: BigNumber,
     _logicContract: string,
     _polymathRegistry: string,
     _isCostInPoly: boolean,
@@ -2335,14 +2966,20 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
     ]);
     const provider = providerUtils.standardizeOrThrow(supportedProvider);
     const constructorAbi = BaseContract._lookupConstructorAbi(abi);
-    [_setupCost, _logicContract, _polymathRegistry, _isCostInPoly] = BaseContract._formatABIDataItemList(
+    [_setupCost, _usageCost, _logicContract, _polymathRegistry, _isCostInPoly] = BaseContract._formatABIDataItemList(
       constructorAbi.inputs,
-      [_setupCost, _logicContract, _polymathRegistry, _isCostInPoly],
+      [_setupCost, _usageCost, _logicContract, _polymathRegistry, _isCostInPoly],
       BaseContract._bigNumberToString,
     );
     const iface = new ethersUtils.Interface(abi);
     const deployInfo = iface.deployFunction;
-    const txData = deployInfo.encode(bytecode, [_setupCost, _logicContract, _polymathRegistry, _isCostInPoly]);
+    const txData = deployInfo.encode(bytecode, [
+      _setupCost,
+      _usageCost,
+      _logicContract,
+      _polymathRegistry,
+      _isCostInPoly,
+    ]);
     const web3Wrapper = new Web3Wrapper(provider);
     const txDataWithDefaults = await BaseContract._applyDefaultsToTxDataAsync(
       { data: txData },
@@ -2358,7 +2995,7 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
       provider,
       txDefaults,
     );
-    contractInstance.constructorArgs = [_setupCost, _logicContract, _polymathRegistry, _isCostInPoly];
+    contractInstance.constructorArgs = [_setupCost, _usageCost, _logicContract, _polymathRegistry, _isCostInPoly];
     return contractInstance;
   }
 
@@ -2385,6 +3022,20 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
         constant: false,
         inputs: [
           {
+            name: '_usageCostProposed',
+            type: 'uint256',
+          },
+        ],
+        name: 'proposeUsageCost',
+        outputs: [],
+        payable: false,
+        stateMutability: 'nonpayable',
+        type: 'function',
+      },
+      {
+        constant: false,
+        inputs: [
+          {
             name: '_module',
             type: 'address',
           },
@@ -2393,6 +3044,20 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
         outputs: [],
         payable: false,
         stateMutability: 'nonpayable',
+        type: 'function',
+      },
+      {
+        constant: true,
+        inputs: [],
+        name: 'willCostInPoly',
+        outputs: [
+          {
+            name: '',
+            type: 'bool',
+          },
+        ],
+        payable: false,
+        stateMutability: 'view',
         type: 'function',
       },
       {
@@ -2468,6 +3133,15 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
           },
         ],
         name: 'setLogicContract',
+        outputs: [],
+        payable: false,
+        stateMutability: 'nonpayable',
+        type: 'function',
+      },
+      {
+        constant: false,
+        inputs: [],
+        name: 'changeUsageCost',
         outputs: [],
         payable: false,
         stateMutability: 'nonpayable',
@@ -2550,6 +3224,20 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
           {
             name: 'upgradeData',
             type: 'bytes',
+          },
+        ],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        constant: true,
+        inputs: [],
+        name: 'usageCostProposedAt',
+        outputs: [
+          {
+            name: '',
+            type: 'uint256',
           },
         ],
         payable: false,
@@ -2735,9 +3423,22 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
       },
       {
         constant: false,
+        inputs: [],
+        name: 'changeCostType',
+        outputs: [],
+        payable: false,
+        stateMutability: 'nonpayable',
+        type: 'function',
+      },
+      {
+        constant: false,
         inputs: [
           {
             name: '_setupCost',
+            type: 'uint256',
+          },
+          {
+            name: '_usageCost',
             type: 'uint256',
           },
           {
@@ -2778,6 +3479,34 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
         type: 'function',
       },
       {
+        constant: true,
+        inputs: [],
+        name: 'usageCost',
+        outputs: [
+          {
+            name: '',
+            type: 'uint256',
+          },
+        ],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        constant: false,
+        inputs: [],
+        name: 'usageCostInPoly',
+        outputs: [
+          {
+            name: '',
+            type: 'uint256',
+          },
+        ],
+        payable: false,
+        stateMutability: 'nonpayable',
+        type: 'function',
+      },
+      {
         constant: false,
         inputs: [
           {
@@ -2808,11 +3537,39 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
       {
         constant: true,
         inputs: [],
+        name: 'proposedUsageCost',
+        outputs: [
+          {
+            name: '',
+            type: 'uint256',
+          },
+        ],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        constant: true,
+        inputs: [],
         name: 'getUpperSTVersionBounds',
         outputs: [
           {
             name: '',
             type: 'uint8[]',
+          },
+        ],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        constant: true,
+        inputs: [],
+        name: 'changeInCostTypeAt',
+        outputs: [
+          {
+            name: '',
+            type: 'uint256',
           },
         ],
         payable: false,
@@ -2841,6 +3598,10 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
         inputs: [
           {
             name: '_setupCost',
+            type: 'uint256',
+          },
+          {
+            name: '_usageCost',
             type: 'uint256',
           },
           {
@@ -2952,6 +3713,42 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
         anonymous: false,
         inputs: [
           {
+            name: '_oldUsageCost',
+            type: 'uint256',
+            indexed: false,
+          },
+          {
+            name: '_newUsageCost',
+            type: 'uint256',
+            indexed: false,
+          },
+        ],
+        name: 'ChangeUsageCost',
+        outputs: [],
+        type: 'event',
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            name: '_proposedFee',
+            type: 'uint256',
+            indexed: false,
+          },
+          {
+            name: '_currentFee',
+            type: 'uint256',
+            indexed: false,
+          },
+        ],
+        name: 'UsageCostProposed',
+        outputs: [],
+        type: 'event',
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
             name: '_isOldCostInPoly',
             type: 'bool',
             indexed: false,
@@ -2963,6 +3760,24 @@ export class USDTieredSTOFactoryContract_3_1_0 extends BaseContract {
           },
         ],
         name: 'ChangeCostType',
+        outputs: [],
+        type: 'event',
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            name: '_proposedCostType',
+            type: 'bool',
+            indexed: false,
+          },
+          {
+            name: '_currentCostType',
+            type: 'bool',
+            indexed: false,
+          },
+        ],
+        name: 'ChangeCostTypeProposed',
         outputs: [],
         type: 'event',
       },
