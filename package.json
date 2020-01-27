@@ -51,7 +51,7 @@
     "tslint": "5.18.0",
     "uglifyjs-folder": "^1.5.1",
     "semantic-release": "16.0.0-beta.18",
-    "@semantic-release/git": "^7.1.0-beta.3",
+    "@semantic-release/git": "^9.0.0",
     "semantic-release-cli": "^5.1.1"
   },
   "dependencies": {
