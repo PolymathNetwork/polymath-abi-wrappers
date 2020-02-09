@@ -56,7 +56,7 @@
   },
   "dependencies": {
     "@0x/base-contract": "^5.1.1",
-    "@0x/utils": "^4.4.0",
+    "@0x/utils": "^5.4.0",
     "@0x/web3-wrapper": "^6.0.7",
     "commitizen": "^4.0.3",
     "ethereum-types": "^2.1.3",
