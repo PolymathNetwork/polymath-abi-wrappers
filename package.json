@@ -55,7 +55,7 @@
     "semantic-release-cli": "^5.1.1"
   },
   "dependencies": {
-    "@0x/base-contract": "^5.1.1",
+    "@0x/base-contract": "^6.2.0",
     "@0x/utils": "^4.4.0",
     "@0x/web3-wrapper": "^6.0.7",
     "commitizen": "^4.0.3",
