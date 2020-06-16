@@ -1,3 +1,35 @@
+# [4.0.0](https://github.com/PolymathNetwork/polymath-abi-wrappers/compare/v3.0.0...v4.0.0) (2020-06-16)
+
+
+### Bug Fixes
+
+* export PolyResponse from the correct path ([75c967d](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/75c967d))
+* export ST wrapper because of missing event in IST wrapper ([d737fa8](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/d737fa8))
+* export ST wrappers ([40560bb](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/40560bb))
+* remove duplicate events ([d7e6057](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/d7e6057))
+* remove duplicated function ([7a2eb52](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/7a2eb52))
+* remove wrong sintax format ([dc1524e](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/dc1524e))
+* rename poly response file ([100fee2](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/100fee2))
+* revert dependency versions back to a working state ([2ee0357](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/2ee0357))
+
+
+### Features
+
+* update contract artifacts to latest version ([c79750e](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/c79750e))
+* **dependencies:** dependencies updated ([f208f0b](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/f208f0b))
+* **usdtieredsto:** tiered sto allows set any stablecoin we want ([7adb896](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/7adb896))
+* **wrapper:** add APLCRVC wrapper to our components suite ([973e9eb](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/973e9eb))
+* modify built code ([39b36ee](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/39b36ee))
+* support multiple versions ([6ca6721](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/6ca6721))
+
+
+### BREAKING CHANGES
+
+* **usdtieredsto:** Contract is now available to be pegged with other fiat currency. Configure function
+is now accepting the contract address of the stable coins, the addresses of the custom oracles and
+the symbol of the denominated currency.
+* abi wrappers are now exported per version and with version names
+
 # [4.0.0-beta.10](https://github.com/PolymathNetwork/polymath-abi-wrappers/compare/v4.0.0-beta.9@beta...v4.0.0-beta.10@beta) (2020-06-16)
 
 
