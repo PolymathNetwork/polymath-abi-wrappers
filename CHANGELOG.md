@@ -1,3 +1,10 @@
+# [4.0.0-beta.10](https://github.com/PolymathNetwork/polymath-abi-wrappers/compare/v4.0.0-beta.9@beta...v4.0.0-beta.10@beta) (2020-06-16)
+
+
+### Features
+
+* update contract artifacts to latest version ([c79750e](https://github.com/PolymathNetwork/polymath-abi-wrappers/commit/c79750e))
+
 # [4.0.0-beta.9](https://github.com/PolymathNetwork/polymath-abi-wrappers/compare/v4.0.0-beta.8@beta...v4.0.0-beta.9@beta) (2019-11-14)
 
 
