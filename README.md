@@ -1,6 +1,11 @@
-## @polymathnetwork/abi-wrappers
-
+[![Build Status](https://travis-ci.org/PolymathNetwork/polymath-abi-wrappers.svg?branch=master)](https://travis-ci.org/PolymathNetwork/polymath-abi-wrappers)
 [![Greenkeeper badge](https://badges.greenkeeper.io/PolymathNetwork/polymath-abi-wrappers.svg)](https://greenkeeper.io/)
+[![Gitter](https://img.shields.io/badge/chat-gitter-green.svg)](https://gitter.im/PolymathNetwork/Lobby)
+[![Telegram](https://img.shields.io/badge/50k+-telegram-blue.svg)](https://gitter.im/PolymathNetwork/Lobby)
+
+![Polymath logo](Polymath.png)
+
+## @polymathnetwork/abi-wrappers
 
 Low-level Polymath smart contract wrappers generated using @0x/abi-gen with custom poly template. These low-level wrappers are imported by other packages and application developers are not expected to import this package directly.
 
@@ -45,5 +50,5 @@ yarn install
 To build this package run the following from root directory:
 
 ```bash
-yarn build
+yarn pre_build && yarn build
 ```
